@@ -1,4 +1,4 @@
-package com.sdc.scala.test
+package com.sdc.scala.car
 
 import com.google.common.base.Objects
 

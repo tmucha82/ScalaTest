@@ -1,6 +1,6 @@
 package com.sdc.scala.rational
 
-object RationalTest extends App {
-
+object RationalApp extends App {
+  println("RationalApp ...")
   println(new Rational(10, 2))
 }

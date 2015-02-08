@@ -1,4 +1,4 @@
-import com.sdc.scala.test.Car
+import com.sdc.scala.car.Car
 
 val cars = new Car("red", true) :: new Car("blue", false) :: Nil
 
