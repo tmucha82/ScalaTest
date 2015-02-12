@@ -1,6 +1,5 @@
-package scala.rational
+package com.sdc.scala.rational
 
-import com.sdc.scala.rational.Rational
 import org.scalatest.FunSuite
 
 class RationalTest extends FunSuite {
@@ -81,6 +80,13 @@ class RationalTest extends FunSuite {
     val rational = new Rational(6, 2) / 2
     assert(rational.number === 6)
     assert(rational.denominator === 4)
+  }
+
+  test("implicit conversions") {
+    var rational = 3 + new Rational(6,2)
+    assert(rational.number === 12)
+    assert(rational.denominator === 2)
+
   }
 
 }

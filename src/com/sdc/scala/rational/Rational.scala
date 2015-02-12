@@ -34,6 +34,10 @@ class Rational(n: Int, d: Int) {
   def / (that: Rational): Rational = new Rational(number * that.denominator, denominator * that.number)
 
   def / (i: Int): Rational = this / new Rational(i)
+}
+
+object Rational {
 
   implicit def intToRational(x: Int): Rational = new Rational(x)
+
 }
