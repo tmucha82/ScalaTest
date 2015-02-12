@@ -26,4 +26,11 @@ class FilesTest extends FunSuite {
       assert(pair._2.contains("import "))
     })
   }
+
+  test("get line length for scala file wth for sentence") {
+    val results = Files.getLineLengthWithForSentenceForScalaFile("./scripts")
+    assert(2 === results.length)
+    assert(16 === results(0))
+    assert(22 === results(1))
+  }
 }

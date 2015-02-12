@@ -12,7 +12,6 @@ object Files {
 
   def grep(files: Array[File], pattern: String): Map[String, String] = {
     var result: Map[String, String] = Map.empty
-
     for (file <- files
          if file.getName.endsWith("scala");
          line <- fileLines(file);
@@ -20,6 +19,15 @@ object Files {
          if trimmed.matches(pattern))
       result += file.getName -> trimmed
     result
+  }
+
+  def getLineLengthWithForSentenceForScalaFile(path: String): Array[Int] = {
+    for {file <- getFiles(path)
+         if file.getName.endsWith("scala")
+         line <- fileLines(file)
+         trimmed = line.trim
+         if trimmed.matches(".*for.*")
+    } yield trimmed.length
   }
 
 
