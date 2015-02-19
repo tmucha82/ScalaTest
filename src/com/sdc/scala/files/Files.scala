@@ -21,13 +21,13 @@ object Files {
     result
   }
 
-  def getLineLengthWithForSentenceForScalaFile(path: String): Array[Int] = {
-    for {file <- getFiles(path)
+  def getLineLengthWithForSentenceForScalaFile(path: String): List[Int] = {
+    (for {file <- getFiles(path)
          if file.getName.endsWith("scala")
          line <- fileLines(file)
          trimmed = line.trim
          if trimmed.matches(".*for.*")
-    } yield trimmed.length
+    } yield trimmed.length).toList
   }
 
 
