@@ -50,6 +50,7 @@ class CommonTest extends FunSuite {
     testList.foreach(x => print(x))
     testList.foreach(print(_))
     for (x <- testList) print(x)
+    println()
   }
 
   def sum(a: Int, b: Int, c: Int) = a + b + c
@@ -66,4 +67,39 @@ class CommonTest extends FunSuite {
     assert(6 === b.apply(2))
   }
 
+  test("sum of the list") {
+    val list = List(-10, 8, 4, 0, -1, 3, 8)
+
+    var sum = 0
+    list.foreach(x => sum += x)
+    assert(12 === sum)
+
+    sum = 0
+    list.foreach(sum += _)
+    assert(12 === sum)
+  }
+
+  test("closure increase") {
+    def increase(more: Int) = (x: Int) => x + more
+    val increaseOne = increase(1)
+    val increaseTen = increase(10)
+    assert(4 === increaseOne(3))
+    assert(13 === increaseTen(3))
+  }
+
+  test("repeated parameter") {
+    def echo1(args: Array[String]) = for (arg <- args) print(arg + " ")
+    echo1(Array("1", "2"))
+    println()
+
+    //but we could do like this
+    def echo2(args: String*) = for (arg <- args) print(arg + " ")
+    echo2("1", "2")
+    println()
+
+    val arr = Array("What's", "up", "doc?")
+    echo1(arr)
+    echo2("What's", "up", "doc?")
+    echo2(arr : _*)
+  }
 }
