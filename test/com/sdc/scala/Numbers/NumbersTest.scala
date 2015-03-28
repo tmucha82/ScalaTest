@@ -16,7 +16,7 @@ class NumbersTest extends FunSuite {
   }
 
   test("half of odd number with catch") {
-    try {
+      try {
       Numbers.half(7)
       fail()
     } catch {
