@@ -23,7 +23,7 @@ object Files {
 
   def getLineLengthWithForSentenceForScalaFile(path: String): List[Int] = {
     (for {file <- getFiles(path)
-         if file.getName.endsWith("scala")
+         if file.getName.endsWith("sc")
          line <- fileLines(file)
          trimmed = line.trim
          if trimmed.matches(".*for.*")
