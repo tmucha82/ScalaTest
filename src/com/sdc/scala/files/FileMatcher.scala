@@ -16,4 +16,8 @@ object FileMatcher {
          if file.getName.contains(query)
     } yield file
   }
+
+  def filesRegex(query: String): Array[File] = {
+    for(file <- filesHere; if file.getName.matches(query)) yield file
+  }
 }
