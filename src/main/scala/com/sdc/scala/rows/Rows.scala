@@ -1,5 +1,7 @@
 package com.sdc.scala.rows
 
+import scala.util.Properties
+
 object Rows {
   // Returns a row as a sequence
   def makeRowSeq(row: Int) =
@@ -17,6 +19,6 @@ object Rows {
     val tableSeq = // a sequence of row strings
       for (row <- 1 to 10)
       yield makeRow(row)
-    tableSeq.mkString("\r\n")
+    tableSeq.mkString(Properties.lineSeparator)
   }
 }
