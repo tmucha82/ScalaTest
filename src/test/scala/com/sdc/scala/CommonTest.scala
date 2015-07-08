@@ -3,6 +3,16 @@ package com.sdc.scala
 import org.scalatest.FunSuite
 
 class CommonTest extends FunSuite {
+  test("simple Hello World with one argument") {
+    //could be this
+    println("Hello, world !")
+
+    //or could be that
+    println {
+      "Hello, world !"
+    }
+  }
+
   def increase = {
     println("increase method")
     (x: Int) => x + 1
@@ -101,5 +111,90 @@ class CommonTest extends FunSuite {
     echo1(arr)
     echo2("What's", "up", "doc?")
     echo2(arr : _*)
+  }
+
+  def containsNegativeFirst(numbers: List[Int]): Boolean = {
+    var exist = false
+    for (number <- numbers)
+      if (number < 0) exist = true
+    exist
+  }
+
+  def containsNegativeSecond(numbers: List[Int]): Boolean = {
+    //numbers.exists(p => p > 0)//we could such way or ..
+    numbers.exists(_ < 0)
+  }
+
+  test("if list contains negative number") {
+    //containsNegativeFirst
+    assert(true === containsNegativeFirst(List(-1)))
+    assert(false === containsNegativeFirst(List(0)))
+    assert(false === containsNegativeFirst(List()))
+    assert(true === containsNegativeFirst(List(1, 2, -3, 4, 5)))
+    assert(false === containsNegativeFirst(List(1, 2, 3, 4, 5)))
+
+
+    assert(true === containsNegativeSecond(List(-1)))
+    assert(false === containsNegativeSecond(List(0)))
+    assert(false === containsNegativeSecond(List()))
+    assert(true === containsNegativeSecond(List(1, 2, -3, 4, 5)))
+    assert(false === containsNegativeSecond(List(1, 2, 3, 4, 5)))
+  }
+
+  def containsOddNumber(numbers: List[Int]): Boolean = {
+    numbers.exists(_ % 2 == 1)
+  }
+
+  test("if list contains odd number") {
+    assert(false === containsOddNumber(Nil))
+    assert(false === containsOddNumber(List(0)))
+    assert(true === containsOddNumber(List(1, 2)))
+    assert(false === containsOddNumber(List(2, 4)))
+  }
+
+  def plainOldSum(x: Int, y: Int): Int = x + y
+
+  def curriedSum(x: Int)(y: Int): Int = x + y
+
+  test("currying methods") {
+    //not - curried
+    assert(4 === plainOldSum(1, 3))
+    assert(10 === plainOldSum(2, 8))
+
+    //curried
+    assert(4 === curriedSum(1)(3))
+    assert(10 === curriedSum(2)(8))
+
+    //get first curried function
+    val onePlus = curriedSum(1)_
+    assert(4 === onePlus(3))
+    assert(10 === onePlus(9))
+  }
+
+  def twice(method: Double => Double, x: Double) = method(method(x))
+
+  test("twice") {
+    assert(7 === twice(_ + 1, 5))
+    assert(12 === twice(_ * 2, 3))
+    assert(81 === twice(Math.pow(_, 2), 3))
+  }
+
+  var enabledBoolAssert = false
+  def boolAssert(predicate: Boolean) = {
+    if(enabledBoolAssert && !predicate)
+      throw new AssertionError
+  }
+
+  var enabledByNameAssert = false
+  def byNameAssert(predicate: => Boolean) = {
+    if(enabledByNameAssert && !predicate)
+      throw new AssertionError
+  }
+
+  test("myAssert in action") {
+    intercept[ArithmeticException] {
+      boolAssert(3 / 0 == 0)
+    }
+    byNameAssert(3 / 0 == 0)
   }
 }

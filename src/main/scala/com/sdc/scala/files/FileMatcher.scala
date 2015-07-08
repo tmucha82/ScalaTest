@@ -1,6 +1,6 @@
 package com.sdc.scala.files
 
-import java.io.File
+import java.io.{PrintWriter, File}
 
 object FileMatcher {
   val filesHere: Array[File] = new File(".").listFiles()
@@ -27,5 +27,14 @@ object FileMatcher {
 
   def filesMatching(query: String, matcher: (String) => Boolean): Array[File] = {
     for (file <- filesHere; if matcher(file.getName)) yield file
+  }
+
+  def withPrintWriter(file: File)(write: PrintWriter => Unit) {
+    val writer = new PrintWriter(file)
+    try {
+      write(writer)
+    } finally {
+      writer.close()
+    }
   }
 }

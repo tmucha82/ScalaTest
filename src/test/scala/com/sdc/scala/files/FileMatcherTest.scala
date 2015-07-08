@@ -1,6 +1,7 @@
 package com.sdc.scala.files
 
 import java.io.File
+import java.util.Date
 
 import org.scalatest.FunSuite
 
@@ -33,6 +34,20 @@ class FileMatcherTest extends FunSuite {
 
     val query3 = "Sc.*Test.*"
     assert(Array(new File("./ScalaTest.iml")) === FileMatcher.filesMatching(query3, _.matches(query3)))
+  }
+
+  test("withPrintWriter write file") {
+    val filePath = "./date.txt"
+    FileMatcher.withPrintWriter(new File(filePath))(writer => writer.println(new Date()))
+    new File(filePath).delete()
+  }
+
+  test("withPrintWriter write file with extra {}") {
+    val filePath = "./date.txt"
+    FileMatcher.withPrintWriter(new File(filePath)) {
+      writer => writer.println(new Date())
+    }
+    new File(filePath).delete()
   }
 
 }
