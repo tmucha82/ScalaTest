@@ -18,6 +18,14 @@ object FileMatcher {
   }
 
   def filesRegex(query: String): Array[File] = {
-    for(file <- filesHere; if file.getName.matches(query)) yield file
+    for (file <- filesHere; if file.getName.matches(query)) yield file
+  }
+
+  def filesMatchingOld(query: String, matcher: (String, String) => Boolean): Array[File] = {
+    for (file <- filesHere; if matcher(file.getName, query)) yield file
+  }
+
+  def filesMatching(query: String, matcher: (String) => Boolean): Array[File] = {
+    for (file <- filesHere; if matcher(file.getName)) yield file
   }
 }

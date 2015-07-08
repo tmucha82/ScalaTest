@@ -14,7 +14,25 @@ class FileMatcherTest extends FunSuite {
     assert(Array(new File("./ScalaTest.iml")) === FileMatcher.filesContaining("ScalaTest"))
   }
 
-  test("simple file matching: matches") {
+  test("simple file matching: regexp") {
     assert(Array(new File("./ScalaTest.iml")) === FileMatcher.filesRegex("Sc.*Test.*"))
   }
+
+  test("simple file matching: first matches") {
+    assert(Array(new File("./ScalaTest.iml")) === FileMatcher.filesMatchingOld("iml", (name: String, query: String) => name.endsWith(query)))
+    assert(Array(new File("./ScalaTest.iml")) === FileMatcher.filesMatchingOld("ScalaTest", (name, query) => name.contains(query)))
+    assert(Array(new File("./ScalaTest.iml")) === FileMatcher.filesMatchingOld("Sc.*Test.*", _.matches(_)))
+  }
+
+  test("simple file matching: second matches") {
+    val query1 = "iml"
+    assert(Array(new File("./ScalaTest.iml")) === FileMatcher.filesMatching(query1, (name: String) => name.endsWith(query1)))
+
+    val query2 = "ScalaTest"
+    assert(Array(new File("./ScalaTest.iml")) === FileMatcher.filesMatching(query2, (name) => name.contains(query2)))
+
+    val query3 = "Sc.*Test.*"
+    assert(Array(new File("./ScalaTest.iml")) === FileMatcher.filesMatching(query3, _.matches(query3)))
+  }
+
 }
