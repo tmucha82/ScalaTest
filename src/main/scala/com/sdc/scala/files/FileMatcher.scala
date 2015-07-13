@@ -1,6 +1,6 @@
 package com.sdc.scala.files
 
-import java.io.{PrintWriter, File}
+import java.io.{File, PrintWriter}
 
 object FileMatcher {
   val filesHere: Array[File] = new File(".").listFiles()

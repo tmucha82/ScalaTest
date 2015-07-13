@@ -61,10 +61,10 @@ class ElementTest extends FunSuite {
   }
 
   test("simple uniform element") {
-    val uniformElement = new UniformElement('x', 2, 5)
+    val uniformElement = new UniformElement('-', 2, 5)
     assert(2 === uniformElement.height)
     assert(5 === uniformElement.width)
-    assert(Array("xxxxx", "xxxxx") === uniformElement.contents)
+    assert(Array("-----", "-----") === uniformElement.contents)
   }
 
   def invokeDemo(element: Element): Unit = {
@@ -104,27 +104,27 @@ class ElementTest extends FunSuite {
     assert(5 === result.width)
     assert(Array("hello", "world", "scala") === result.contents)
 
-    result = new UniformElement('x', 2, 5) above new LineCompositionElement("scala")
+    result = new UniformElement('*', 2, 5) above new LineCompositionElement("scala")
     assert(3 === result.height)
     assert(5 === result.width)
-    assert(Array("xxxxx", "xxxxx", "scala") === result.contents)
+    assert(Array("*****", "*****", "scala") === result.contents)
   }
 
   test("beside method") {
     var result = new LineCompositionElement("hello") beside new LineCompositionElement("world")
     assert(1 === result.height)
     assert(10 === result.width)
-    assert(Array("helloworld") === result.contents)
+    assert(Array("hello" + "world") === result.contents)
 
     result = new LineCompositionElement("scala") beside new ArrayElement(Array("hello", "world"))
     assert(1 === result.height)
     assert(10 === result.width)
-    assert(Array("scalahello") === result.contents)
+    assert(Array("scala" + "hello") === result.contents)
 
-    result = new UniformElement('x', 2, 5) beside new ArrayElement(Array("hello", "world"))
+    result = new UniformElement('*', 2, 5) beside new ArrayElement(Array("hello", "world"))
     assert(2 === result.height)
     assert(10 === result.width)
-    assert(Array("xxxxxhello", "xxxxxworld") === result.contents)
+    assert(Array("*****" + "hello", "*****" + "world") === result.contents)
 
   }
 

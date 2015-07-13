@@ -83,10 +83,16 @@ class RationalTest extends FunSuite {
   }
 
   test("implicit conversions") {
-    var rational = 3 + new Rational(6,2)
+    val rational = 3 + new Rational(6, 2)
     assert(rational.number === 12)
     assert(rational.denominator === 2)
 
   }
 
+  test("greatest common divisor") {
+    assert(2 === Rational.greatestCommonDivisor(6, 2))
+    assert(1 === Rational.greatestCommonDivisor(11, 13))
+    assert(1 === Rational.greatestCommonDivisor(11, 1))
+    assert(6 === Rational.greatestCommonDivisor(18, 24))
+  }
 }

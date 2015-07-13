@@ -13,7 +13,7 @@ class CarTest extends FunSuite {
       result += car
     }
     assert(1 === result.size)
-    for(test <- result) {
+    for (test <- result) {
       assert(true === test.valid)
       assert("red" === test.color)
     }

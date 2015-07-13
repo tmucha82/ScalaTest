@@ -110,7 +110,7 @@ class CommonTest extends FunSuite {
     val arr = Array("What's", "up", "doc?")
     echo1(arr)
     echo2("What's", "up", "doc?")
-    echo2(arr : _*)
+    echo2(arr: _*)
   }
 
   def containsNegativeFirst(numbers: List[Int]): Boolean = {
@@ -166,7 +166,7 @@ class CommonTest extends FunSuite {
     assert(10 === curriedSum(2)(8))
 
     //get first curried function
-    val onePlus = curriedSum(1)_
+    val onePlus = curriedSum(1) _
     assert(4 === onePlus(3))
     assert(10 === onePlus(9))
   }
@@ -180,14 +180,16 @@ class CommonTest extends FunSuite {
   }
 
   var enabledBoolAssert = false
+
   def boolAssert(predicate: Boolean) = {
-    if(enabledBoolAssert && !predicate)
+    if (enabledBoolAssert && !predicate)
       throw new AssertionError
   }
 
   var enabledByNameAssert = false
+
   def byNameAssert(predicate: => Boolean) = {
-    if(enabledByNameAssert && !predicate)
+    if (enabledByNameAssert && !predicate)
       throw new AssertionError
   }
 

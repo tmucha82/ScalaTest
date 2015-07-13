@@ -16,7 +16,7 @@ class NumbersTest extends FunSuite {
   }
 
   test("half of odd number with catch") {
-      try {
+    try {
       Numbers.half(7)
       fail()
     } catch {
@@ -36,7 +36,7 @@ class NumbersTest extends FunSuite {
     val additionalFood = food match {
       case "salt" => "pepper"
       case "chips" => "salsa"
-      case "eggs"  => "bacon"
+      case "eggs" => "bacon"
       case _ => "hmm"
     }
     additionalFood
