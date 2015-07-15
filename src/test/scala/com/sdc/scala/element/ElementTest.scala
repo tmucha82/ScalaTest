@@ -127,6 +127,21 @@ class ElementTest extends FunSuite {
     assert(Array("*****" + "hello", "*****" + "world") === result.contents)
   }
 
+  test("toString method of element"){
+    println(new LineCompositionElement("hello") above new LineCompositionElement("world"))
+    println(new ArrayElement(Array("hello", "world")) above new LineCompositionElement("scala"))
+    println(new UniformElement('*', 2, 5) above new LineCompositionElement("scala"))
+
+    println(new LineCompositionElement("hello") beside new LineCompositionElement("world"))
+    println(new LineCompositionElement("scala") beside new ArrayElement(Array("hello", "world")))
+    println(new UniformElement('*', 2, 5) beside new ArrayElement(Array("hello", "world")))
+
+    val column1 = new LineCompositionElement("hello") above new LineCompositionElement("---")
+    val column2 = new LineCompositionElement("***") above new LineCompositionElement("world")
+    println(column1 beside column2)
+
+  }
+
   test("element factory") {
     assert(Array("hello", "world") === Element.create(Array("hello", "world")).contents)
     assert(Array("hello") === Element.create("hello").contents)

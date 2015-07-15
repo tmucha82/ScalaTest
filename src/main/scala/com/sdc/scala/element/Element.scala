@@ -14,10 +14,10 @@ abstract class Element {
   }
 
   def beside(that: Element): Element = {
-    val contents = new Array[String](this.contents.length)
-    for (i <- 0 until this.contents.length)
-      contents(i) = this.contents(i) + that.contents(i)
-    create(contents)
+    create(
+//      for (element <- this.contents.zip(that.contents)) yield element._1 + element._2// you could also
+      for ((line1, line2) <- this.contents.zip(that.contents)) yield line1 + line2
+    )
   }
 
   def widen(w: Int): Element = {
@@ -41,6 +41,8 @@ abstract class Element {
   def demo() {
     println("Element: demo")
   }
+
+  override def toString: String = contents.mkString("\n")
 }
 
 object Element {

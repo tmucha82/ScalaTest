@@ -199,4 +199,8 @@ class CommonTest extends FunSuite {
     }
     byNameAssert(3 / 0 == 0)
   }
+
+  test("zip two arrays") {
+    assert(Array(("1", 1), ("2", 2)) === (Array("1", "2", "3") zip Array(1, 2)))
+  }
 }
