@@ -1,6 +1,6 @@
 package com.sdc.scala.element
 
-class LineCompositionElement(content: String) extends Element {
+private class LineCompositionElement(content: String) extends Element {
 
   override def contents: Array[String] = Array(content)
 

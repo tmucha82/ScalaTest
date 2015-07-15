@@ -1,6 +1,6 @@
 package com.sdc.scala.element
 
-class UniformElement(character: Char, override val height: Int, override val width: Int) extends Element {
+class UniformElement(character: Char, override val width: Int, override val height: Int) extends Element {
   private val line = character.toString * width
 
   override def contents: Array[String] = Array.fill(height)(line)

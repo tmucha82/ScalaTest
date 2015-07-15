@@ -61,7 +61,7 @@ class ElementTest extends FunSuite {
   }
 
   test("simple uniform element") {
-    val uniformElement = new UniformElement('-', 2, 5)
+    val uniformElement = new UniformElement('-', 5, 2)
     assert(2 === uniformElement.height)
     assert(5 === uniformElement.width)
     assert(Array("-----", "-----") === uniformElement.contents)
@@ -78,7 +78,7 @@ class ElementTest extends FunSuite {
     invokeDemo(new ArrayElement(Nil.toArray))
     invokeDemo(new LineInheritanceElement(""))
     invokeDemo(new LineCompositionElement(""))
-    invokeDemo(new UniformElement('x', 2, 5))
+    invokeDemo(new UniformElement('x', 5, 2))
   }
 
   test("composition or inheritance") {
@@ -104,7 +104,7 @@ class ElementTest extends FunSuite {
     assert(5 === result.width)
     assert(Array("hello", "world", "scala") === result.contents)
 
-    result = new UniformElement('*', 2, 5) above new LineCompositionElement("scala")
+    result = new UniformElement('*', 5, 2) above new LineCompositionElement("scala")
     assert(3 === result.height)
     assert(5 === result.width)
     assert(Array("*****", "*****", "scala") === result.contents)
@@ -121,11 +121,35 @@ class ElementTest extends FunSuite {
     assert(10 === result.width)
     assert(Array("scala" + "hello") === result.contents)
 
-    result = new UniformElement('*', 2, 5) beside new ArrayElement(Array("hello", "world"))
+    result = new UniformElement('*', 5, 2) beside new ArrayElement(Array("hello", "world"))
     assert(2 === result.height)
     assert(10 === result.width)
     assert(Array("*****" + "hello", "*****" + "world") === result.contents)
-
   }
 
+  test("element factory") {
+    assert(Array("hello", "world") === Element.create(Array("hello", "world")).contents)
+    assert(Array("hello") === Element.create("hello").contents)
+    assert(Array("*****", "*****") === Element.create('*', 5, 2).contents)
+  }
+
+  test("widen element") {
+    val element1 = new LineCompositionElement("hello")
+    assert(Array("  hello   ") === element1.widen(10).contents)
+    assert(Array("   hello   ") === element1.widen(11).contents)
+
+    val element2 = new ArrayElement(Array("hello", "world"))
+    assert(Array("  hello   ", "  world   ") === element2.widen(10).contents)
+    assert(Array("   hello   ", "   world   ") === element2.widen(11).contents)
+  }
+
+  test("heighten element") {
+    val element1 = new LineCompositionElement("hello")
+    assert(Array("hello", "     ") === element1.heighten(2).contents)
+    assert(Array("     ", "hello", "     ") === element1.heighten(3).contents)
+
+    val element2 = new ArrayElement(Array("hello", "world"))
+    assert(Array("hello", "world", "     ") === element2.heighten(3).contents)
+    assert(Array("     ", "hello", "world", "     ") === element2.heighten(4).contents)
+  }
 }
