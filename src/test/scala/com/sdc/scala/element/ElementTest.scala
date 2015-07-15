@@ -117,9 +117,9 @@ class ElementTest extends FunSuite {
     assert(Array("hello" + "world") === result.contents)
 
     result = new LineCompositionElement("scala") beside new ArrayElement(Array("hello", "world"))
-    assert(1 === result.height)
+    assert(2 === result.height)
     assert(10 === result.width)
-    assert(Array("scala" + "hello") === result.contents)
+    assert(Array("scala" + "hello", "     world") === result.contents)
 
     result = new UniformElement('*', 5, 2) beside new ArrayElement(Array("hello", "world"))
     assert(2 === result.height)
@@ -127,7 +127,7 @@ class ElementTest extends FunSuite {
     assert(Array("*****" + "hello", "*****" + "world") === result.contents)
   }
 
-  test("toString method of element"){
+  test("toString method of element") {
     println(new LineCompositionElement("hello") above new LineCompositionElement("world"))
     println(new ArrayElement(Array("hello", "world")) above new LineCompositionElement("scala"))
     println(new UniformElement('*', 2, 5) above new LineCompositionElement("scala"))
@@ -166,5 +166,17 @@ class ElementTest extends FunSuite {
     val element2 = new ArrayElement(Array("hello", "world"))
     assert(Array("hello", "world", "     ") === element2.heighten(3).contents)
     assert(Array("     ", "hello", "world", "     ") === element2.heighten(4).contents)
+  }
+
+  test("spiral - uff") {
+    println(Spiral.spiral(2, 0))
+    println(Spiral.spiral(3, 1))
+    println(Spiral.spiral(4, 2))
+    println(Spiral.spiral(5, 3))
+    println(Spiral.spiral(6, 0))
+    println(Spiral.spiral(7, 1))
+    println(Spiral.spiral(8, 2))
+    println(Spiral.spiral(9, 3))
+    println(Spiral.spiral(10, 0))
   }
 }

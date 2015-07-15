@@ -10,13 +10,17 @@ abstract class Element {
   def width: Int = if (height != 0) contents(0).length else 0
 
   def above(that: Element): Element = {
-    create(this.contents ++ that.contents)
+    val widenThis = this widen that.width
+    val widenThat = that widen this.width
+    create(widenThis.contents ++ widenThat.contents)
   }
 
   def beside(that: Element): Element = {
+    val heightenThis = this heighten that.height
+    val heightenThat = that heighten this.height
     create(
 //      for (element <- this.contents.zip(that.contents)) yield element._1 + element._2// you could also
-      for ((line1, line2) <- this.contents.zip(that.contents)) yield line1 + line2
+      for ((line1, line2) <- heightenThis.contents.zip(heightenThat.contents)) yield line1 + line2
     )
   }
 
