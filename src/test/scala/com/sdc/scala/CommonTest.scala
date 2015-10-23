@@ -203,4 +203,16 @@ class CommonTest extends FunSuite {
   test("zip two arrays") {
     assert(Array(("1", 1), ("2", 2)) === (Array("1", "2", "3") zip Array(1, 2)))
   }
+
+  test("ensuring of simple test") {
+    {
+      Math.abs(9)
+    } ensuring (result => result >= 0)
+  }
+
+  test("ensuring of simple test with placeholder") {
+    {
+      Math.abs(9)
+    } ensuring (_ >= 0)
+  }
 }

@@ -2,7 +2,7 @@ package com.sdc.scala.rational
 
 import scala.language.implicitConversions
 
-class Rational(n: Int, d: Int) {
+class Rational(n: Int, d: Int) extends Ordered[Rational] {
   require(d != 0)
   val number: Int = n
   val denominator: Int = d
@@ -32,6 +32,8 @@ class Rational(n: Int, d: Int) {
   def /(that: Rational): Rational = new Rational(number * that.denominator, denominator * that.number)
 
   def /(i: Int): Rational = this / new Rational(i)
+
+  override def compare(that: Rational): Int = (this.number * that.denominator) - (that.number * this.denominator)
 }
 
 object Rational {

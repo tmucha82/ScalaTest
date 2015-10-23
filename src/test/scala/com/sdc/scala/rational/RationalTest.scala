@@ -86,7 +86,6 @@ class RationalTest extends FunSuite {
     val rational = 3 + new Rational(6, 2)
     assert(rational.number === 12)
     assert(rational.denominator === 2)
-
   }
 
   test("greatest common divisor") {
@@ -94,5 +93,12 @@ class RationalTest extends FunSuite {
     assert(1 === Rational.greatestCommonDivisor(11, 13))
     assert(1 === Rational.greatestCommonDivisor(11, 1))
     assert(6 === Rational.greatestCommonDivisor(18, 24))
+  }
+
+  test("comparison of two rationals") {
+    assert((new Rational(3, 2) > new Rational(2, 3)) === true)
+    assert((new Rational(1, 13) < new Rational(1, 10)) === true)
+    assert((new Rational(2, 6) >= new Rational(1, 3)) === true)
+    assert((new Rational(2, 6) <= new Rational(1, 3)) === true)
   }
 }
