@@ -1,5 +1,6 @@
 package com.sdc.scala
 
+import com.sdc.scala.expressions._
 import org.scalatest.FunSuite
 
 class CommonTest extends FunSuite {
@@ -13,20 +14,16 @@ class CommonTest extends FunSuite {
     }
   }
 
-  def increase = {
-    println("increase method")
-    (x: Int) => x + 1
-  }
-
-  def increasePlaceholder = (_: Int) + 1
-
-  def add = (_: Int) + (_: Int)
-
   test("simple increase function ") {
+    def increase = {
+      println("increase method")
+      (x: Int) => x + 1
+    }
     assert(11 === increase(10))
   }
 
   test("simple increase placeholder function ") {
+    def increasePlaceholder = (_: Int) + 1
     assert(11 === increasePlaceholder(10))
   }
 
@@ -49,6 +46,7 @@ class CommonTest extends FunSuite {
   }
 
   test("placeholder add test") {
+    def add = (_: Int) + (_: Int)
     assert(7 === add(3, 4))
   }
   test("println list in different ways") {
@@ -63,9 +61,9 @@ class CommonTest extends FunSuite {
     println()
   }
 
-  def sum(a: Int, b: Int, c: Int) = a + b + c
-
   test("partially applied functions") {
+    def sum(a: Int, b: Int, c: Int) = a + b + c
+
     val a = sum _
     assert(6 === sum(1, 2, 3))
     assert(6 === a(1, 2, 3))
@@ -152,11 +150,10 @@ class CommonTest extends FunSuite {
     assert(false === containsOddNumber(List(2, 4)))
   }
 
-  def plainOldSum(x: Int, y: Int): Int = x + y
-
-  def curriedSum(x: Int)(y: Int): Int = x + y
-
   test("currying methods") {
+    def plainOldSum(x: Int, y: Int): Int = x + y
+    def curriedSum(x: Int)(y: Int): Int = x + y
+
     //not - curried
     assert(4 === plainOldSum(1, 3))
     assert(10 === plainOldSum(2, 8))
@@ -171,9 +168,10 @@ class CommonTest extends FunSuite {
     assert(10 === onePlus(9))
   }
 
-  def twice(method: Double => Double, x: Double) = method(method(x))
 
   test("twice") {
+    def twice(method: Double => Double, x: Double) = method(method(x))
+
     assert(7 === twice(_ + 1, 5))
     assert(12 === twice(_ * 2, 3))
     assert(81 === twice(Math.pow(_, 2), 3))
@@ -214,5 +212,142 @@ class CommonTest extends FunSuite {
     {
       Math.abs(9)
     } ensuring (_ >= 0)
+  }
+
+  test("pattern matching: variable and constant") {
+    import Math.{E, PI}
+    assert(E match {
+      case PI => false
+      case _ => true // would be this
+    })
+
+/*
+    val pi = PI
+    assert(E match {
+      case pi => true
+      case _ => false //unreachable code
+    })
+*/
+    val pi = PI
+    assert(E match {
+      case `pi` => false
+      case _ => true
+    })
+  }
+
+  test("pattern matching: sequence") {
+    assert(List(0, 1, 2, 3) match {
+      case List(0, _, _, _) => true
+    })
+
+    assert(List(0, 1, 2, 3, 4, 5) match {
+      case List(0, _*) => true
+    })
+
+    assert((0, "hi", true) match {
+      case (a, b, c) =>
+        println("matched: " + a + b + c)
+        true
+      case _ => false
+    })
+  }
+
+  test("pattern matching: typed") {
+    def getSize(x: Any): Int = {
+      x match {
+        case x: String => x.length
+        case map: Map[_, _] => map.size
+        case _ => -1
+      }
+    }
+
+/*
+    def getSizeByInstanceOf(x: Any): Int = {//sic ! - more long-winded than match
+      if(x.isInstanceOf[String])
+        x.asInstanceOf[String].length
+      else if(x.isInstanceOf[Map])
+        x.asInstanceOf[Map].size
+      else
+        -1
+    }
+*/
+    assert(-1 === getSize(UnaryOperator("-", Variable("x"))))
+    assert(4 === getSize("test"))
+    assert(2 === getSize(Map(1 -> "test", 2 -> "value")))
+    assert(2 === getSize(Map((1, "test"), (2, "value"))))
+  }
+
+  test("pattern matching: typed map") {
+    def test(x: Any): Boolean = {
+      x match {
+//        case map: Map[Int, String] => false //no difference between Map[Int, String] and Map[String, String] in runtime
+//        case map: Map[Int, Int] => false
+        case map: Map[_, _] => true
+        case _ => false
+      }
+    }
+    assert(test(Map(1 -> "a")))
+    assert(test(Map(1 -> 1)))
+  }
+
+  test("pattern matching: typed arrays - different than map") {
+    def isStringArray(x: Any): Boolean = {
+      x match {
+        case array: Array[String] => true
+        case array: Array[Int] => false
+        case _ => false
+      }
+    }
+
+    assert(isStringArray(Array(1,2,3)) === false)
+    assert(isStringArray(Array("1","2","3")))
+  }
+
+  test("pattern matching: variable binding") {
+    def test(expression: Expression): String = {
+      expression match {
+        case UnaryOperator("-", UnaryOperator(_, variable @ Variable(_))) => variable.name
+        case _ => null
+      }
+    }
+
+    assert(test(UnaryOperator("-", UnaryOperator("-", Variable("a")))) === "a")
+    assert(test(UnaryOperator("-", UnaryOperator("+", Variable("b")))) === "b")
+  }
+
+  test("instance Of and cast to type - more long-winded than match") {
+    val test:Any = "test"
+    assert(test.isInstanceOf[String])
+    assert(test.asInstanceOf[String].isInstanceOf[String])
+  }
+
+  test("pattern guards") {
+    def simplifyAdd(expression: Expression): Expression = {
+      expression match {
+        case BinaryOperator("+", x, y) if x == y => BinaryOperator("*", x, Number(2))
+        case _ => expression
+      }
+    }
+    assert(BinaryOperator("*", Variable("a"), Number(2)) === simplifyAdd(BinaryOperator("+", Variable("a"), Variable("a"))))
+    assert(BinaryOperator("+", Variable("a"), Variable("b")) === simplifyAdd(BinaryOperator("+", Variable("a"), Variable("b"))))
+
+    def test(x: Any): Any = {
+      x match {
+        case a: Int if a > 0 => a
+        case b: String if b(0) == 'a' => b
+        case _ => throw new IllegalArgumentException("wrong")
+      }
+    }
+    assert(3 === test(3))
+    assert("abc" === test("abc"))
+  }
+
+  test("sealed case class") {
+    def describe(expression: Expression): String = (expression: @unchecked) match {//if not all the options
+      case Number(_) => "number"
+      case Variable(_) => "variable"
+    }
+    assert("number" === describe(Number(3)))
+    assert("variable" === describe(Variable("3")))
   }
 }

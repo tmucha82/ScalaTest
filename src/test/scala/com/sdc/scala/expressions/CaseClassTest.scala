@@ -22,10 +22,15 @@ class CaseClassTest extends FunSuite {
   }
 
   test("simplify using case classes and pattern matching") {
-    assert(Expression.simplifyTop(UnaryOperator("-", UnaryOperator("-", Variable("x")))) === Variable("x"))
-    assert(Expression.simplifyTop(BinaryOperator("+", Number(0), Variable("a"))) === Variable("a"))
-    assert(Expression.simplifyTop(BinaryOperator("+", Variable("b"), Number(0))) === Variable("b"))
-    assert(Expression.simplifyTop(BinaryOperator("*", Number(1), Variable("c"))) === Variable("c"))
-    assert(Expression.simplifyTop(BinaryOperator("*", Variable("d"), Number(1))) === Variable("d"))
+    assert(Expression.simplifyAll(UnaryOperator("-", UnaryOperator("-", Variable("x")))) === Variable("x"))
+    assert(Expression.simplifyAll(BinaryOperator("+", Number(0), Variable("a"))) === Variable("a"))
+    assert(Expression.simplifyAll(BinaryOperator("+", Variable("b"), Number(0))) === Variable("b"))
+    assert(Expression.simplifyAll(BinaryOperator("*", Number(1), Variable("c"))) === Variable("c"))
+    assert(Expression.simplifyAll(BinaryOperator("*", Variable("d"), Number(1))) === Variable("d"))
+  }
+
+  test("simplify all for expression") {
+    //(-(-3) + 0) + (3 * 1) === 3 * 2
+    assert(BinaryOperator("*", Number(3), Number(2)) === BinaryOperator("+", BinaryOperator("+", UnaryOperator("-", Number(-3)), Number(0)), BinaryOperator("*", Number(3), Number(1))))
   }
 }
