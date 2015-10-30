@@ -221,13 +221,13 @@ class CommonTest extends FunSuite {
       case _ => true // would be this
     })
 
-/*
-    val pi = PI
-    assert(E match {
-      case pi => true
-      case _ => false //unreachable code
-    })
-*/
+    /*
+        val pi = PI
+        assert(E match {
+          case pi => true
+          case _ => false //unreachable code
+        })
+    */
     val pi = PI
     assert(E match {
       case `pi` => false
@@ -261,16 +261,16 @@ class CommonTest extends FunSuite {
       }
     }
 
-/*
-    def getSizeByInstanceOf(x: Any): Int = {//sic ! - more long-winded than match
-      if(x.isInstanceOf[String])
-        x.asInstanceOf[String].length
-      else if(x.isInstanceOf[Map])
-        x.asInstanceOf[Map].size
-      else
-        -1
-    }
-*/
+    /*
+        def getSizeByInstanceOf(x: Any): Int = {//sic ! - more long-winded than match
+          if(x.isInstanceOf[String])
+            x.asInstanceOf[String].length
+          else if(x.isInstanceOf[Map])
+            x.asInstanceOf[Map].size
+          else
+            -1
+        }
+    */
     assert(-1 === getSize(UnaryOperator("-", Variable("x"))))
     assert(4 === getSize("test"))
     assert(2 === getSize(Map(1 -> "test", 2 -> "value")))
@@ -280,8 +280,8 @@ class CommonTest extends FunSuite {
   test("pattern matching: typed map") {
     def test(x: Any): Boolean = {
       x match {
-//        case map: Map[Int, String] => false //no difference between Map[Int, String] and Map[String, String] in runtime
-//        case map: Map[Int, Int] => false
+        //        case map: Map[Int, String] => false //no difference between Map[Int, String] and Map[String, String] in runtime
+        //        case map: Map[Int, Int] => false
         case map: Map[_, _] => true
         case _ => false
       }
@@ -299,20 +299,77 @@ class CommonTest extends FunSuite {
       }
     }
 
-    assert(isStringArray(Array(1,2,3)) === false)
-    assert(isStringArray(Array("1","2","3")))
+    assert(isStringArray(Array(1, 2, 3)) === false)
+    assert(isStringArray(Array("1", "2", "3")))
   }
 
   test("pattern matching: variable binding") {
     def test(expression: Expression): String = {
       expression match {
-        case UnaryOperator("-", UnaryOperator(_, variable @ Variable(_))) => variable.name
+        case UnaryOperator("-", UnaryOperator(_, variable@Variable(_))) => variable.name
         case _ => null
       }
     }
 
     assert(test(UnaryOperator("-", UnaryOperator("-", Variable("a")))) === "a")
     assert(test(UnaryOperator("-", UnaryOperator("+", Variable("b")))) === "b")
+  }
+
+  test("patterns in variable definitions") {
+    val template = (1, "abc")
+    val (number, text) = template
+
+    assert(1 === number)
+    assert("abc" === text)
+
+    val templateBinaryOperator = BinaryOperator("+", Variable("a"), Variable("b"))
+    val BinaryOperator(operator, right, left) = templateBinaryOperator
+    assert(operator === "+")
+    assert(right === Variable("a"))
+    assert(left === Variable("b"))
+  }
+
+  test("case sequences as partial functions") {
+    val multiply = (a: Int) => 3 * a //declare of function - memory
+    assert(6 === multiply(2))
+
+    val withDefault: Option[Int] => Int = {
+      case Some(x) => x
+      case None => 0
+    }
+    assert(3 === withDefault(Some(3)))
+    assert(0 === withDefault(None))
+
+    val second: List[Int] => Int = {
+      case List(_, sec, _*) => sec //this
+      //      case x :: sec :: _ => sec //or this
+    }
+    assert(2 === second(List(1, 2, 3, 4, 5, 6, 7, 8, 9)))
+
+    val secondImproved: PartialFunction[List[Int], Int] = {
+      case List(_, sec, _*) => sec //this
+      //      case x :: sec :: _ => sec //or this
+    }
+    assert(secondImproved.isDefinedAt(List(1, 2, 3, 4, 5, 6, 7, 8, 9)))
+    assert(secondImproved.isDefinedAt(List()) === false)
+
+    assert(2 === secondImproved.applyOrElse(List(1, 2, 3, 4, 5, 6, 7, 8, 9), (a: List[Int]) => 3))
+    assert(3 === secondImproved.applyOrElse(List(), (a: List[Int]) => 3))
+  }
+
+  test("create new partial function") {
+    val second = new PartialFunction[List[Int], Int] {
+      override def isDefinedAt(x: List[Int]): Boolean = x match {
+        case list:List[Int] if list.size >= 2 => true
+        case _ => false
+      }
+
+      override def apply(v1: List[Int]): Int = v1 match {
+        case List(_, sec, _*) => sec
+      }
+    }
+    assert(2 === second.applyOrElse(List(1,2,3,4), (a: List[Int]) => -1))
+    assert(-1 === second.applyOrElse(List(), (a: List[Int]) => -1))
   }
 
   test("instance Of and cast to type - more long-winded than match") {
@@ -343,11 +400,35 @@ class CommonTest extends FunSuite {
   }
 
   test("sealed case class") {
-    def describe(expression: Expression): String = (expression: @unchecked) match {//if not all the options
+    def describe(expression: Expression): String = (expression: @unchecked) match {
+      //if not all the options
       case Number(_) => "number"
       case Variable(_) => "variable"
     }
     assert("number" === describe(Number(3)))
     assert("variable" === describe(Variable("3")))
+  }
+
+  test("option type") {
+    val capitols = Map("France" -> "Paris", "Poland" -> "Warsaw")
+    assert(Some("Paris") === capitols.get("France"))
+    assert(Some("Warsaw") === capitols.get("Poland"))
+    assert(None === capitols.get("Russia"))
+    assert("Sorry" === capitols.getOrElse("Russia", "Sorry"))
+  }
+
+  test("patterns in for expressions") {
+    val capitols = Map("France" -> "Paris", "Poland" -> "Warsaw")
+    val cities = for((country, city) <- capitols) yield {
+      println("The capitol of " + country + " is " + city + ".")
+      city
+    }
+    assert(Array("Paris", "Warsaw") === cities)
+  }
+
+  test("patterns in for expressions tha is matched") {
+    val fruits = List(Some("apple"), None, Some("orange"))
+    val realFruit = for (Some(fruit) <- fruits) yield fruit
+    assert(Array("apple", "orange") === realFruit)
   }
 }
