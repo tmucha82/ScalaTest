@@ -1,4 +1,4 @@
-package com.sdc.scala
+package com.sdc.scala.collections
 
 import org.scalatest.FunSuite
 
@@ -273,12 +273,11 @@ class ListTest extends FunSuite {
     assert(List("brown", "fox", "quick", "the") === words.sorted)
     assert(List("the", "fox", "quick", "brown") === words.sortWith((x, y) => x.length < y.length))
     assert(List("the", "fox", "quick", "brown") === words.sortWith(_.length < _.length))
-
   }
 
   test("methods of the List object") {
     // Creating lists from their elements: List.apply
-    assert(List(1,2) === List.apply(1, 2))
+    assert(List(1, 2) === List.apply(1, 2))
 
     // Creating a range of numbers: List.range
     assert(List(1, 2, 3, 4) === List.range(1, 5))
