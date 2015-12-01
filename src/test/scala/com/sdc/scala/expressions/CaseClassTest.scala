@@ -31,6 +31,6 @@ class CaseClassTest extends FunSuite {
 
   test("simplify all for expression") {
     //(-(-3) + 0) + (3 * 1) === 3 * 2
-    assert(BinaryOperator("+", Number(3), Number(3)) === Expression.simplifyAll(BinaryOperator("+", BinaryOperator("+", UnaryOperator("-", UnaryOperator("-", Number(3))), Number(0)), BinaryOperator("*", Number(3), Number(1)))))
+    assert(BinaryOperator("+", UnaryOperator("-", Number(-3)), Number(3)) === Expression.simplifyAll(BinaryOperator("+", BinaryOperator("+", UnaryOperator("-", Number(-3)), Number(0)), BinaryOperator("*", Number(3), Number(1)))))
   }
 }
