@@ -49,6 +49,7 @@ class CommonTest extends FunSuite {
     def add = (_: Int) + (_: Int)
     assert(7 === add(3, 4))
   }
+
   test("println list in different ways") {
     val testList = List(1, 2, 3, 4, 5)
     println(testList)

@@ -5,7 +5,7 @@ import com.sdc.scala.element.Element
 class ExpressionFormatter {
 
   // Contains operators in groups of increasing precedence
-  private var operatorGroups = Array(
+  private val operatorGroups = Array(
     Set("|", "||"),
     Set("&", "&&"),
     Set("^"),
