@@ -1,4 +1,4 @@
-package com.sdc.scala.queue
+package com.sdc.scala.queue.basic
 
 trait Doubling extends IntQueue {
   abstract override def put(element: Int): Unit = {

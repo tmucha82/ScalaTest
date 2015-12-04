@@ -1,4 +1,4 @@
-package com.sdc.scala.queue
+package com.sdc.scala.queue.basic
 
 import org.scalatest.FunSuite
 

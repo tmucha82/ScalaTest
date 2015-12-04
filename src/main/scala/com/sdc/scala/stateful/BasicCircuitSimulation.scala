@@ -18,6 +18,7 @@ abstract class BasicCircuitSimulation extends Simulation {
       if (signal != signalValue) {
         signalValue = signal
         actions foreach (_())
+        //actions foreach (f => f()) /the same as above
       }
 
     def addAction(action: Action) = {

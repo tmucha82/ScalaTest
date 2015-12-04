@@ -1,6 +1,7 @@
-package com.sdc.scala.queue
+package com.sdc.scala.queue.basic
 
 //you can do also that - sic! :P
+
 import scala.collection.mutable.{ArrayBuffer => Buffer}
 
 class BasicIntQueue extends IntQueue {

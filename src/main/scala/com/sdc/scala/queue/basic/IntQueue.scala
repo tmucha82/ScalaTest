@@ -1,4 +1,4 @@
-package com.sdc.scala.queue
+package com.sdc.scala.queue.basic
 
 abstract class IntQueue {
   def get(): Int
