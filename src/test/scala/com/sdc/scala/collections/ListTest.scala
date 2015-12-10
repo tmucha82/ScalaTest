@@ -246,6 +246,7 @@ class ListTest extends FunSuite {
 
     //0 as first element, like in E in math: ((0 + list(0)) + list(1)) + ....
     def sum(list: List[Int]): Int = (0 /: list)(_ + _)
+    //def sum(list: List[Int]): Int = (0 /: list)((s, element) => s + element) //like that also
     assert(10 === sum(list))
 
     //1 as first element, like in PI in math: ((1 * list(0)) * list(1)) * ....
