@@ -53,7 +53,7 @@ class ConcreteTest extends FunSuite {
       // could be like this
       //var test: String = "test"
 
-      //or like these
+      //or like this
       def test: String = "test"
 
       def test_=(x: String) = println(x)
