@@ -5,7 +5,7 @@ import java.io.File
 import org.scalatest.FunSuite
 
 import scala.io.Source
-import scala.xml.{NodeSeq, XML}
+import scala.xml.{Node, NodeSeq, XML}
 
 class XmlTest extends FunSuite {
   test("XML literals") {
@@ -84,19 +84,63 @@ class XmlTest extends FunSuite {
   }
 
   test("xml pattern matching") {
-/*
-    object Dupa extends Enumeration {
+    object Element extends Enumeration {
       val A = Value
       val B = Value
       val Other = Value
     }
 
-    def proc(node: scala.xml.Node): Value =
+    def process(node: Node): Element.Value =
       node match {
-        case <a>{contents}</a> => "It's an a: " + contents
-        case <b>{contents}</b> => "It's a b: " + contents
-        case _ => "It's something else."
+        case <a>{contents}</a> => Element.A
+        case <b>{contents}</b> => Element.B
+        case _ => Element.Other
       }
-*/
+
+    assert(Element.A === process(<a>apple</a>))
+    assert(Element.B === process(<b>banana</b>))
+    assert(Element.Other === process(<c>cherry</c>))
+    assert(Element.Other === process(<a>a <em>red</em> apple</a>))
+    assert(Element.Other === process(<a/>))
+
+    def process2(node: Node): Element.Value =
+      node match {
+        case <a>{contents @ _*}</a> => Element.A
+        case <b>{contents @ _*}</b> => Element.B
+        case _ => Element.Other
+      }
+
+    assert(Element.A === process2(<a>apple</a>))
+    assert(Element.B === process2(<b>banana</b>))
+    assert(Element.Other === process2(<c>cherry</c>))
+    assert(Element.A === process2(<a>a <em>red</em> apple</a>))
+    assert(Element.A === process2(<a/>))
+
+
+    val catalog =
+      <catalog>
+        <cctherm>
+          <description>hot dog #5</description>
+          <yearMade>1952</yearMade>
+          <dateObtained>March 14, 2006</dateObtained>
+          <bookPrice>2199</bookPrice>
+          <purchasePrice>500</purchasePrice>
+          <condition>9</condition>
+        </cctherm>
+        <cctherm>
+          <description>Sprite Boy</description>
+          <yearMade>1964</yearMade>
+          <dateObtained>April 28, 2003</dateObtained>
+          <bookPrice>1695</bookPrice>
+          <purchasePrice>595</purchasePrice>
+          <condition>5</condition>
+        </cctherm>
+      </catalog>
+
+    val descriptions = catalog match {
+      case <catalog>{therms @ _*}</catalog> => for (therm @ <cctherm>{_*}</cctherm> <- therms) yield (therm \ "description").text
+    }
+
+    assert(List("hot dog #5", "Sprite Boy") === descriptions)
   }
 }
