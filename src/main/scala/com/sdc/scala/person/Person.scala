@@ -1,6 +1,6 @@
 package com.sdc.scala.person
 
-class Person(val firstName: String, val lastName: String) extends Ordered[Person] with Equals{
+class Person(val firstName: String, val lastName: String) extends Ordered[Person] with Equals {
 
   def compare(that: Person) = {
     val lastNameComparison = lastName.compareToIgnoreCase(that.lastName)
@@ -11,13 +11,13 @@ class Person(val firstName: String, val lastName: String) extends Ordered[Person
   }
 
 
-
   override def toString = firstName + " " + lastName
 
   override def canEqual(that: Any): Boolean = that match {
     case _: Person => true
     case _ => false
   }
+
   override def equals(obj: scala.Any): Boolean = obj match {
     case person: Person => canEqual(person) && this.firstName == person.firstName && this.lastName == person.lastName
     case _ => false

@@ -19,7 +19,7 @@ abstract class Element {
     val heightenThis = this heighten that.height
     val heightenThat = that heighten this.height
     create(
-//      for (element <- this.contents.zip(that.contents)) yield element._1 + element._2// you could also
+      //      for (element <- this.contents.zip(that.contents)) yield element._1 + element._2// you could also
       for ((line1, line2) <- heightenThis.contents.zip(heightenThat.contents)) yield line1 + line2
     )
   }

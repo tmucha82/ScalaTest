@@ -18,7 +18,7 @@ object Rows {
   def multiTable() = {
     val tableSeq = // a sequence of row strings
       for (row <- 1 to 10)
-      yield makeRow(row)
+        yield makeRow(row)
     tableSeq.mkString(Properties.lineSeparator)
   }
 }

@@ -9,10 +9,10 @@ object PhotoNameReplacer extends App {
   val regExpInputFile = Pattern.compile("WP_(\\d{8}_\\d{2}_\\d{2}_\\d{2})_Pro\\.(.*)")
 
   val photoDirectory = new File(photoDirectoryPath)
-  if(photoDirectory.exists && photoDirectory.isDirectory)
-    for(file <- photoDirectory.listFiles) {
+  if (photoDirectory.exists && photoDirectory.isDirectory)
+    for (file <- photoDirectory.listFiles) {
       val matcher = regExpInputFile.matcher(file.getName)
-      if(matcher.matches()) {
+      if (matcher.matches()) {
         val date = new SimpleDateFormat("yyyyMMdd_HH_mm_ss").parse(matcher.group(1))
         val newFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss").format(date)
         try {
