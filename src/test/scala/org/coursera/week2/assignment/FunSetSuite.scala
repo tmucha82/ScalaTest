@@ -78,6 +78,8 @@ class FunSetSuite extends FunSuite {
 
     val positiveNumbers = (x: Int) => x > 0
     val evenNumbers = (x: Int) => x % 2 == 0
+    val oddNumbers = (x: Int) => x % 2 == 1
+    val digits = intersect(x => x < 10, x => x >= 0)
 
     def getElements(set: Set) = {
       for (i <- -bound to bound if contains(set, i)) yield i
@@ -173,11 +175,38 @@ class FunSetSuite extends FunSuite {
     }
   }
 
-  test("forall all numbers [0-9] modulo of 13 should return 0") {
+  test("forall which returns whether all bounded integers within `s` satisfy `p`") {
     new TestSets {
-      val digits = union(x => x < 10, x => x >= 0)
-      assert(forall(digits, x => x % 13 == 0), "All numbers [0-9] modulo of 13 should return 0")
+      assert(forall(digits, x => x / 10 < 1), "All numbers [0-9] division of 10 should be less then 1")
+      assert(!forall(digits, x => x % 2 == 0), "Not all numbers [0-9] are even")
+      assert(forall(s1, x => x > 0), "For sure 1 is great than 0")
     }
   }
 
+  test("exists which returns whether there exists a bounded integer within `s` that satisfies `p`") {
+    new TestSets {
+      assert(exists(digits, x => x == 3), "One of digits [0-9] should be 3")
+      assert(exists(digits, x => x % 2 == 0), "At least one of digits [0-9] is even")
+      assert(exists(s1, x => x > 0), "For sure 1 is great than 0")
+
+      assert(!exists(digits, x => x > 10), "There is no digit greater than 10")
+      assert(!exists(positiveNumbers, x => x < 0), "There is no positive number less than 0")
+      assert(!exists(evenNumbers, oddNumbers), "There is even number which is odd :)")
+    }
+  }
+
+  test("map which returns a set transformed by applying `f` to each element of `s`") {
+    new TestSets {
+      val s1Plus1 = map(s1, x => x + 1)
+      val s1Plus1Elements = getElements(s1Plus1)
+      assert(s1Plus1Elements.size === 1, "Set should contain one element")
+      assert(s1Plus1Elements.head === 2, "Set should contain {2}")
+
+      val negativeDigits = map(digits, x => -x)
+      val negativeDigitsElements = getElements(negativeDigits)
+      assert(negativeDigitsElements.size === 10, "Set should contain ten element")
+      assert(negativeDigitsElements === List(-9, -8, -7, -6, -5, -4, -3, -2, -1, 0), "Set of negative digits")
+
+    }
+  }
 }
