@@ -17,6 +17,7 @@ class TweetSetSuite extends FunSuite {
     val set4c = set3.incl(c)
     val set4d = set3.incl(d)
     val set5 = set4c.incl(d)
+    val set6 = set5.incl(new Tweet("g", "g body", 112))
   }
 
   def asSet(tweets: TweetSet): Set[Tweet] = {
@@ -27,9 +28,9 @@ class TweetSetSuite extends FunSuite {
 
   def size(set: TweetSet): Int = asSet(set).size
 
-  test("foreach println") {
+  test("foreach: on set6 println") {
     new TestSets {
-      set5.foreach(println(_))
+      set6.foreach(println(_))
     }
   }
 
@@ -66,6 +67,48 @@ class TweetSetSuite extends FunSuite {
   test("union: with empty set (2)") {
     new TestSets {
       assert(size(set1.union(set5)) === 4)
+    }
+  }
+
+  test("mostRetweeted: on set1") {
+    new TestSets {
+      assert(set1.mostRetweeted === null)
+    }
+  }
+
+  test("mostRetweeted: on set2") {
+    new TestSets {
+      assert(set2.mostRetweeted.retweets === 20)
+    }
+  }
+
+  test("mostRetweeted: on set3") {
+    new TestSets {
+      assert(set3.mostRetweeted.retweets === 20)
+    }
+  }
+
+  test("mostRetweeted: on set4c") {
+    new TestSets {
+      assert(set4c.mostRetweeted.retweets === 20)
+    }
+  }
+
+  test("mostRetweeted: on set4d") {
+    new TestSets {
+      assert(set4d.mostRetweeted.retweets === 20)
+    }
+  }
+
+  test("mostRetweeted on set5") {
+    new TestSets {
+      assert(set5.mostRetweeted.retweets === 20)
+    }
+  }
+
+  test("mostRetweeted on set6") {
+    new TestSets {
+      assert(set6.mostRetweeted.retweets === 112)
     }
   }
 

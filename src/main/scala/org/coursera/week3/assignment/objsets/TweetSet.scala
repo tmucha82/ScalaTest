@@ -63,7 +63,7 @@ abstract class TweetSet {
     * Question: Should we implement this method here, or should it remain abstract
     * and be implemented in the subclasses?
     */
-  def mostRetweeted: Tweet = ???
+  def mostRetweeted: Tweet
 
   /**
     * Returns a list containing all tweets of this set, sorted by retweet count
@@ -116,6 +116,17 @@ class Empty extends TweetSet {
   override def union(that: TweetSet): TweetSet = that
 
   /**
+    * Returns the tweet from this set which has the greatest retweet count.
+    *
+    * Calling `mostRetweeted` on an empty set should throw an exception of
+    * type `java.util.NoSuchElementException`.
+    *
+    * Question: Should we implement this method here, or should it remain abstract
+    * and be implemented in the subclasses?
+    */
+  override def mostRetweeted: Tweet = null
+
+  /**
     * The following methods are already implemented
     */
 
@@ -143,6 +154,25 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     */
   override def union(that: TweetSet): TweetSet = {
     left.union(right).union(that).incl(elem)
+  }
+
+  /**
+    * Returns the tweet from this set which has the greatest retweet count.
+    *
+    * Calling `mostRetweeted` on an empty set should throw an exception of
+    * type `java.util.NoSuchElementException`.
+    *
+    * Question: Should we implement this method here, or should it remain abstract
+    * and be implemented in the subclasses?
+    */
+  override def mostRetweeted: Tweet = {
+    def retweets(tweet: Tweet): Int = if (tweet == null) -1 else tweet.retweets
+
+    val leftMostRetweeted = left.mostRetweeted
+    val rightMostRetweeted = right.mostRetweeted
+    if (retweets(elem) > retweets(leftMostRetweeted) && retweets(elem) > retweets(rightMostRetweeted)) this.elem
+    else if (retweets(leftMostRetweeted) > retweets(rightMostRetweeted)) leftMostRetweeted
+    else rightMostRetweeted
   }
 
   /**
@@ -202,6 +232,13 @@ class Cons(val head: Tweet, val tail: TweetList) extends TweetList {
 object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
+
+  /**
+    * def tweetsMentioning(dictionary: List[String]): TweetSet =
+    * TweetReader.allTweets.filter(tweet =>
+    * dictionary.exists(word => tweet.text.contains(word)))
+    */
+
 
   lazy val googleTweets: TweetSet = ???
   lazy val appleTweets: TweetSet = ???
