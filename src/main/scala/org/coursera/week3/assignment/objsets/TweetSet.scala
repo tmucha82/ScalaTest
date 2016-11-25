@@ -52,7 +52,7 @@ abstract class TweetSet {
     * Question: Should we implement this method here, or should it remain abstract
     * and be implemented in the subclasses?
     */
-  def union(that: TweetSet): TweetSet
+  def union(that: TweetSet): TweetSet = that.filterAcc(tweet => true, this)
 
   /**
     * Returns the tweet from this set which has the greatest retweet count.
@@ -108,14 +108,6 @@ class Empty extends TweetSet {
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
 
   /**
-    * Returns a new `TweetSet` that is the union of `TweetSet`s `this` and `that`.
-    *
-    * Question: Should we implement this method here, or should it remain abstract
-    * and be implemented in the subclasses?
-    */
-  override def union(that: TweetSet): TweetSet = that
-
-  /**
     * Returns the tweet from this set which has the greatest retweet count.
     *
     * Calling `mostRetweeted` on an empty set should throw an exception of
@@ -155,16 +147,6 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
     val accSet = if (p(elem)) acc.incl(elem) else acc
     left.filterAcc(p, right.filterAcc(p, accSet))
-  }
-
-  /**
-    * Returns a new `TweetSet` that is the union of `TweetSet`s `this` and `that`.
-    *
-    * Question: Should we implement this method here, or should it remain abstract
-    * and be implemented in the subclasses?
-    */
-  override def union(that: TweetSet): TweetSet = {
-    left.union(right).union(that).incl(elem)
   }
 
   /**
@@ -258,24 +240,20 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  /**
-    * def tweetsMentioning(dictionary: List[String]): TweetSet =
-    * TweetReader.allTweets.filter(tweet =>
-    * dictionary.exists(word => tweet.text.contains(word)))
-    */
+
+  def tweetsMentioning(dictionary: List[String]): TweetSet = TweetReader.allTweets.filter(tweet => dictionary.exists(word => tweet.text.contains(word)))
 
 
-  lazy val googleTweets: TweetSet = ???
-  lazy val appleTweets: TweetSet = ???
+  lazy val googleTweets: TweetSet = tweetsMentioning(google)
+  lazy val appleTweets: TweetSet = tweetsMentioning(apple)
 
   /**
     * A list of all tweets mentioning a keyword from either apple or google,
     * sorted by the number of retweets.
     */
-  lazy val trending: TweetList = ???
+  lazy val trending: TweetList = (googleTweets union appleTweets).descendingByRetweet
 }
 
 object Main extends App {
-  // Print the trending tweets
   GoogleVsApple.trending foreach println
 }
