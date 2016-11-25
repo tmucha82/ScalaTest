@@ -14,7 +14,7 @@ class Tweet(val user: String, val text: String, val retweets: Int) {
   * tree. Every branch in the tree has two children (two `TweetSet`s). There is an
   * invariant which always holds: for every branch `b`, all elements in the left
   * subtree are smaller than the tweet at `b`. The elements in the right subtree are
-  * larger.
+  * larger.``
   *
   * Note that the above structure requires us to be able to compare two tweets (we
   * need to be able to say which of two tweets is larger, or if they are equal). In
@@ -146,9 +146,8 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   override def isEmpty: Boolean = false
 
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
-    var result = acc
-    foreach(tweet => if (p(tweet)) result = result.incl(tweet))
-    result
+    val newAcc = if (p(elem)) acc.incl(elem) else acc
+    left.filterAcc(p, right.filterAcc(p, newAcc))
   }
 
   /**
@@ -161,9 +160,14 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     * and be implemented in the subclasses?
     */
   override def mostRetweeted: Tweet = {
-    var most: Tweet = elem
-    (left union right).foreach(t => if (t.retweets > most.retweets) most = t)
-    most
+    lazy val leftMostRetweeted = left.mostRetweeted
+    lazy val rightMostRetweeted = right.mostRetweeted
+
+    if (!left.isEmpty && leftMostRetweeted.retweets > elem.retweets)
+      if (!right.isEmpty && rightMostRetweeted.retweets > leftMostRetweeted.retweets) rightMostRetweeted
+      else leftMostRetweeted
+    else if (!right.isEmpty && rightMostRetweeted.retweets > elem.retweets) rightMostRetweeted
+    else elem
   }
 
   /**
@@ -239,7 +243,5 @@ object GoogleVsApple {
 }
 
 object Main extends App {
-  val t1 = System.currentTimeMillis()
   GoogleVsApple.trending foreach println
-  println(System.currentTimeMillis() - t1)
 }

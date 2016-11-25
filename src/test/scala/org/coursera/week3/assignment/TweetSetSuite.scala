@@ -1,6 +1,6 @@
 package org.coursera.week3.assignment
 
-import org.coursera.week3.assignment.objsets.{Empty, Tweet, TweetSet}
+import org.coursera.week3.assignment.objsets.{TweetSet, Tweet, Empty}
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
