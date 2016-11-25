@@ -74,7 +74,7 @@ abstract class TweetSet {
     * Question: Should we implement this method here, or should it remain abstract
     * and be implemented in the subclasses?
     */
-  def descendingByRetweet: TweetList = ???
+  def descendingByRetweet: TweetList
 
   /**
     * The following methods are already implemented
@@ -127,6 +127,17 @@ class Empty extends TweetSet {
   override def mostRetweeted: Tweet = null
 
   /**
+    * Returns a list containing all tweets of this set, sorted by retweet count
+    * in descending order. In other words, the head of the resulting list should
+    * have the highest retweet count.
+    *
+    * Hint: the method `remove` on TweetSet will be very useful.
+    * Question: Should we implement this method here, or should it remain abstract
+    * and be implemented in the subclasses?
+    */
+  override def descendingByRetweet: TweetList = Nil
+
+  /**
     * The following methods are already implemented
     */
 
@@ -173,6 +184,20 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     if (retweets(elem) > retweets(leftMostRetweeted) && retweets(elem) > retweets(rightMostRetweeted)) this.elem
     else if (retweets(leftMostRetweeted) > retweets(rightMostRetweeted)) leftMostRetweeted
     else rightMostRetweeted
+  }
+
+  /**
+    * Returns a list containing all tweets of this set, sorted by retweet count
+    * in descending order. In other words, the head of the resulting list should
+    * have the highest retweet count.
+    *
+    * Hint: the method `remove` on TweetSet will be very useful.
+    * Question: Should we implement this method here, or should it remain abstract
+    * and be implemented in the subclasses?
+    */
+  override def descendingByRetweet: TweetList = {
+    val tweet = this.mostRetweeted
+    new Cons(tweet, this.remove(tweet).descendingByRetweet)
   }
 
   /**
