@@ -72,7 +72,13 @@ class TweetSetSuite extends FunSuite {
 
   test("mostRetweeted: on set1") {
     new TestSets {
-      assert(set1.mostRetweeted === null)
+      try {
+        set1.mostRetweeted
+        fail
+      }
+      catch {
+        case _: NoSuchElementException => // Expected, so continue
+      }
     }
   }
 

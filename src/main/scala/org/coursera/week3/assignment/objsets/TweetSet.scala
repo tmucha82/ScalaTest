@@ -32,6 +32,8 @@ class Tweet(val user: String, val text: String, val retweets: Int) {
   */
 abstract class TweetSet {
 
+  def isEmpty: Boolean
+
   /**
     * This method takes a predicate and returns a subset of all the elements
     * in the original set for which the predicate is true.
@@ -74,10 +76,16 @@ abstract class TweetSet {
     * Question: Should we implement this method here, or should it remain abstract
     * and be implemented in the subclasses?
     */
-  def descendingByRetweet: TweetList
+  def descendingByRetweet: TweetList =
+    if (isEmpty) Nil
+    else {
+      val tweet = this.mostRetweeted
+      new Cons(tweet, this.remove(tweet).descendingByRetweet)
+    }
+
 
   /**
-    * The following methods are already implemented
+    * The following methods are already imple mented
     */
 
   /**
@@ -105,6 +113,8 @@ abstract class TweetSet {
 }
 
 class Empty extends TweetSet {
+  override def isEmpty: Boolean = true
+
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
 
   /**
@@ -116,18 +126,7 @@ class Empty extends TweetSet {
     * Question: Should we implement this method here, or should it remain abstract
     * and be implemented in the subclasses?
     */
-  override def mostRetweeted: Tweet = null
-
-  /**
-    * Returns a list containing all tweets of this set, sorted by retweet count
-    * in descending order. In other words, the head of the resulting list should
-    * have the highest retweet count.
-    *
-    * Hint: the method `remove` on TweetSet will be very useful.
-    * Question: Should we implement this method here, or should it remain abstract
-    * and be implemented in the subclasses?
-    */
-  override def descendingByRetweet: TweetList = Nil
+  override def mostRetweeted: Tweet = throw new java.util.NoSuchElementException
 
   /**
     * The following methods are already implemented
@@ -144,9 +143,12 @@ class Empty extends TweetSet {
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
+  override def isEmpty: Boolean = false
+
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
-    val accSet = if (p(elem)) acc.incl(elem) else acc
-    left.filterAcc(p, right.filterAcc(p, accSet))
+    var result = acc
+    foreach(tweet => if (p(tweet)) result = result.incl(tweet))
+    result
   }
 
   /**
@@ -159,27 +161,9 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     * and be implemented in the subclasses?
     */
   override def mostRetweeted: Tweet = {
-    def retweets(tweet: Tweet): Int = if (tweet == null) -1 else tweet.retweets
-
-    val leftMostRetweeted = left.mostRetweeted
-    val rightMostRetweeted = right.mostRetweeted
-    if (retweets(elem) > retweets(leftMostRetweeted) && retweets(elem) > retweets(rightMostRetweeted)) this.elem
-    else if (retweets(leftMostRetweeted) > retweets(rightMostRetweeted)) leftMostRetweeted
-    else rightMostRetweeted
-  }
-
-  /**
-    * Returns a list containing all tweets of this set, sorted by retweet count
-    * in descending order. In other words, the head of the resulting list should
-    * have the highest retweet count.
-    *
-    * Hint: the method `remove` on TweetSet will be very useful.
-    * Question: Should we implement this method here, or should it remain abstract
-    * and be implemented in the subclasses?
-    */
-  override def descendingByRetweet: TweetList = {
-    val tweet = this.mostRetweeted
-    new Cons(tweet, this.remove(tweet).descendingByRetweet)
+    var most: Tweet = elem
+    (left union right).foreach(t => if (t.retweets > most.retweets) most = t)
+    most
   }
 
   /**
@@ -255,5 +239,7 @@ object GoogleVsApple {
 }
 
 object Main extends App {
+  val t1 = System.currentTimeMillis()
   GoogleVsApple.trending foreach println
+  println(System.currentTimeMillis() - t1)
 }
