@@ -12,7 +12,7 @@ object Expr {
   def show(e: Expr): String = e match {
     case Number(n) => n.toString
     case Var(n) => n.toString
-    case Sum(e1, e2) => show(e1) + " + " + show(e2)
+    case Sum(e1, e2) => "(" + show(e1) + " + " + show(e2) + ")"
     case Prod(e1, e2) => show(e1) + " * " + show(e2)
   }
 }
