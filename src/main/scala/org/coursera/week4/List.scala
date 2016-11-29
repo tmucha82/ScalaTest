@@ -36,7 +36,7 @@ object List {
 
   def apply[T](x: T): List[T] = new Cons[T](x, apply())
 
-  def apply[T](): List[T] = Nil[T]
+  def apply[T](): List[T] = Nil
 }
 
 object test {
