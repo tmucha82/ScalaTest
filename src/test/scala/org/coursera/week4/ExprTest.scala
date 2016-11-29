@@ -11,7 +11,7 @@ class ExprTest extends FunSuite {
 
   test("show") {
     new TestSet {
-      println(""Expr.show(expr1))
+      println(Expr.show(expr1))
       println(Expr.show(expr2))
     }
   }
