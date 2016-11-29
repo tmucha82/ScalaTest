@@ -6,6 +6,8 @@ package org.coursera.week4
 
 import java.util.NoSuchElementException
 
+import org.coursera.week3.assignment.objsets.{Empty, NonEmpty}
+
 trait List[+T] {
   def isEmpty: Boolean
 
@@ -13,7 +15,8 @@ trait List[+T] {
 
   def tail: List[T]
 
-//  def prepend(elem: T): List[T] = new Cons(elem, this)
+  //  def prepend(elem: T): List[T] = new Cons(elem, this) //we cannot do that - but we can do (upper) bound
+  def prepend[U >: T](elem: U): List[U] = new Cons(elem, this)
 }
 
 class Cons[T](val head: T, val tail: List[T]) extends List[T] {
@@ -38,4 +41,6 @@ object List {
 
 object test {
   val x: List[String] = Nil
+
+  def f(xs: List[NonEmpty], x: Empty) = xs.prepend(x) //returns List[IntSet]
 }
