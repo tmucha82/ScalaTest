@@ -40,6 +40,19 @@ class HuffmanSuite extends FunSuite {
 
   test("makeOrderedLeafList for some frequency table") {
     assert(Huffman.makeOrderedLeafList(List(('t', 2), ('e', 1), ('x', 3))) === List(Leaf('e', 1), Leaf('t', 2), Leaf('x', 3)))
+    assert(Huffman.makeOrderedLeafList(List(('a', 2), ('b', 1))) === List(Leaf('b', 1), Leaf('a', 2)))
+    assert(Huffman.makeOrderedLeafList(List(('a', 3), ('b', 1), ('c', 2))) === List(Leaf('b', 1), Leaf('c', 2), Leaf('a', 3)))
+  }
+
+  test("singleton") {
+    new TestTrees {
+      assert(!Huffman.singleton(List()))
+      assert(Huffman.singleton(List(Leaf('a', 1))))
+      assert(Huffman.singleton(List(t1)))
+      assert(Huffman.singleton(List(t2)))
+      assert(!Huffman.singleton(List(t1, t2, Leaf('a', 1))))
+      assert(!Huffman.singleton(List(t1, t2)))
+    }
   }
 
   test("combine of some leaf list") {
