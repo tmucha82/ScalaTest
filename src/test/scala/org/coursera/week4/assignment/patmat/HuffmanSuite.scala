@@ -31,6 +31,13 @@ class HuffmanSuite extends FunSuite {
     assert(Huffman.string2Chars("hello, world") === List('h', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd'))
   }
 
+  test("times") {
+    new TestTrees {
+      assert(List(('a', 2), ('b', 1)) === Huffman.times(List('a', 'b', 'a')))
+      assert(List(('a', 3), ('b', 1), ('c', 2)) === Huffman.times(List('a', 'b', 'c', 'a', 'c', 'a')))
+    }
+  }
+
   test("makeOrderedLeafList for some frequency table") {
     assert(Huffman.makeOrderedLeafList(List(('t', 2), ('e', 1), ('x', 3))) === List(Leaf('e', 1), Leaf('t', 2), Leaf('x', 3)))
   }
