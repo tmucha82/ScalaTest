@@ -212,7 +212,7 @@ object Huffman {
     * This function returns the bit sequence that represents the character `char` in
     * the code table `table`.
     */
-  def codeBits(table: CodeTable)(char: Char): List[Bit] = table.find(x => x._1 == char).get._2
+  def codeBits(table: CodeTable)(char: Char): List[Bit] = table.find { case (x, _) => x == char }.get._2
 
   /**
     * Given a code tree, create a code table which contains, for every character in the
