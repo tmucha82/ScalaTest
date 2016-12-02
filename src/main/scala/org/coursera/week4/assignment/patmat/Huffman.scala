@@ -158,13 +158,13 @@ object Huffman {
     * the resulting list of characters.
     */
   def decode(mainTree: CodeTree, bits: List[Bit]): List[Char] = {
-    def decodeAcc(tree: CodeTree, bits: List[Bit], chars: List[Char]): List[Char] = {
+    def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
       tree match {
-        case Leaf(char, _) => if (bits.isEmpty) chars ::: List(char) else decodeAcc(mainTree, bits, chars ::: List(char))
-        case Fork(left, right, _, _) => decodeAcc(if (bits.head == 0) left else right, bits.tail, chars)
+        case Leaf(char, _) => if (bits.isEmpty) List(char) else char :: decode(mainTree, bits)
+        case Fork(left, right, _, _) => decode(if (bits.head == 0) left else right, bits.tail)
       }
     }
-    decodeAcc(mainTree, bits, List())
+    decode(mainTree, bits)
   }
 
 
@@ -196,9 +196,9 @@ object Huffman {
   def encode(mainTree: CodeTree)(text: List[Char]): List[Bit] = {
     def encodeAcc(tree: CodeTree, text: List[Char], bits: List[Bit]): List[Bit] = {
       tree match {
-        case Leaf(char, _) => if (text.tail.isEmpty) bits else encodeAcc(mainTree, text.tail, bits)
-        case Fork(left, right, charList, _) if chars(left).contains(text.head) =>  encodeAcc(left, text, bits ::: List(0))
-        case Fork(left, right, charList, _) if chars(right).contains(text.head) => encodeAcc(right, text, bits ::: List(1))
+        case Leaf(_, _) => if (text.tail.isEmpty) bits else encodeAcc(mainTree, text.tail, bits)
+        case Fork(left, right, _, _) if chars(left).contains(text.head) => encodeAcc(left, text, bits ::: List(0))
+        case Fork(left, right, _, _) if chars(right).contains(text.head) => encodeAcc(right, text, bits ::: List(1))
       }
     }
     encodeAcc(mainTree, text, List())
