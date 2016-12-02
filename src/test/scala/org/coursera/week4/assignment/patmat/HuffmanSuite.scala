@@ -56,8 +56,34 @@ class HuffmanSuite extends FunSuite {
   }
 
   test("combine of some leaf list") {
-    val leaflist = List(Leaf('e', 1), Leaf('t', 2), Leaf('x', 4))
-    assert(Huffman.combine(leaflist) === List(Fork(Leaf('e', 1), Leaf('t', 2), List('e', 't'), 3), Leaf('x', 4)))
+    assert(Huffman.combine(List(Leaf('e', 1), Leaf('t', 2), Leaf('x', 4))) === List(Fork(Leaf('e', 1), Leaf('t', 2), List('e', 't'), 3), Leaf('x', 4)))
+    assert(Huffman.combine(List(Fork(Leaf('e', 1), Leaf('t', 2), List('e', 't'), 3), Leaf('x', 4))) === List(Fork(Fork(Leaf('e', 1), Leaf('t', 2), List('e', 't'), 3), Leaf('x', 4), List('e', 't', 'x'), 7)))
+    assert(Huffman.combine(List(Leaf('a', 2), Leaf('b', 3), Leaf('c', 4))) === List(Leaf('c', 4), Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5)))
+    assert(Huffman.combine(List(Leaf('c', 4), Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5))) === List(Fork(Leaf('c', 4), Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5), List('c', 'a', 'b'), 9)))
+  }
+
+  test("until") {
+    assert(List(Fork(Leaf('c', 4), Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5), List('c', 'a', 'b'), 9)) === Huffman.until(Huffman.singleton, Huffman.combine)(List(Leaf('a', 2), Leaf('b', 3), Leaf('c', 4))))
+    assert(List(Fork(Fork(Leaf('e', 1), Leaf('t', 2), List('e', 't'), 3), Leaf('x', 4), List('e', 't', 'x'), 7)) === Huffman.until(Huffman.singleton, Huffman.combine)(List(Leaf('e', 1), Leaf('t', 2), Leaf('x', 4))))
+  }
+
+  test("createCodeTree") {
+    assert(Fork(Leaf('c', 4), Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5), List('c', 'a', 'b'), 9) === Huffman.createCodeTree(Huffman.string2Chars("aabbbcccc")))
+    assert(Fork(Fork(Leaf('e', 1), Leaf('t', 2), List('e', 't'), 3), Leaf('x', 4), List('e', 't', 'x'), 7) === Huffman.createCodeTree(Huffman.string2Chars("ettxxxx")))
+  }
+
+  test("decode") {
+    assert(Huffman.string2Chars("caba") === Huffman.decode(Huffman.createCodeTree(Huffman.string2Chars("aabbbcccc")), List(0, 1, 0, 1, 1, 1, 0)))
+    assert(Huffman.string2Chars("xtet") === Huffman.decode(Huffman.createCodeTree(Huffman.string2Chars("ettxxxx")), List(1, 0, 1, 0, 0, 0, 1)))
+  }
+
+  test("decode secret using frenchCode") {
+    assert(Huffman.string2Chars("huffmanestcool") === Huffman.decodedSecret)
+  }
+
+  test("encode") {
+    assert(List(0, 1, 0, 1, 1, 1, 0) === Huffman.encode(Huffman.createCodeTree(Huffman.string2Chars("aabbbcccc")))(Huffman.string2Chars("caba")))
+    assert(List(1, 0, 1, 0, 0, 0, 1) === Huffman.encode(Huffman.createCodeTree(Huffman.string2Chars("ettxxxx")))(Huffman.string2Chars("xtet")))
   }
 
   test("decode and encode a very short text should be identity") {
