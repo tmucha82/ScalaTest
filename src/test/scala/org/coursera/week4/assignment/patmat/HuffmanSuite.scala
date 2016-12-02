@@ -1,9 +1,11 @@
 package org.coursera.week4.assignment.patmat
 
-import org.coursera.week4.assignment.patmat.Huffman.{Fork, Leaf}
+import org.coursera.week4.assignment.patmat.Huffman._
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
+
+import scala.collection.immutable.List
 
 @RunWith(classOf[JUnitRunner])
 class HuffmanSuite extends FunSuite {
@@ -11,6 +13,11 @@ class HuffmanSuite extends FunSuite {
   trait TestTrees {
     val t1 = Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5)
     val t2 = Fork(Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5), Leaf('d', 4), List('a', 'b', 'd'), 9)
+  }
+
+  trait TestCodeTables {
+    val abc = List(('c', List(0)), ('a', List(1, 0)), ('b', List(1, 1)))
+    val etx = List(('e', List(0, 0)), ('t', List(0, 1)), ('x', List(1)))
   }
 
   test("weight of a larger tree") {
@@ -91,6 +98,18 @@ class HuffmanSuite extends FunSuite {
       assert(Huffman.decode(t1, Huffman.encode(t1)("ab".toList)) === "ab".toList)
       assert(Huffman.decode(t2, Huffman.encode(t2)("abddba".toList)) === "abddba".toList)
       assert(Huffman.encode(Huffman.frenchCode)("huffmanestcool".toList) === Huffman.secret)
+    }
+  }
+
+  test("codeBits") {
+    new TestCodeTables {
+      assert(List(1, 0) === Huffman.codeBits(abc)('a'))
+      assert(List(1, 1) === Huffman.codeBits(abc)('b'))
+      assert(List(0) === Huffman.codeBits(abc)('c'))
+
+      assert(List(0, 0) === Huffman.codeBits(etx)('e'))
+      assert(List(0, 1) === Huffman.codeBits(etx)('t'))
+      assert(List(1) === Huffman.codeBits(etx)('x'))
     }
   }
 }
