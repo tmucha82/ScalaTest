@@ -195,7 +195,11 @@ object Huffman {
     */
   def encode(mainTree: CodeTree)(text: List[Char]): List[Bit] = {
     def encodeAcc(tree: CodeTree, text: List[Char], bits: List[Bit]): List[Bit] = {
-      ???
+      tree match {
+        case Leaf(char, _) => if (text.tail.isEmpty) bits else encodeAcc(mainTree, text.tail, bits)
+        case Fork(left, right, charList, _) if chars(left).contains(text.head) =>  encodeAcc(left, text, bits ::: List(0))
+        case Fork(left, right, charList, _) if chars(right).contains(text.head) => encodeAcc(right, text, bits ::: List(1))
+      }
     }
     encodeAcc(mainTree, text, List())
   }
