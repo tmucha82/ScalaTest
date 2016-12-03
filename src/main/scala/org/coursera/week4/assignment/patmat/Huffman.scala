@@ -114,8 +114,8 @@ object Huffman {
     * unchanged.
     */
   def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
-    case List(_) => trees
     case first :: second :: xs => (makeCodeTree(first, second) :: xs).sortBy(leaf => weight(leaf))
+    case _ => trees
   }
 
   /**

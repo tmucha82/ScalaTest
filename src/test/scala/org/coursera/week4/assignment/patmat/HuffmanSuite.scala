@@ -69,6 +69,12 @@ class HuffmanSuite extends FunSuite {
     assert(Huffman.combine(List(Leaf('c', 4), Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5))) === List(Fork(Leaf('c', 4), Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5), List('c', 'a', 'b'), 9)))
   }
 
+  test("combine of a singleton or nil") {
+    assert(Huffman.combine(List()) === List())
+    assert(Huffman.combine(Nil) === Nil)
+
+  }
+
   test("until") {
     assert(List(Fork(Leaf('c', 4), Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5), List('c', 'a', 'b'), 9)) === Huffman.until(Huffman.singleton, Huffman.combine)(List(Leaf('a', 2), Leaf('b', 3), Leaf('c', 4))))
     assert(List(Fork(Fork(Leaf('e', 1), Leaf('t', 2), List('e', 't'), 3), Leaf('x', 4), List('e', 't', 'x'), 7)) === Huffman.until(Huffman.singleton, Huffman.combine)(List(Leaf('e', 1), Leaf('t', 2), Leaf('x', 4))))
