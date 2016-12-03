@@ -72,7 +72,6 @@ class HuffmanSuite extends FunSuite {
   test("combine of a singleton or nil") {
     assert(Huffman.combine(List()) === List())
     assert(Huffman.combine(Nil) === Nil)
-
   }
 
   test("until") {
