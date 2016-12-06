@@ -9,7 +9,7 @@ class Rational(n: Int, d: Int) extends Ordered[Rational] {
 
   def this(n: Int) = this(n, 1)
 
-  override def toString: String = n + "/" + d
+  override def toString: String = if (denominator == 1) number.toString else number + "/" + denominator
 
   def add(that: Rational): Rational = new Rational(number * that.denominator + that.number * denominator, denominator * that.denominator)
 
@@ -34,6 +34,18 @@ class Rational(n: Int, d: Int) extends Ordered[Rational] {
   def /(i: Int): Rational = this / new Rational(i)
 
   override def compare(that: Rational): Int = (this.number * that.denominator) - (that.number * this.denominator)
+
+  //could be val or def - depending on performance - caching hash code (only for immutable!)
+  override def hashCode: Int = 41 * (41 + number) + denominator
+
+  override def equals(other: Any): Boolean = other match {
+    case that: Rational =>
+      (that canEqual this) &&
+        number == that.number && denominator == that.denominator
+    case _ => false
+  }
+
+  def canEqual(other: Any): Boolean = other.isInstanceOf[Rational]
 }
 
 object Rational {

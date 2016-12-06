@@ -1,5 +1,6 @@
 package com.sdc.scala.eqality
 
+import com.sdc.scala.rational.Rational
 import org.scalatest.FunSuite
 
 import scala.collection.mutable
@@ -123,7 +124,8 @@ class EqualityTest extends FunSuite {
     }
 
     class ColoredPoint(x: Int, y: Int, val color: Color.Value)
-      extends Point(x, y) { // Problem: equals not symmetric
+      extends Point(x, y) {
+      // Problem: equals not symmetric
 
       override def equals(other: Any) = other match {
         case that: ColoredPoint =>
@@ -196,7 +198,9 @@ class EqualityTest extends FunSuite {
 
     val point = new Point(1, 2)
     val coloredPoint = new ColoredPoint(1, 2, Color.Red)
-    val differentPoint = new Point(1, 1) { override val y = 2 }
+    val differentPoint = new Point(1, 1) {
+      override val y = 2
+    }
 
     //you should compare only the same classes
     assert(!(point equals coloredPoint)) //yep
@@ -219,15 +223,19 @@ class EqualityTest extends FunSuite {
   test("Defining equality for parametrized types") {
     trait Tree[+T] {
       def element: T
+
       def left: Tree[T]
+
       def right: Tree[T]
     }
 
     object EmptyTree extends Tree[Nothing] {
       def element =
         throw new NoSuchElementException("EmptyTree.elem")
+
       def left =
         throw new NoSuchElementException("EmptyTree.left")
+
       def right =
         throw new NoSuchElementException("EmptyTree.right")
     }
@@ -253,10 +261,13 @@ class EqualityTest extends FunSuite {
             ) + left.hashCode
           ) + right.hashCode
 
-      def canEqual(other: Any) = other match {
+      def irstCanEqual(other: Any) = other match {
         case that: Branch[_] => true
         case _ => false
       }
+
+      //could be also
+      def canEqual(other: Any) = other.isInstanceOf[Branch[_]]
     }
 
 
@@ -264,5 +275,11 @@ class EqualityTest extends FunSuite {
     val branch2 = new Branch[List[Int]](Nil, EmptyTree, EmptyTree)
     assert(branch1 == branch2)
     assert(branch1 equals branch2)
+  }
+
+  test("recipes for equals and hashCode") {
+    val rational1 = new Rational(2,3)
+    val rational2 = new Rational(2,3)
+    assert(rational1 === rational2)
   }
 }
