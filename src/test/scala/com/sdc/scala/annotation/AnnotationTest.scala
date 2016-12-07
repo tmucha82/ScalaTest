@@ -8,10 +8,7 @@ class AnnotationTest extends FunSuite {
   def sampleMethod(): Unit = {
   }
 
-
   test("example") {
-
-
     assert("sampleMethod" === (for {
       method <- AnnotationTest.this.getClass.getMethods
       if method.getName.startsWith("sample")
