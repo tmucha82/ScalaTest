@@ -2,26 +2,25 @@ package com.sdc.scala.parser
 
 import org.scalatest.FunSuite
 
-import scala.util.parsing.combinator.RegexParsers
+import scala.util.parsing.combinator.{JavaTokenParsers, RegexParsers}
 
 class ParserTest extends FunSuite {
+
+  object Arith extends JavaTokenParsers {
+    def expr: Parser[Any] = term ~ rep("+" ~ term | "-" ~ term)
+
+    def term: Parser[Any] = factor ~ rep("*" ~ factor | "/" ~ factor)
+
+    def factor: Parser[Any] = floatingPointNumber | "(" ~ expr ~ ")"
+  }
 
   object MyParsers extends RegexParsers {
     val ident: Parser[String] = """[a-zA-Z_]\w*""".r
   }
 
-  trait TestSet {
-    val arith = new Arith()
-
-    val example1 = "2 * (3 + 7)"
-    val failureExample = "2 * (3 + 7))"
-  }
-
   test("simple arith parsing") {
-    new TestSet {
-      assert("[1.12] parsed: ((2~List((*~(((~((3~List())~List((+~(7~List())))))~)))))~List())" === arith.parseAll(arith.expr, example1).toString)
-      assert("[1.12] failure: `-' expected but `)' found\n\n2 * (3 + 7))\n           ^" === arith.parseAll(arith.expr, failureExample).toString)
-    }
+    assert("[1.12] parsed: ((2~List((*~(((~((3~List())~List((+~(7~List())))))~)))))~List())" === Arith.parseAll(Arith.expr, "2 * (3 + 7)").toString)
+    assert("[1.12] failure: `-' expected but `)' found\n\n2 * (3 + 7))\n           ^" === Arith.parseAll(Arith.expr, "2 * (3 + 7))").toString)
   }
 
   test("regexp parser") {
