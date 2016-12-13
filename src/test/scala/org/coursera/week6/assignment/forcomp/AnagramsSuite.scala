@@ -12,7 +12,6 @@ class AnagramsSuite extends FunSuite {
     assert(Anagrams.dictionary.contains("zoo"))
     assert(Anagrams.dictionary.contains("Scala"))
     assert(Anagrams.dictionary.contains("cool"))
-
   }
 
   test("wordOccurrences: abcd") {
@@ -21,6 +20,18 @@ class AnagramsSuite extends FunSuite {
 
   test("wordOccurrences: Robert") {
     assert(wordOccurrences("Robert") === List(('b', 1), ('e', 1), ('o', 1), ('r', 2), ('t', 1)))
+  }
+
+  test("wordOccurrences: abcdABSsc") {
+    assert(wordOccurrences("abcdABSsc") === List(('a', 2), ('b', 2), ('c', 2), ('d', 1), ('s', 2)))
+  }
+
+  test("wordOccurrences: ScalaIsFun") {
+    assert(wordOccurrences("ScalaIsFun") === List(('a', 2), ('c', 1), ('f', 1), ('i', 1), ('l', 1), ('n', 1), ('s', 2), ('u', 1)))
+  }
+
+  test("wordOccurrences: TomaszMucha") {
+    assert(wordOccurrences("TomaszMucha") === List(('a', 2), ('c', 1), ('h', 1), ('m', 2), ('o', 1), ('s', 1), ('t', 1), ('u', 1), ('z', 1)))
   }
 
   test("sentenceOccurrences: abcd e") {
