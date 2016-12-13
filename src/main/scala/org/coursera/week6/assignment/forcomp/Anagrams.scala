@@ -33,7 +33,7 @@ object Anagrams {
     *
     * Note: you must use `groupBy` to implement this method!
     */
-  def wordOccurrences(w: Word): Occurrences = w.groupBy(char => char.toLower).mapValues(_.length).toList.sorted
+  def wordOccurrences(w: Word): Occurrences = w.groupBy(_.toLower).mapValues(_.length).toList.sorted
 
 
   /** Converts a sentence into its character occurrence list. */
@@ -54,7 +54,7 @@ object Anagrams {
     * List(('a', 1), ('e', 1), ('t', 1)) -> Seq("ate", "eat", "tea")
     *
     */
-  lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] = ???
+  lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] = dictionary.groupBy(wordOccurrences)
 
   /** Returns all the anagrams of a given word. */
   def wordAnagrams(word: Word): List[Word] = ???
