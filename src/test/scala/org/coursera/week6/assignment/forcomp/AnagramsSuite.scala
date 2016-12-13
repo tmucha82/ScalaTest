@@ -38,6 +38,14 @@ class AnagramsSuite extends FunSuite {
     assert(sentenceOccurrences(List("abcd", "e")) === List(('a', 1), ('b', 1), ('c', 1), ('d', 1), ('e', 1)))
   }
 
+  test("sentenceOccurrences: Tomasz Mucha") {
+    assert(sentenceOccurrences("Tomasz" :: "Mucha" :: Nil) === List(('a', 2), ('c', 1), ('h', 1), ('m', 2), ('o', 1), ('s', 1), ('t', 1), ('u', 1), ('z', 1)))
+  }
+
+  test("sentenceOccurrences: ScalaIsFun") {
+    assert(sentenceOccurrences("Scala" :: "Is" :: "Fun" :: Nil) === List(('a', 2), ('c', 1), ('f', 1), ('i', 1), ('l', 1), ('n', 1), ('s', 2), ('u', 1)))
+  }
+
   test("dictionaryByOccurrences.get: eat") {
     assert(dictionaryByOccurrences.get(List(('a', 1), ('e', 1), ('t', 1))).map(_.toSet) === Some(Set("ate", "eat", "tea")))
   }
