@@ -18,5 +18,5 @@ def combinations(occurrences: Occurrences) = {
 
 wordOccurrences("abcdAaCSDba")
 sentenceOccurrences(List("Tomasz", "Mucha"))
-combinations(List(('a', 2), ('b', 2))).size
+combinations(List(('a', 2), ('b', 2)))
 combinations(List(('a', 2), ('b', 2), ('c', 3)))
