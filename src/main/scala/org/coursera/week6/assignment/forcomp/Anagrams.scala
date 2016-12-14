@@ -83,10 +83,10 @@ object Anagrams {
     */
   def combinations(occurrences: Occurrences): List[Occurrences] = {
     def accumulate(rest: List[Occurrences]): List[Occurrences] = rest match {
-      case List() => List[Occurrences](Nil)
-      case x :: y =>
-        val acc = accumulate(y)
-        acc ++ (for (i <- x; j <- acc) yield i :: j)
+      case List() => List(Nil)
+      case occurrence :: restOccurrences =>
+        val acc = accumulate(restOccurrences)
+        acc ++ (for (charOcc <- occurrence; wordOcc <- acc) yield charOcc :: wordOcc)
     }
     accumulate(occurrences.map { case (char, size) => (for (i <- 1 to size) yield (char, i)).toList })
   }
@@ -101,7 +101,14 @@ object Anagrams {
     * Note: the resulting value is an occurrence - meaning it is sorted
     * and has no zero-entries.
     */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = ???
+  def subtract(x: Occurrences, y: Occurrences): Occurrences = {
+    val result = y.foldLeft(x)((previous, next) => {
+      val (char, frequency) = next
+      val map = previous.toMap.withDefaultValue(0)
+      map.updated(char, map(char) - frequency).toList
+    })
+    result.filter { case (_, frequency) => frequency > 0 }.sorted
+  }
 
   /** Returns a list of all anagram sentences of the given sentence.
     *
