@@ -27,6 +27,21 @@ def subtract(x: Occurrences, y: Occurrences): Occurrences = {
 }
 
 /**
+  * Returns a list of all anagram sentences of the given sentence.
+  *
+  * An anagram of a sentence is formed by taking the occurrences of all the characters of
+  * all the words in the sentence, and producing all possible combinations of words with those characters,
+  * such that the words have to be from the dictionary.
+  *
+  * The number of words in the sentence and its anagrams does not have to correspond.
+  * For example, the sentence `List("I", "love", "you")` is an anagram of the sentence `List("You", "olive")`.
+  *
+  * Also, two sentences with the same words but in a different order are considered two different anagrams.
+  * For example, sentences `List("You", "olive")` and `List("olive", "you")` are different anagrams of
+  * `List("I", "love", "you")`.
+  *
+  * Here is a full example of a sentence `List("Yes", "man")` and its anagrams for our dictionary:
+  *
   * List(en, as, my),
   * List(en, my, as),
   * List(man, yes),
@@ -42,16 +57,19 @@ def subtract(x: Occurrences, y: Occurrences): Occurrences = {
   * List(say, men),
   * List(yes, man)
   */
-def sentenceAnagrams(sentence: Sentence) = {
-  sentenceOccurrences(sentence)
-  val occurrences = wordOccurrences(sentence.mkString)
-  val allCombinations = combinations(occurrences)
-  val dictionary = dictionaryByOccurrences.withDefaultValue(Nil)
-  (for(combination <- allCombinations) yield dictionary(combination)).filterNot(_.isEmpty)
+def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
+  def sentenceAnagrams(occurrences: Occurrences): List[Sentence] = {
+    if (occurrences.isEmpty) List(Nil)
+    else
+      for {
+        element <- combinations(occurrences) if dictionaryByOccurrences.keySet(element)
+        word <- dictionaryByOccurrences(element)
+        rest <- sentenceAnagrams(subtract(occurrences, element))
+      } yield word :: rest
+  }
+  sentenceAnagrams(sentenceOccurrences(sentence))
 }
 
-//in progress
-sentenceAnagrams(List("Yes", "man"))
 wordOccurrences("abcdAaCSDba")
 sentenceOccurrences(List("Tomasz", "Mucha"))
 combinations(List(('a', 2), ('b', 2)))
@@ -59,3 +77,4 @@ combinations(List(('a', 2), ('b', 2), ('c', 3)))
 makeWord(List(('a', 2), ('b', 2)))
 makeWord(List(('a', 2), ('b', 2), ('c', 3)))
 subtract(List(('a', 2), ('b', 2), ('c', 3)), List(('a', 1), ('b', 2)))
+sentenceAnagrams(List("Yes", "man"))
