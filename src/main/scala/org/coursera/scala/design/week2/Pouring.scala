@@ -40,15 +40,49 @@ class Pouring(capacity: Vector[Int]) {
 
 
   // Paths - sequences of moves
-  class Path(history: List[Move]) {
-    def endState: State = trackState(history)
+  class Path(history: List[Move], val endState: State) {
+    /*
+        def endState: State = trackState(history)
+        def trackState(moves: List[Move]): State = moves match {
+          case List() => initialState
+          case move :: otherMoves => move change trackState(otherMoves)
+        }
+        trackState(history)
 
-    //    def trackState(moves: List[Move]): State = moves match {
-    //      case List() => initialState
-    //      case move::otherMoves => move change trackState(otherMoves)
-    //    }
-    def trackState(moves: List[Move]): State = history.foldRight(initialState)(_ change _)
+    /**
+      * Calculate sate according to all moves (history)
+      *
+      * @return state which we got after apply all given moves from history
+      */
+    def endState: State = history.foldRight(initialState)(_ change _)
 
+    */
+
+
+    def extend(move: Move) = new Path(move :: history, move.change(endState))
+
+    override def toString: String = history.reverse.mkString(" ") + "--> " + endState
   }
 
+  val initialPath = new Path(Nil, initialState)
+
+  def from(paths: Set[Path], explored: Set[State]): Stream[Set[Path]] =
+    if (paths.isEmpty) Stream.empty
+    else {
+      val more = for {
+        path <- paths
+        next <- moves.map(path.extend)
+        if !explored.contains(next.endState)
+      } yield next
+      paths #:: from(more, explored ++ more.map(_.endState))
+    }
+
+  val pathSets = from(Set(initialPath), Set(initialPath.endState))
+
+  def solution(target: Int): Stream[Path] =
+    for {
+      pathSet <- pathSets
+      path <- pathSet
+      if path.endState.contains(target)
+    } yield path
 }
