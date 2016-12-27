@@ -101,6 +101,15 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
+  test("done level 1") {
+    new Level1 {
+      assert(!done(Block(Pos(2, 1), Pos(3, 1))))
+      assert(!done(Block(Pos(3, 3), Pos(3, 3))))
+      assert(!done(Block(Pos(4, 7), Pos(4, 8))))
+      assert(done(Block(Pos(4, 7), Pos(4, 7))))
+    }
+  }
+
   test("optimal solution for level 1") {
     new Level1 {
       assert(solve(solution) == Block(goal, goal))
