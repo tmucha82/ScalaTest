@@ -1,6 +1,6 @@
 package org.coursera.scala.design.week2.assignment
 
-import org.coursera.scala.design.week2.assignment.streams.{GameDef, Solver, StringParserTerrain}
+import org.coursera.scala.design.week2.assignment.streams.{InfiniteTerrain, GameDef, Solver, StringParserTerrain}
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
@@ -24,6 +24,11 @@ class BloxorzSuite extends FunSuite {
           case Down => block.down
         }
       }
+  }
+
+  trait InfiniteLevel extends Solver with InfiniteTerrain {
+    val startPos = Pos(1, 3)
+    val goal = Pos(5, 8)
   }
 
   trait Level0 extends SolutionChecker {
@@ -62,7 +67,7 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("terrain function level 0") {
+  test("terrain function for level 0") {
     new Level0 {
       assert(terrain(Pos(1, 2)), "1,2") // start
       assert(terrain(Pos(1, 3)), "1,3") // goal
@@ -73,14 +78,14 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("findChar level 0") {
+  test("findChar for level 0") {
     new Level0 {
       assert(startPos === Pos(1, 2))
       assert(goal === Pos(1, 3))
     }
   }
 
-  test("isLegal level 0") {
+  test("isLegal for level 0") {
     new Level0 {
       assert(Block(Pos(1, 2), Pos(1, 3)).isLegal)
       assert(Block(Pos(1, 2), Pos(1, 2)).isLegal)
@@ -91,7 +96,7 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("startBlock level 0") {
+  test("startBlock for level 0") {
     new Level0 {
       assert(startBlock.isStanding)
       assert(startBlock.isLegal)
@@ -100,7 +105,7 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("legalNeighbors level 0") {
+  test("legalNeighbors for level 0") {
     new Level0 {
       assert(List((Block(Pos(2, 3), Pos(3, 3)), Down)) === Block(Pos(1, 3), Pos(1, 3)).legalNeighbors)
       assert(List((Block(Pos(2, 2), Pos(2, 3)), Down)) === Block(Pos(1, 2), Pos(1, 3)).legalNeighbors)
@@ -108,7 +113,7 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("done level 0") {
+  test("done for level 0") {
     new Level0 {
       assert(!done(Block(Pos(2, 1), Pos(3, 1))))
       assert(!done(Block(Pos(3, 3), Pos(3, 3))))
@@ -117,7 +122,7 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("neighborsWithHistory level 0") {
+  test("neighborsWithHistory for level 0") {
     new Level0 {
       assert(Set(
         (Block(Pos(1, 2), Pos(1, 2)), List(Up, Left, Up)),
@@ -126,7 +131,7 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("newNeighborsOnly level 0") {
+  test("newNeighborsOnly for level 0") {
     new Level0 {
       assert(Set((Block(Pos(2, 3), Pos(3, 3)), List(Right, Left, Up))).toStream ===
         newNeighborsOnly(
@@ -139,20 +144,20 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("from level 0") {
+  test("from for level 0") {
     new Level0 {
       assert(Stream.Empty === from(Stream.Empty, Set.empty))
       assert(List((Block(Pos(2, 2), Pos(3, 2)), List(Down))) === from(List((Block(Pos(1, 2), Pos(1, 2)), Nil)).toStream, Set.empty).take(1).toList)
     }
   }
 
-  test("pathsFromStart level 0") {
+  test("pathsFromStart for level 0") {
     new Level0 {
       assert(List((Block(Pos(2, 2), Pos(3, 2)), List(Down))) === pathsFromStart.take(1).toList)
     }
   }
 
-  test("pathsToGoal level 0") {
+  test("pathsToGoal for level 0") {
     new Level0 {
       assert(List((Block(Pos(1, 3), Pos(1, 3)), List(Up, Right, Down))) === pathsToGoal.toList)
     }
@@ -170,7 +175,7 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("terrain function level 1") {
+  test("terrain function for level 1") {
     new Level1 {
       assert(terrain(Pos(0, 0)), "0,0")
       assert(terrain(Pos(1, 1)), "1,1") // start
@@ -185,14 +190,14 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("findChar level 1") {
+  test("findChar for level 1") {
     new Level1 {
       assert(startPos === Pos(1, 1))
       assert(goal === Pos(4, 7))
     }
   }
 
-  test("isLegal level 1") {
+  test("isLegal for level 1") {
     new Level1 {
       assert(Block(Pos(2, 1), Pos(3, 1)).isLegal)
       assert(!Block(Pos(3, 2), Pos(4, 2)).isLegal)
@@ -204,7 +209,7 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("startBlock level 1") {
+  test("startBlock for level 1") {
     new Level1 {
       assert(startBlock.isStanding)
       assert(startBlock.isLegal)
@@ -213,7 +218,7 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("legalNeighbors level 1") {
+  test("legalNeighbors for level 1") {
     new Level1 {
       assert(List((Block(Pos(1, 1), Pos(1, 1)), Up), (Block(Pos(2, 2), Pos(3, 2)), Right)) === Block(Pos(2, 1), Pos(3, 1)).legalNeighbors)
       assert(List((Block(Pos(3, 2), Pos(3, 3)), Left), (Block(Pos(1, 4), Pos(2, 4)), Up), (Block(Pos(3, 5), Pos(3, 6)), Right)) === Block(Pos(3, 4), Pos(3, 4)).legalNeighbors)
@@ -221,7 +226,7 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("done level 1") {
+  test("done for level 1") {
     new Level1 {
       assert(!done(Block(Pos(2, 1), Pos(3, 1))))
       assert(!done(Block(Pos(3, 3), Pos(3, 3))))
@@ -230,7 +235,7 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("neighborsWithHistory level 1") {
+  test("neighborsWithHistory for level 1") {
     new Level1 {
       assert(Set(
         (Block(Pos(1, 2), Pos(1, 3)), List(Right, Left, Up)),
@@ -239,7 +244,7 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("newNeighborsOnly level 1") {
+  test("newNeighborsOnly for level 1") {
     new Level1 {
       assert(Set((Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))).toStream ===
         newNeighborsOnly(
@@ -249,20 +254,20 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-  test("from level 1") {
+  test("from for level 1") {
     new Level1 {
       assert(Stream.Empty === from(Stream.Empty, Set.empty))
       assert(List((Block(Pos(1, 2), Pos(1, 3)), List(Right))) === from(List((Block(Pos(1, 1), Pos(1, 1)), Nil)).toStream, Set.empty).take(1).toList)
     }
   }
 
-  test("pathsFromStart level 1") {
+  test("pathsFromStart for level 1") {
     new Level1 {
       assert(List((Block(Pos(1, 2), Pos(1, 3)), List(Right))) === pathsFromStart.take(1).toList)
     }
   }
 
-  test("pathsToGoal level 1") {
+  test("pathsToGoal for level 1") {
     new Level1 {
       assert(
         List(
@@ -279,11 +284,124 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-
   test("optimal solution length for level 1") {
     new Level1 {
       assert(solution.length == optsolution.length)
     }
   }
 
+  test("terrain function for infinite level") {
+    new InfiniteLevel {
+      assert(terrain(Pos(1, 3)), "1,3") // start
+      assert(terrain(Pos(5, 8)), "5,8") // goal
+      assert(terrain(Pos(0, 0)), "0,0")
+      assert(terrain(Pos(2, 2)), "2,2")
+      assert(terrain(Pos(3, 3)), "3,3")
+      assert(terrain(Pos(4, 7)), "4,7")
+    }
+  }
+
+  test("findChar for infinite level") {
+    new InfiniteLevel {
+      assert(startPos === Pos(1, 3))
+      assert(goal === Pos(5, 8))
+    }
+  }
+
+  test("isLegal for infinite level") {
+    new InfiniteLevel {
+      assert(Block(Pos(1, 2), Pos(1, 3)).isLegal)
+      assert(Block(Pos(100, 2), Pos(100, 2)).isLegal)
+      assert(Block(Pos(23, 21), Pos(23, 22)).isLegal)
+      assert(Block(Pos(13, 3), Pos(14, 3)).isLegal)
+      assert(Block(Pos(2, 1), Pos(2, 2)).isLegal)
+      assert(Block(Pos(3, 1), Pos(3, 1)).isLegal)
+    }
+  }
+
+  test("startBlock for infinite level") {
+    new InfiniteLevel {
+      assert(startBlock.isStanding)
+      assert(startBlock.isLegal)
+      assert(Pos(1, 3) === startBlock.b1)
+      assert(Pos(1, 3) === startBlock.b2)
+    }
+  }
+
+  test("legalNeighbors for infinite level") {
+    new InfiniteLevel {
+      assert(List((Block(Pos(0, -2), Pos(0, -1)), Left), (Block(Pos(-2, 0), Pos(-1, 0)), Up), (Block(Pos(0, 1), Pos(0, 2)), Right), (Block(Pos(1, 0), Pos(2, 0)), Down)) === Block(Pos(0, 0), Pos(0, 0)).legalNeighbors)
+      assert(List((Block(Pos(1, 1), Pos(1, 2)), Left), (Block(Pos(-1, 3), Pos(0, 3)), Up), (Block(Pos(1, 4), Pos(1, 5)), Right), (Block(Pos(2, 3), Pos(3, 3)), Down)) === Block(Pos(1, 3), Pos(1, 3)).legalNeighbors)
+      assert(List((Block(Pos(10, 9), Pos(10, 9)), Left), (Block(Pos(9, 10), Pos(9, 11)), Up), (Block(Pos(10, 12), Pos(10, 12)), Right), (Block(Pos(11, 10), Pos(11, 11)), Down)) === Block(Pos(10, 10), Pos(10, 11)).legalNeighbors)
+    }
+  }
+
+  test("done for infinite level") {
+    new InfiniteLevel {
+      assert(!done(Block(Pos(2, 1), Pos(3, 1))))
+      assert(!done(Block(Pos(3, 3), Pos(3, 3))))
+      assert(!done(Block(Pos(5, 7), Pos(5, 8))))
+      assert(done(Block(Pos(5, 8), Pos(5, 8))))
+    }
+  }
+
+  test("neighborsWithHistory for infinite level") {
+    new InfiniteLevel {
+      assert(Set(
+        (Block(Pos(2, 1), Pos(3, 1)), List(Left, Left, Up)),
+        (Block(Pos(1, 2), Pos(1, 2)), List(Up, Left, Up)),
+        (Block(Pos(2, 3), Pos(3, 3)), List(Right, Left, Up)),
+        (Block(Pos(4, 2), Pos(4, 2)), List(Down, Left, Up))
+      ) === neighborsWithHistory(Block(Pos(2, 2), Pos(3, 2)), List(Left, Up)).toSet)
+    }
+  }
+
+  test("newNeighborsOnly for infinite level") {
+    new InfiniteLevel {
+      assert(Set((Block(Pos(2, 3), Pos(3, 3)), List(Right, Left, Up))).toStream ===
+        newNeighborsOnly(
+          Set(
+            (Block(Pos(1, 2), Pos(1, 2)), List(Up, Left, Up)),
+            (Block(Pos(2, 3), Pos(3, 3)), List(Right, Left, Up))
+          ).toStream,
+          Set(Block(Pos(1, 2), Pos(1, 2)), Block(Pos(3, 2), Pos(3, 3)))
+        ))
+    }
+  }
+
+  test("from for infinite level") {
+    new InfiniteLevel {
+      //TODO
+      //      assert(Stream.Empty === from(Stream.Empty, Set.empty))
+      //      assert(List((Block(Pos(2, 2), Pos(3, 2)), List(Down))) === from(List((Block(Pos(1, 2), Pos(1, 2)), Nil)).toStream, Set.empty).take(1).toList)
+    }
+  }
+
+  test("pathsFromStart for infinite level") {
+    new InfiniteLevel {
+      //TODO
+      //      assert(List((Block(Pos(2, 2), Pos(3, 2)), List(Down))) === pathsFromStart.take(1).toList)
+    }
+  }
+
+  test("pathsToGoal for infinite level") {
+    new InfiniteLevel {
+      //TODO
+      //      assert(List((Block(Pos(1, 3), Pos(1, 3)), List(Up, Right, Down))) === pathsToGoal.toList)
+    }
+  }
+
+  test("optimal solution for infinite level") {
+    new InfiniteLevel {
+      //TODO
+      //      assert(solve(solution) == Block(goal, goal))
+    }
+  }
+
+  test("optimal solution length for infinite level") {
+    new InfiniteLevel {
+      //TODO
+      //      assert(solution.length == optsolution.length)
+    }
+  }
 }
