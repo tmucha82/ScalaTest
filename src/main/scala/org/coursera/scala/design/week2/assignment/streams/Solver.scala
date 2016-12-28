@@ -1,7 +1,5 @@
 package org.coursera.scala.design.week2.assignment.streams
 
-import scala.collection.immutable.Stream.#::
-
 /**
   * This component implements the solver for the Bloxorz game
   */
