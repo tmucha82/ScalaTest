@@ -26,6 +26,19 @@ class BloxorzSuite extends FunSuite {
       }
   }
 
+  trait Level0 extends SolutionChecker {
+    /* terrain for level 0*/
+
+    val level =
+      """------
+        |--ST--
+        |--oo--
+        |--oo--
+        |------""".stripMargin
+
+    val optsolution = List(Down, Right, Up)
+  }
+
   trait Level1 extends SolutionChecker {
     /* terrain for level 1*/
 
@@ -40,6 +53,122 @@ class BloxorzSuite extends FunSuite {
     val optsolution = List(Right, Right, Down, Right, Right, Right, Down)
   }
 
+  test("isStanding") {
+    new Level1 {
+      assert(!Block(Pos(1, 4), Pos(2, 4)).isStanding)
+      assert(!Block(Pos(3, 1), Pos(3, 2)).isStanding)
+      assert(Block(Pos(4, 6), Pos(4, 6)).isStanding)
+      assert(Block(Pos(6, 3), Pos(6, 3)).isStanding)
+    }
+  }
+
+  test("terrain function level 0") {
+    new Level0 {
+      assert(terrain(Pos(1, 2)), "1,2") // start
+      assert(terrain(Pos(1, 3)), "1,3") // goal
+      assert(!terrain(Pos(0, 0)), "0,0")
+      assert(terrain(Pos(2, 2)), "2,2")
+      assert(terrain(Pos(3, 3)), "3,3")
+      assert(!terrain(Pos(4, 7)), "4,7")
+    }
+  }
+
+  test("findChar level 0") {
+    new Level0 {
+      assert(startPos === Pos(1, 2))
+      assert(goal === Pos(1, 3))
+    }
+  }
+
+  test("isLegal level 0") {
+    new Level0 {
+      assert(Block(Pos(1, 2), Pos(1, 3)).isLegal)
+      assert(Block(Pos(1, 2), Pos(1, 2)).isLegal)
+      assert(Block(Pos(2, 2), Pos(3, 2)).isLegal)
+      assert(!Block(Pos(1, 3), Pos(1, 4)).isLegal)
+      assert(!Block(Pos(2, 1), Pos(2, 2)).isLegal)
+      assert(!Block(Pos(3, 1), Pos(3, 1)).isLegal)
+    }
+  }
+
+  test("startBlock level 0") {
+    new Level0 {
+      assert(startBlock.isStanding)
+      assert(startBlock.isLegal)
+      assert(Pos(1, 2) === startBlock.b1)
+      assert(Pos(1, 2) === startBlock.b2)
+    }
+  }
+
+  test("legalNeighbors level 0") {
+    new Level0 {
+      assert(List((Block(Pos(2, 3), Pos(3, 3)), Down)) === Block(Pos(1, 3), Pos(1, 3)).legalNeighbors)
+      assert(List((Block(Pos(2, 2), Pos(2, 3)), Down)) === Block(Pos(1, 2), Pos(1, 3)).legalNeighbors)
+      assert(List((Block(Pos(1, 2), Pos(1, 2)), Up), (Block(Pos(2, 3), Pos(3, 3)), Right)) === Block(Pos(2, 2), Pos(3, 2)).legalNeighbors)
+    }
+  }
+
+  test("done level 0") {
+    new Level0 {
+      assert(!done(Block(Pos(2, 1), Pos(3, 1))))
+      assert(!done(Block(Pos(3, 3), Pos(3, 3))))
+      assert(!done(Block(Pos(1, 2), Pos(1, 3))))
+      assert(done(Block(Pos(1, 3), Pos(1, 3))))
+    }
+  }
+
+  test("neighborsWithHistory level 0") {
+    new Level0 {
+      assert(Set(
+        (Block(Pos(1, 2), Pos(1, 2)), List(Up, Left, Up)),
+        (Block(Pos(2, 3), Pos(3, 3)), List(Right, Left, Up))
+      ) === neighborsWithHistory(Block(Pos(2, 2), Pos(3, 2)), List(Left, Up)).toSet)
+    }
+  }
+
+  test("newNeighborsOnly level 0") {
+    new Level0 {
+      assert(Set((Block(Pos(2, 3), Pos(3, 3)), List(Right, Left, Up))).toStream ===
+        newNeighborsOnly(
+          Set(
+            (Block(Pos(1, 2), Pos(1, 2)), List(Up, Left, Up)),
+            (Block(Pos(2, 3), Pos(3, 3)), List(Right, Left, Up))
+          ).toStream,
+          Set(Block(Pos(1, 2), Pos(1, 2)), Block(Pos(3, 2), Pos(3, 3)))
+        ))
+    }
+  }
+
+  test("from level 0") {
+    new Level0 {
+      assert(Stream.Empty === from(Stream.Empty, Set.empty))
+      assert(List((Block(Pos(2, 2), Pos(3, 2)), List(Down))) === from(List((Block(Pos(1, 2), Pos(1, 2)), Nil)).toStream, Set.empty).take(1).toList)
+    }
+  }
+
+  test("pathsFromStart level 0") {
+    new Level0 {
+      assert(List((Block(Pos(2, 2), Pos(3, 2)), List(Down))) === pathsFromStart.take(1).toList)
+    }
+  }
+
+  test("pathsToGoal level 0") {
+    new Level0 {
+      assert(List((Block(Pos(1, 3), Pos(1, 3)), List(Up, Right, Down))) === pathsToGoal.toList)
+    }
+  }
+
+  test("optimal solution for level 0") {
+    new Level0 {
+      assert(solve(solution) == Block(goal, goal))
+    }
+  }
+
+  test("optimal solution length for level 0") {
+    new Level1 {
+      assert(solution.length == optsolution.length)
+    }
+  }
 
   test("terrain function level 1") {
     new Level1 {
@@ -60,15 +189,6 @@ class BloxorzSuite extends FunSuite {
     new Level1 {
       assert(startPos === Pos(1, 1))
       assert(goal === Pos(4, 7))
-    }
-  }
-
-  test("isStanding") {
-    new Level1 {
-      assert(!Block(Pos(1, 4), Pos(2, 4)).isStanding)
-      assert(!Block(Pos(3, 1), Pos(3, 2)).isStanding)
-      assert(Block(Pos(4, 6), Pos(4, 6)).isStanding)
-      assert(Block(Pos(6, 3), Pos(6, 3)).isStanding)
     }
   }
 

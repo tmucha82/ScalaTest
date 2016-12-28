@@ -64,8 +64,8 @@ trait Solver extends GameDef {
   def from(initial: Stream[(Block, List[Move])], explored: Set[Block]): Stream[(Block, List[Move])] = initial match {
     case Stream.Empty => Stream.empty
     case (block, moves) #:: rest =>
-      lazy val exploredBlocks = explored + block
-      lazy val newNeighbors = newNeighborsOnly(neighborsWithHistory(block, moves), exploredBlocks)
+      val exploredBlocks = explored + block
+      val newNeighbors = newNeighborsOnly(neighborsWithHistory(block, moves), exploredBlocks)
       newNeighbors ++ from(rest ++ newNeighbors, exploredBlocks)
   }
 
