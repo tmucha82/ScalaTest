@@ -78,7 +78,7 @@ trait Solver extends GameDef {
     * Returns a stream of all possible pairs of the goal block along
     * with the history how it was reached.
     */
-  lazy val pathsToGoal: Stream[(Block, List[Move])] = ???
+  lazy val pathsToGoal: Stream[(Block, List[Move])] = pathsFromStart.filter { case (block, _) => done(block) }
 
   /**
     * The (or one of the) shortest sequence(s) of moves to reach the

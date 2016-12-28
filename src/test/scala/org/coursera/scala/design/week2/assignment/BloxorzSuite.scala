@@ -142,6 +142,17 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
+  test("pathsToGoal level 1") {
+    new Level1 {
+      assert(
+        List(
+          (Block(Pos(4, 7), Pos(4, 7)), List(Down, Right, Right, Right, Down, Right, Right)),
+          (Block(Pos(4, 7), Pos(4, 7)), List(Right, Down, Down, Right, Right, Down, Right)),
+          (Block(Pos(4, 7), Pos(4, 7)), List(Right, Down, Right, Right, Down, Down, Right)))
+          === pathsToGoal.toList)
+    }
+  }
+
   test("optimal solution for level 1") {
     new Level1 {
       assert(solve(solution) == Block(goal, goal))
