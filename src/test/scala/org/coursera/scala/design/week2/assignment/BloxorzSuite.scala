@@ -129,6 +129,13 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
+  test("from level 1") {
+    new Level1 {
+      assert(Stream.Empty === from(Stream.Empty, Set.empty))
+      assert(List((Block(Pos(1, 2), Pos(1, 3)), List(Right))) === from(List((Block(Pos(1, 1), Pos(1, 1)), Nil)).toStream, Set.empty).take(1).toList)
+    }
+  }
+
   test("optimal solution for level 1") {
     new Level1 {
       assert(solve(solution) == Block(goal, goal))

@@ -34,8 +34,7 @@ trait Solver extends GameDef {
     * positions that have already been explored. We will use it to
     * make sure that we don't explore circular paths.
     */
-  def newNeighborsOnly(neighbors: Stream[(Block, List[Move])],
-                       explored: Set[Block]): Stream[(Block, List[Move])] =
+  def newNeighborsOnly(neighbors: Stream[(Block, List[Move])], explored: Set[Block]): Stream[(Block, List[Move])] =
     neighbors.filterNot { case (block, moves) => explored.contains(block) }
 
 
@@ -62,8 +61,14 @@ trait Solver extends GameDef {
     * of different paths - the implementation should naturally
     * construct the correctly sorted stream.
     */
-  def from(initial: Stream[(Block, List[Move])],
-           explored: Set[Block]): Stream[(Block, List[Move])] = ???
+  def from(initial: Stream[(Block, List[Move])], explored: Set[Block]): Stream[(Block, List[Move])] = initial match {
+    case Stream.Empty => Stream.empty
+    case (block, moves) #:: rest => {
+      lazy val exploredBlocks = explored + block
+      lazy val newNeighbors = newNeighborsOnly(neighborsWithHistory(block, moves), exploredBlocks)
+      newNeighbors ++ from(rest ++ newNeighbors, exploredBlocks)
+    }
+  }
 
   /**
     * The stream of all paths that begin at the starting block.
