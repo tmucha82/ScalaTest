@@ -147,13 +147,15 @@ class BloxorzSuite extends FunSuite {
   test("from for level 0") {
     new Level0 {
       assert(Stream.Empty === from(Stream.Empty, Set.empty))
-      assert(List((Block(Pos(2, 2), Pos(3, 2)), List(Down))) === from(List((Block(Pos(1, 2), Pos(1, 2)), Nil)).toStream, Set.empty).take(1).toList)
+      val fromList = from(List((Block(Pos(1, 2), Pos(1, 2)), Nil)).toStream, Set.empty).take(2).toList
+      assert((Block(Pos(1, 2), Pos(1, 2)), List()) === fromList.head)
+      assert((Block(Pos(2, 2), Pos(3, 2)), List(Down)) === fromList(1))
     }
   }
 
   test("pathsFromStart for level 0") {
     new Level0 {
-      assert(List((Block(Pos(2, 2), Pos(3, 2)), List(Down))) === pathsFromStart.take(1).toList)
+      assert(List((Block(Pos(1, 2), Pos(1, 2)), List()), (Block(Pos(2, 2), Pos(3, 2)), List(Down))) === pathsFromStart.take(2).toList)
     }
   }
 
@@ -257,13 +259,15 @@ class BloxorzSuite extends FunSuite {
   test("from for level 1") {
     new Level1 {
       assert(Stream.Empty === from(Stream.Empty, Set.empty))
-      assert(List((Block(Pos(1, 2), Pos(1, 3)), List(Right))) === from(List((Block(Pos(1, 1), Pos(1, 1)), Nil)).toStream, Set.empty).take(1).toList)
+      val fromList = from(List((Block(Pos(1, 1), Pos(1, 1)), Nil)).toStream, Set.empty).take(2).toList
+      assert((Block(Pos(1, 1), Pos(1, 1)), List()) === fromList.head)
+      assert((Block(Pos(1, 2), Pos(1, 3)), List(Right)) === fromList(1))
     }
   }
 
   test("pathsFromStart for level 1") {
     new Level1 {
-      assert(List((Block(Pos(1, 2), Pos(1, 3)), List(Right))) === pathsFromStart.take(1).toList)
+      assert(List((Block(Pos(1, 1), Pos(1, 1)), List()), (Block(Pos(1, 2), Pos(1, 3)), List(Right))) === pathsFromStart.take(2).toList)
     }
   }
 
@@ -371,37 +375,22 @@ class BloxorzSuite extends FunSuite {
 
   test("from for infinite level") {
     new InfiniteLevel {
-      //TODO
-      //      assert(Stream.Empty === from(Stream.Empty, Set.empty))
-      //      assert(List((Block(Pos(2, 2), Pos(3, 2)), List(Down))) === from(List((Block(Pos(1, 2), Pos(1, 2)), Nil)).toStream, Set.empty).take(1).toList)
+      assert(Stream.Empty === from(Stream.Empty, Set.empty))
+      val fromList = from(List((Block(Pos(1, 2), Pos(1, 2)), Nil)).toStream, Set.empty).take(2).toList
+      assert((Block(Pos(1, 2), Pos(1, 2)), List()) === fromList.head)
+      assert((Block(Pos(1, 0), Pos(1, 1)), List(Left)) === fromList(1))
     }
   }
 
   test("pathsFromStart for infinite level") {
     new InfiniteLevel {
-      //TODO
-      //      assert(List((Block(Pos(2, 2), Pos(3, 2)), List(Down))) === pathsFromStart.take(1).toList)
-    }
-  }
-
-  test("pathsToGoal for infinite level") {
-    new InfiniteLevel {
-      //TODO
-      //      assert(List((Block(Pos(1, 3), Pos(1, 3)), List(Up, Right, Down))) === pathsToGoal.toList)
+      assert(List((Block(Pos(1, 3), Pos(1, 3)), List()), (Block(Pos(1, 1), Pos(1, 2)), List(Left))) === pathsFromStart.take(2).toList)
     }
   }
 
   test("optimal solution for infinite level") {
     new InfiniteLevel {
-      //TODO
-      //      assert(solve(solution) == Block(goal, goal))
-    }
-  }
-
-  test("optimal solution length for infinite level") {
-    new InfiniteLevel {
-      //TODO
-      //      assert(solution.length == optsolution.length)
+      assert(List(Right, Down, Right, Down, Right, Right, Down) === solution)
     }
   }
 }

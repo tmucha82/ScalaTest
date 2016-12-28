@@ -1,5 +1,7 @@
 package org.coursera.scala.design.week2.assignment.streams
 
+import scala.collection.immutable.Stream.#::
+
 /**
   * This component implements the solver for the Bloxorz game
   */
@@ -66,7 +68,7 @@ trait Solver extends GameDef {
     case (block, moves) #:: rest =>
       val exploredBlocks = explored + block
       val newNeighbors = newNeighborsOnly(neighborsWithHistory(block, moves), exploredBlocks)
-      newNeighbors ++ from(rest ++ newNeighbors, exploredBlocks)
+      (block, moves) #:: from(rest ++ newNeighbors, exploredBlocks)
   }
 
   /**
