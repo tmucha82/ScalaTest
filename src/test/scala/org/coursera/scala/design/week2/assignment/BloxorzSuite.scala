@@ -136,6 +136,12 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
+  test("pathsFromStart level 1") {
+    new Level1 {
+      assert(List((Block(Pos(1, 2), Pos(1, 3)), List(Right))) === pathsFromStart.take(1).toList)
+    }
+  }
+
   test("optimal solution for level 1") {
     new Level1 {
       assert(solve(solution) == Block(goal, goal))

@@ -63,17 +63,16 @@ trait Solver extends GameDef {
     */
   def from(initial: Stream[(Block, List[Move])], explored: Set[Block]): Stream[(Block, List[Move])] = initial match {
     case Stream.Empty => Stream.empty
-    case (block, moves) #:: rest => {
+    case (block, moves) #:: rest =>
       lazy val exploredBlocks = explored + block
       lazy val newNeighbors = newNeighborsOnly(neighborsWithHistory(block, moves), exploredBlocks)
       newNeighbors ++ from(rest ++ newNeighbors, exploredBlocks)
-    }
   }
 
   /**
     * The stream of all paths that begin at the starting block.
     */
-  lazy val pathsFromStart: Stream[(Block, List[Move])] = ???
+  lazy val pathsFromStart: Stream[(Block, List[Move])] = from(List((startBlock, Nil)).toStream, Set.empty)
 
   /**
     * Returns a stream of all possible pairs of the goal block along
