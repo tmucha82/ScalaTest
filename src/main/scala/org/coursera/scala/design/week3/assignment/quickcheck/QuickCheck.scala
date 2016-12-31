@@ -82,7 +82,7 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
   /**
     * Deleting min element and adding it again should give the same min elemente and at the begginnig
     */
-  property("Deleting min element and adding it again") = forAll { (h: H) =>
+  property("deleting min element and adding it again") = forAll { (h: H) =>
     val min = if (isEmpty(h)) 0 else findMin(h)
     val heapAfterDelete = if (isEmpty(h)) h else deleteMin(h)
     findMin(insert(min, heapAfterDelete)) == min
