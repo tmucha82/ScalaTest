@@ -22,6 +22,10 @@ class MyIntHeap extends BinomialHeap with IntHeap {
       heap <- Gen.oneOf(Gen.const(empty), genHeap)
     } yield insert(element, heap)
   }
+  def collectMin(heap: H, listOfMin: List[A]): List[A] = {
+    if (isEmpty(heap)) listOfMin
+    else collectMin(deleteMin(heap), findMin(heap) :: listOfMin)
+  }
 }
 val heapManager = new MyIntHeap
 heapManager.genHeap.sample
@@ -32,10 +36,11 @@ heapManager.empty
 heapManager.isEmpty(heapManager.empty)
 // 1, 3, 5, 8, -1
 var testHeap = heapManager.insert(1, heapManager.insert(3, heapManager.insert(5, heapManager.insert(8, heapManager.insert(-1, heapManager.empty)))))
+heapManager.collectMin(testHeap, Nil)
 // -1
 heapManager.findMin(testHeap)
 testHeap = heapManager.deleteMin(testHeap)
-// -1
+// 1
 heapManager.findMin(testHeap)
 testHeap = heapManager.deleteMin(testHeap)
 // 3

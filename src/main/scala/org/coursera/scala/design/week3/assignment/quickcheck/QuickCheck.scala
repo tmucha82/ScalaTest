@@ -41,16 +41,27 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
   /**
     * If you insert an element into an empty heap, then delete the minimum, the resulting heap should be empty.
     */
-  //TODO
+  property("inserting and deleting min from empty heap") = forAll { (a: A) =>
+    deleteMin(insert(a, empty)) == empty
+  }
 
   /**
     * Given any heap, you should get a sorted sequence of elements
     * when continually finding and deleting minima. (Hint: recursion and helper functions are your friends.)
     */
-  //TODO
+  property("a sorted sequence of elements (find and delete min)") = forAll { (h: H) =>
+    def collectMin(heap: H, listOfMin: List[A]): List[A] = {
+      if (isEmpty(heap)) listOfMin
+      else collectMin(deleteMin(heap), findMin(heap) :: listOfMin)
+    }
+
+    val listOfMin = collectMin(h, Nil)
+    listOfMin == listOfMin.sorted.reverse
+  }
 
   /**
     * Finding a minimum of the melding of any two heaps should return a minimum of one or the other.
     */
   //TODO
+//  property("finding a minimum of the melding of any two heaps") = ???
 }
