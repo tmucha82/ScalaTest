@@ -57,3 +57,11 @@ heapManager.meld(testHeap, heapManager.empty)
 
 
 
+var h1 = heapManager.insert(0, heapManager.insert(854071479, heapManager.insert(2147483647, heapManager.empty)))
+//List(Node(0,0,List()), Node(854071479,1,List(Node(2147483647,0,List()))))
+var h2 = heapManager.insert(1, heapManager.insert(-1778284689, heapManager.insert(-1, heapManager.empty)))
+//List(Node(1,0,List()), Node(-1778284689,1,List(Node(-1,0,List())))
+
+val minElement = heapManager.findMin(h1)
+val heapAfterDel = heapManager.deleteMin(h1)
+heapManager.meld(h1, h2) == heapManager.meld(heapAfterDel, heapManager.insert(minElement, h2))

@@ -70,7 +70,6 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
         else Option(findMin(h1))
       else
         Option(findMin(h1).min(findMin(h2)))
-
     }
 
     val result = meld(h1, h2)
@@ -79,4 +78,27 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
       case Some(minValue) => findMin(result) == minValue
     }
   }
+
+  /**
+    * Deleting min element and adding it again should give the same min elemente and at the begginnig
+    */
+  property("Deleting min element and adding it again") = forAll { (h: H) =>
+    val min = if (isEmpty(h)) 0 else findMin(h)
+    val heapAfterDelete = if (isEmpty(h)) h else deleteMin(h)
+    findMin(insert(min, heapAfterDelete)) == min
+  }
+
+  /**
+    * Deleting min from one and add to another heap should have no effect on melded heap and its min element
+    */
+  property("moving min element from heap one to another") = forAll { (h1: H, h2: H) => (!isEmpty(h1) && !isEmpty(h2)) ==> {
+      def equal(h1: H, h2: H): Boolean = {
+        if (isEmpty(h1)) if (isEmpty(h2)) true else false
+        else
+          findMin(h1) == findMin(h2) && equal(deleteMin(h1), deleteMin(h2))
+      }
+      equal(meld(h1, h2), meld(deleteMin(h1), insert(findMin(h1), h2)))
+    }
+  }
+
 }
