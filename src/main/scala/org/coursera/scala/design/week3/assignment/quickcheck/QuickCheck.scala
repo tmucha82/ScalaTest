@@ -62,6 +62,21 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
   /**
     * Finding a minimum of the melding of any two heaps should return a minimum of one or the other.
     */
-  //TODO
-//  property("finding a minimum of the melding of any two heaps") = ???
+  property("finding a minimum of the melding of any two heaps") = forAll { (h1: H, h2: H) =>
+    def min(h1: H, h2: H): Option[A] = {
+      if (isEmpty(h1))
+        if (isEmpty(h2))
+          None
+        else Option(findMin(h1))
+      else
+        Option(findMin(h1).min(findMin(h2)))
+
+    }
+
+    val result = meld(h1, h2)
+    min(h1, h2) match {
+      case None => isEmpty(result)
+      case Some(minValue) => findMin(result) == minValue
+    }
+  }
 }
