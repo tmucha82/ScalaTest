@@ -1,11 +1,11 @@
 package org.coursera.scala.design.week4
 
-import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Success, Failure, Random}
 
 object FutureTest extends App {
-
 
   def sleep(time: Long) {
     Thread.sleep(time)
@@ -21,23 +21,29 @@ object FutureTest extends App {
     case Failure(e) => e.printStackTrace()
   }
   // do the rest of your work
-  println("A ...")
-  sleep(100)
+  Await.result(f, Duration.Inf)
 
-  println("B ...")
-  sleep(100)
+  //recover
+  val divide = Future(6 / 0) recover { case e: ArithmeticException => 0 } // result: 0
+  divide.onSuccess { case result => println(s"Result = $result") }
 
-  println("C ...")
-  sleep(100)
+  //recoverWith
+  val f2 = (x: Int, y: Int) => Future {
+    x.max(y)
+  }
 
-  println("D ...")
-  sleep(100)
+  val divideTwo = (x: Int, y: Int) => Future(x / y) recoverWith { case e: ArithmeticException => f2(x, y) } // result: 0
+  divideTwo(6,0).onSuccess { case result => println(s"Result2 with fail = $result") }
+  divideTwo(6,2).onSuccess { case result => println(s"Result2 with OK = $result") }
 
-  println("E ...")
-  sleep(100)
+  val divideTwoWithFallback = (x: Int, y: Int) => Future(x / y) fallbackTo { f2(x, y) } // result: 0
+  divideTwoWithFallback(6,0).onSuccess { case result => println(s"Result3 with fail = $result") }
+  divideTwoWithFallback(6,2).onSuccess { case result => println(s"Result3 with OK = $result") }
 
-  println("F ...")
-  sleep(100)
 
-  sleep(2000)
+  val f3 = Future { sys.error("failed") }
+  val g = Future { 5 }
+  val h = f3 fallbackTo g
+  val resultH = Await.result(h, Duration.Zero) // evaluates to 5
+  println(resultH)
 }
