@@ -115,7 +115,7 @@ object CoffeeFuture extends App {
 
   val prepareCappuccinoFuture = prepareCappuccino()
   prepareCappuccinoFuture.onComplete{
-    case Success(cappuccino) => println("Cappucino " + cappuccino + " is ready")
+    case Success(cappuccino) => println("Cappuccino " + cappuccino + " is ready")
     case Failure(ex) => println("Problem with creating cappuccino")
   }
 
