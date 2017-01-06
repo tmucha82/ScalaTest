@@ -97,16 +97,6 @@ object FutureTest extends App {
     }
   }
 
-  /**
-    * Of course we cour do without recursion---> foldLef, foldRight
-    */
-  def retryTwo[T](noTimes: Int)(block: => Future[T]): Future[T] = {
-    val attempts = (1 to noTimes).map(attempt => () => block) //call by name
-    val startElement = Future.failed(new Exception("Sorry"))
-    attempts.foldLeft(startElement){case (attempt, future) => attempt.recoverWith{ case _ => future()}}
-
-  }
-
   val futureWithRandomResult = Future {
     sleep(Random.nextInt(5000))
     Random.nextInt()
