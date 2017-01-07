@@ -139,4 +139,26 @@ class CalculatorSuite extends FunSuite with ShouldMatchers {
     c() = 1
     assert(solutions() === Set(-0.5))
   }
+
+  /** ****************
+    * * CALCULATOR  **
+    * ****************/
+  test("eval with constant signal") {
+    //a=2, b=3*a, c=b/3 + a, d = b-a+1
+    val a = Literal(2)
+    val b = Times(Literal(3), Ref("a"))
+    val c = Plus(Divide(Ref("b"), Literal(3)), Ref("a"))
+    val d = Plus(Minus(Ref("b"), Ref("a")), Literal(1))
+
+    val references: Map[String, Signal[Expr]] = Map(
+      "a" -> Signal(a),
+      "b" -> Signal(b),
+      "c" -> Signal(c),
+      "d" -> Signal(d)
+    )
+    assert(2 === Calculator.eval(a, references))
+    assert(6 === Calculator.eval(b, references))
+    assert(4 === Calculator.eval(c, references))
+    assert(5 === Calculator.eval(d, references))
+  }
 }
