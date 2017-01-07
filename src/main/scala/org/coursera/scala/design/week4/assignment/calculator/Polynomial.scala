@@ -6,6 +6,10 @@ object Polynomial {
   }
 
   def computeSolutions(a: Signal[Double], b: Signal[Double], c: Signal[Double], delta: Signal[Double]): Signal[Set[Double]] = {
-    ???
+    Signal {
+      if (delta() >= 0) {
+        List((-1 * b() - Math.sqrt(delta())) / (2 * a()), (-1 * b() + Math.sqrt(delta())) / (2 * a())).sorted.toSet
+      } else Set.empty
+    }
   }
 }

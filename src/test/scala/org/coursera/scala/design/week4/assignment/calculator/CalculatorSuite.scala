@@ -102,4 +102,41 @@ class CalculatorSuite extends FunSuite with ShouldMatchers {
     val oneSolution = Polynomial.computeDelta(Var(4), Var(4), Var(1))
     assert(oneSolution() === 0)
   }
+
+  test("computeDelta with changing signal") {
+    val a = Var(-2.0)
+    val b = Var(3.0)
+    val c = Var(-1.0)
+    val delta = Polynomial.computeDelta(a, b, c)
+    assert(delta() === 1)
+
+    a() = 1
+    b() = 2
+    c() = 4
+    assert(delta() === -12)
+
+    a() = 4
+    b() = 4
+    c() = 1
+    assert(delta() === 0)
+  }
+
+  test("computeSolutions with changing signal") {
+    val a = Var(-2.0)
+    val b = Var(3.0)
+    val c = Var(-1.0)
+    val delta = Polynomial.computeDelta(a, b, c)
+    val solutions = Polynomial.computeSolutions(a, b, c, delta)
+    assert(solutions() === Set(0.5, 1.0))
+
+    a() = 1
+    b() = 2
+    c() = 4
+    assert(solutions() === Set.empty)
+
+    a() = 4
+    b() = 4
+    c() = 1
+    assert(solutions() === Set(-0.5))
+  }
 }
