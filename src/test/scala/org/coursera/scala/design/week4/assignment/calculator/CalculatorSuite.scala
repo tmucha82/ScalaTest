@@ -161,4 +161,53 @@ class CalculatorSuite extends FunSuite with ShouldMatchers {
     assert(4 === Calculator.eval(c, references))
     assert(5 === Calculator.eval(d, references))
   }
+
+  test("computeValues with constant signal") {
+    //a=2, b=3*a, c=b/3 + a, d = b-a+1
+    val a: Expr = Literal(2)
+    val b: Expr = Times(Literal(3), Ref("a"))
+    val c: Expr = Plus(Divide(Ref("b"), Literal(3)), Ref("a"))
+    val d: Expr = Plus(Minus(Ref("b"), Ref("a")), Literal(1))
+
+    val references = Map(
+      "a" -> Signal(a),
+      "b" -> Signal(b),
+      "c" -> Signal(c),
+      "d" -> Signal(d)
+    )
+
+    val namedSignals = Calculator.computeValues(references)
+    assert(2 === namedSignals("a")())
+    assert(6 === namedSignals("b")())
+    assert(4 === namedSignals("c")())
+    assert(5 === namedSignals("d")())
+  }
+
+  test("computeValues with changing signal") {
+    //a=2, b=3*a, c=b/3 + a, d = b-a+1
+    val a: Expr = Literal(2)
+    val b: Expr = Times(Literal(3), Ref("a"))
+    val c: Expr = Plus(Divide(Ref("b"), Literal(3)), Ref("a"))
+    val d: Expr = Plus(Minus(Ref("b"), Ref("a")), Literal(1))
+
+    val references = Map(
+      "a" -> Var(a),
+      "b" -> Var(b),
+      "c" -> Var(c),
+      "d" -> Var(d)
+    )
+
+    val namedSignals = Calculator.computeValues(references)
+    assert(2 === namedSignals("a")())
+    assert(6 === namedSignals("b")())
+    assert(4 === namedSignals("c")())
+    assert(5 === namedSignals("d")())
+
+    //a=3
+    references("a")() = Literal(3)
+    assert(3 === namedSignals("a")())
+    assert(9 === namedSignals("b")())
+    assert(6 === namedSignals("c")())
+    assert(7 === namedSignals("d")())
+  }
 }
