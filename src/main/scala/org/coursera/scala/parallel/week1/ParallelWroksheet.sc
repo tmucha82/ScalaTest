@@ -1,8 +1,13 @@
+//parallel - it is only for marking, it is not parallel really
+def parallel[A, B](taskA: => A, taskB: => B): (A, B) = (taskA, taskB)
+
 def power(x: Int, p: Double): Int = Math.exp(p * Math.log(Math.abs(x))).toInt
+
 // this is how I would do that with functional style
 def sumSegmentMine(array: Array[Int], p: Double, s: Int, t: Int): Int = {
   array.slice(s, t).foldLeft(0)((previous, next) => previous + power(next, p))
 }
+
 // yak - this is for parallel reason
 def sumSegment(a: Array[Int], p: Double, s: Int, t: Int): Int = {
   var i = s
@@ -21,8 +26,6 @@ def pNormTwoPartSeq(a: Array[Int], p: Double): Int = {
   val (sum1, sum2) = (sumSegment(a, p, 0, m), sumSegment(a, p, m, a.length))
   power(sum1 + sum2, 1 / p)
 }
-//parallel
-def parallel[A, B](taskA: => A, taskB: => B): (A, B) = (taskA, taskB)
 
 def pNormTwoPartPar(a: Array[Int], p: Double): Int = {
   val m = a.length / 2

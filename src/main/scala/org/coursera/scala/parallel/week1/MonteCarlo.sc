@@ -1,5 +1,8 @@
 import scala.util.Random
 
+//parallel - it is only for marking, it is not parallel really
+def parallel[A, B](taskA: => A, taskB: => B): (A, B) = (taskA, taskB)
+
 /**
   * Counts hits which would be in circle
   *
@@ -17,14 +20,25 @@ def mcCount(iteration: Int): Int = {
   }
   hits
 }
+
 def mcCountMine(iteration: Int): Int = {
   def isInCircle(x: Double, y: Double): Boolean = x * x + y * y < 1
 
   val (randomX, randomY) = (new Random, new Random)
   (for (i <- 0 until iteration; if isInCircle(randomX.nextDouble, randomY.nextDouble)) yield i).length
 }
+
 def monteCarloPiSeq(iteration: Int): Double = {
   4.0 * mcCountMine(iteration) / iteration
-//  4.0 * mcCount(iteration) / iteration
 }
+
+def monteCarloPiPar(iteration: Int): Double = {
+  val ((pi1, pi2), (pi3, pi4)) = parallel(
+    parallel(mcCountMine(iteration / 4), mcCountMine(iteration / 4)),
+    parallel(mcCountMine(iteration / 4), mcCountMine(iteration - 3 * (iteration / 4)))
+  )
+  4.0 * (pi1 + pi2 + pi3 + pi4) / iteration
+}
+
 monteCarloPiSeq(1000000)
+monteCarloPiPar(1000000)
