@@ -7,6 +7,7 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class BlurSuite extends FunSuite {
+
   test("boxBlurKernel should correctly handle radius 0") {
     val src = new Img(5, 5)
 
@@ -38,8 +39,7 @@ class BlurSuite extends FunSuite {
 
     HorizontalBoxBlur.blur(src, dst, 0, 2, 1)
 
-    def check(x: Int, y: Int, expected: Int) =
-      assert(dst(x, y) == expected, s"(destination($x, $y) should be $expected)")
+    def check(x: Int, y: Int, expected: Int) = assert(dst(x, y) == expected, s"(destination($x, $y) should be $expected)")
 
     check(0, 0, 2)
     check(1, 0, 2)
@@ -52,8 +52,7 @@ class BlurSuite extends FunSuite {
     check(2, 2, 0)
   }
 
-  test("VerticalBoxBlur.blur with radius 2 should correctly blur the entire " +
-    "4x3 image") {
+  test("VerticalBoxBlur.blur with radius 2 should correctly blur the entire 4x3 image") {
     val w = 4
     val h = 3
     val src = new Img(w, h)
@@ -64,9 +63,7 @@ class BlurSuite extends FunSuite {
 
     VerticalBoxBlur.blur(src, dst, 0, 4, 2)
 
-    def check(x: Int, y: Int, expected: Int) =
-      assert(dst(x, y) == expected,
-        s"(destination($x, $y) should be $expected)")
+    def check(x: Int, y: Int, expected: Int) = assert(dst(x, y) == expected, s"(destination($x, $y) should be $expected)")
 
     check(0, 0, 4)
     check(1, 0, 5)
@@ -81,6 +78,4 @@ class BlurSuite extends FunSuite {
     check(2, 2, 5)
     check(3, 2, 6)
   }
-
-
 }
