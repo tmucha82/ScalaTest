@@ -36,8 +36,7 @@ package object common {
     }
   }
 
-  val scheduler =
-    new DynamicVariable[TaskScheduler](new DefaultTaskScheduler)
+  val scheduler = new DynamicVariable[TaskScheduler](new DefaultTaskScheduler)
 
   def task[T](body: => T): ForkJoinTask[T] = {
     scheduler.value.schedule(body)
