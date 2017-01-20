@@ -1,6 +1,7 @@
 package org.coursera.scala.parallel.week1.assignment.scalashop
 
 import org.scalameter._
+import org.coursera.scala.parallel.week1.assignment.common._
 
 object VerticalBoxBlurRunner {
 
@@ -61,12 +62,15 @@ object VerticalBoxBlur {
     * columns.
     */
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
-//    val cols = 0 until src.width
-//    val tasks = (cols.start until cols.end by numTasks).map(i => (i, math.min(i + numTasks, src.width)))
     val step = Math.ceil(src.width.toDouble / numTasks).toInt max 1
     val stripIndexes = 0 until src.width by step
-    println(stripIndexes)
-//    println(stripIndexes.zip(stripIndexes.tail))
+    val tasks = stripIndexes.zip(stripIndexes.tail :+ src.width).map {
+      case (start, end) =>
+        task {
+          blur(src, dst, start, end, radius)
+        }
+    }
+    tasks.foreach(_.join)
   }
 
 }
