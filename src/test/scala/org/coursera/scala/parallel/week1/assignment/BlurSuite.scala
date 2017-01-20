@@ -78,4 +78,45 @@ class BlurSuite extends FunSuite {
     check(2, 2, 5)
     check(3, 2, 6)
   }
+
+  test("HorizontalBoxBlur.blur and HorizontalBoxBlur.parBlur should give the same result") {
+    val w = 3
+    val h = 3
+    val radius = 1
+    val src = new Img(w, h)
+    val dst1 = new Img(w, h)
+    val dst2 = new Img(w, h)
+    src(0, 0) = 0; src(1, 0) = 1; src(2, 0) = 2
+    src(0, 1) = 3; src(1, 1) = 4; src(2, 1) = 5
+    src(0, 2) = 6; src(1, 2) = 7; src(2, 2) = 8
+
+    HorizontalBoxBlur.blur(src, dst1, 0, src.height, radius)
+    HorizontalBoxBlur.parBlur(src, dst2, src.height, radius) //numTask === src.height
+    check(dst1, dst2)
+  }
+
+  test("VerticalBoxBlur.blur and VerticalBoxBlur.parBlur should give the same result") {
+    val w = 4
+    val h = 3
+    val radius = 1
+    val src = new Img(w, h)
+    val dst1 = new Img(w, h)
+    val dst2 = new Img(w, h)
+    src(0, 0) = 0; src(1, 0) = 1; src(2, 0) = 2; src(3, 0) = 9
+    src(0, 1) = 3; src(1, 1) = 4; src(2, 1) = 5; src(3, 1) = 10
+    src(0, 2) = 6; src(1, 2) = 7; src(2, 2) = 8; src(3, 2) = 11
+
+    VerticalBoxBlur.blur(src, dst1, 0, src.width, radius)
+    VerticalBoxBlur.parBlur(src, dst2, src.width, radius) // numTask == src.width
+    check(dst1, dst2)
+  }
+
+  private def check(dst1: Img, dst2: Img) = {
+    for {
+      i <- 0 until dst1.width
+      j <- 0 until dst1.height
+    } {
+      assert(dst1(i,j) === dst2(i,j))
+    }
+  }
 }

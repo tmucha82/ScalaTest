@@ -22,7 +22,7 @@ package object scalashop {
     (r << 24) | (g << 16) | (b << 8) | (a << 0)
   }
 
-  private def rgba(rgba: Tuple4[RGBA, RGBA, RGBA, RGBA]): RGBA = {
+  private def rgba(rgba: (RGBA, RGBA, RGBA, RGBA)): RGBA = {
     (rgba._1 << 24) | (rgba._2 << 16) | (rgba._3 << 8) | (rgba._4 << 0)
   }
 

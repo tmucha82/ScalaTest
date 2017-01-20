@@ -8,6 +8,17 @@ rgbaToString(boxBlurKernel(src, 0, 0, 2))
 rgbaToString(boxBlurKernel(src, 4, 4, 2))
 VerticalBoxBlur.blur(src, dst, 0, 4, 2)
 dst
-val result = new Img(5, 5)
-VerticalBoxBlur.parBlur(src, result, 5, 2)
-result
+val result1 = new Img(5, 5)
+VerticalBoxBlur.parBlur(src, result1, 1, 2)
+VerticalBoxBlur.parBlur(src, result1, 2, 2)
+VerticalBoxBlur.parBlur(src, result1, 3, 2)
+VerticalBoxBlur.parBlur(src, result1, 4, 2)
+VerticalBoxBlur.parBlur(src, result1, 5, 2)
+result1
+val result2 = new Img(5, 5)
+HorizontalBoxBlur.parBlur(src, result2, 1, 2)
+HorizontalBoxBlur.parBlur(src, result2, 2, 2)
+HorizontalBoxBlur.parBlur(src, result2, 3, 2)
+HorizontalBoxBlur.parBlur(src, result2, 4, 2)
+HorizontalBoxBlur.parBlur(src, result2, 5, 2)
+result2

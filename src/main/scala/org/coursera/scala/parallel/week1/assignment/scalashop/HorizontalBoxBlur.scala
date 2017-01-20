@@ -1,5 +1,6 @@
 package org.coursera.scala.parallel.week1.assignment.scalashop
 
+import org.coursera.scala.parallel.week1.assignment.common._
 import org.scalameter._
 
 object HorizontalBoxBlurRunner {
@@ -41,21 +42,28 @@ object HorizontalBoxBlur {
     * Within each row, `blur` traverses the pixels by going from left to right.
     */
   def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit = {
-    // TODO implement this method using the `boxBlurKernel` method
-
-    ???
+    for {
+      j <- from until end
+      i <- 0 until src.width
+    } {
+      dst(i, j) = boxBlurKernel(src, i, j, radius)
+    }
   }
 
   /** Blurs the rows of the source image in parallel using `numTasks` tasks.
     *
-    * Parallelization is done by stripping the source image `src` into
+    * Parallelism is done by stripping the source image `src` into
     * `numTasks` separate strips, where each strip is composed of some number of
     * rows.
     */
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
-    // TODO implement using the `task` construct and the `blur` method
-
-    ???
+    val step = Math.ceil(src.height.toDouble / numTasks).toInt max 1
+    val stripIndexes = 0 until src.height by step
+    stripIndexes.zip(stripIndexes.tail :+ src.height).map {
+      case (start, end) =>
+        task {
+          blur(src, dst, start, end, radius)
+        }
+    }.foreach(_.join)
   }
-
 }

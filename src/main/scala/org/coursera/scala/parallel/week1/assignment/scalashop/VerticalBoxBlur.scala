@@ -43,10 +43,6 @@ object VerticalBoxBlur {
     * bottom.
     */
   def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit = {
-    require(from >= 0 && from < src.width, "From property must have index of one of the column of src image")
-    require(end > 0 && end <= src.width, "End property must have index of one of the column of src image")
-    require(from < end, "End property must be greater than from property")
-
     for {
       i <- from until end
       j <- 0 until src.height
@@ -57,20 +53,18 @@ object VerticalBoxBlur {
 
   /** Blurs the columns of the source image in parallel using `numTasks` tasks.
     *
-    * Parallelization is done by stripping the source image `src` into
+    * Parallelism is done by stripping the source image `src` into
     * `numTasks` separate strips, where each strip is composed of some number of
     * columns.
     */
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
     val step = Math.ceil(src.width.toDouble / numTasks).toInt max 1
     val stripIndexes = 0 until src.width by step
-    val tasks = stripIndexes.zip(stripIndexes.tail :+ src.width).map {
+    stripIndexes.zip(stripIndexes.tail :+ src.width).map {
       case (start, end) =>
         task {
           blur(src, dst, start, end, radius)
         }
-    }
-    tasks.foreach(_.join)
+    }.foreach(_.join)
   }
-
 }
