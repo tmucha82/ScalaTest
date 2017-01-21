@@ -1,5 +1,4 @@
-package org.coursera.scala.parallel.week1.assignment
-
+package org.coursera.scala.parallel
 
 import java.util.concurrent._
 

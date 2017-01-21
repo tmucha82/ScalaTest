@@ -1,6 +1,6 @@
 package org.coursera.scala.parallel.week1.assignment.scalashop
 
-import org.coursera.scala.parallel.week1.assignment.common._
+import org.coursera.scala.parallel.common._
 import org.scalameter._
 
 object HorizontalBoxBlurRunner {
