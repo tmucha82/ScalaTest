@@ -3,8 +3,7 @@ package org.coursera.scala.parallel.week2
 import org.coursera.scala.parallel.common._
 import org.scalameter.{Warmer, _}
 
-
-object Mapping {
+object MappingList {
 
   val standardConfig = config(
     Key.exec.minWarmupRuns -> 20,
