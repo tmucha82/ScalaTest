@@ -14,11 +14,9 @@ object MappingArray {
 
 
   def initialize(length: Int): Array[Int] = {
-    val list = Nil
-    for (i <- 0 until length) {
-      (i % 100) :: list
-    }
-    list.toArray
+    val array = new Array[Int](length)
+    for(i <- 0 until length) array(i) = i % 100
+    array
   }
 
   def mapSegmentSeq[A, B](in: Array[A], out: Array[B], start: Int, end: Int, f: A => B): Array[B] = {
