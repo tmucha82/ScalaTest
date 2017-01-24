@@ -31,7 +31,7 @@ reducePar(tree, fMinus) // 6
 
 def toList[A](t: Tree[A]): List[A] = t match {
   case Leaf(v) => List(v)
-  case Node(l, r) => toList[A](l) ++ toList[A](r)
+  case Node(l, r) => toList(l) ++ toList(r)
 }
 
 //Can you express toList using map and reduce?
