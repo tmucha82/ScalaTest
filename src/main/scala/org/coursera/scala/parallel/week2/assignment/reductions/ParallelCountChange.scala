@@ -1,6 +1,7 @@
 package org.coursera.scala.parallel.week2.assignment.reductions
 
 import org.scalameter._
+import org.coursera.scala.parallel.common._
 
 object ParallelCountChangeRunner {
 
@@ -57,11 +58,17 @@ object ParallelCountChange {
 
   type Threshold = (Int, List[Int]) => Boolean
 
-  /** In parallel, counts the number of ways change can be made from the
+  /**
+    * In parallel, counts the number of ways change can be made from the
     * specified list of coins for the specified amount of money.
     */
   def parCountChange(money: Int, coins: List[Int], threshold: Threshold): Int = {
-    ???
+    if (threshold(money, coins) || coins == Nil || coins.isEmpty || money < 0) countChange(money, coins)
+    else {
+      val (a, b) = parallel(parCountChange(money - coins.head, coins, threshold), parCountChange(money, coins.tail, threshold))
+      a + b
+    }
+
   }
 
   /** Threshold heuristic based on the starting money. */
