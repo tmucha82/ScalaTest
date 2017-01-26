@@ -50,12 +50,12 @@ object ArrayMapping {
     val seqtime = standardConfig measure {
       mapSeq(input, new Array[Int](length), f)
     }
-    println(s"sequential sum time: $seqtime")
+    println(s"sequential sum time: ${seqtime.value}")
 
     val partime = standardConfig measure {
       mapPar(input, new Array[Int](length), f)
     }
-    println(s"fork / join time: $partime")
+    println(s"fork / join time: ${partime.value}")
     println(s"speedup: ${seqtime.value / partime.value}")
   }
 
