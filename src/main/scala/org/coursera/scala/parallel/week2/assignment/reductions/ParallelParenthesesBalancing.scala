@@ -93,7 +93,7 @@ object ParallelParenthesesBalancing {
       else {
         val middle = (from + until) / 2
         val ((leftOpeningBalance, leftClosingBalance), (rightOpeningBalance, rightClosingBalance)) = parallel(reduce(from, middle), reduce(middle, until))
-        val matched = scala.math.min(leftOpeningBalance, rightClosingBalance)
+        val matched = math.min(leftOpeningBalance, rightClosingBalance)
         (leftOpeningBalance + rightOpeningBalance - matched, leftClosingBalance + rightClosingBalance - matched)
       }
     }
