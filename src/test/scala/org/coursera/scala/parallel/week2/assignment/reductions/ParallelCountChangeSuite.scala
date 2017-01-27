@@ -12,11 +12,17 @@ class ParallelCountChangeSuite extends FunSuite {
     def checkFunction(money: Int, coins: List[Int], countChangeFunction: (Int, List[Int]) => Int, expected: Int) =
       assert(countChangeFunction(money, coins) == expected, s"countChangeFunction($money, $coins) should be $expected")
 
-    val parallelCountChange = (money: Int, coins: List[Int]) => parCountChange(_: Int, _: List[Int], moneyThreshold(money))
+    private val parallelCountChangeWithThreshold = (money: Int, coins: List[Int], threshold: Threshold) => parCountChange(_: Int, _: List[Int], threshold)
+
+    val parallelCountChangeWithMoneyThreshold = (money: Int, coins: List[Int]) => parallelCountChangeWithThreshold(money, coins, moneyThreshold(money))
+    val parallelCountChangeWithTotalCoinsThreshold = (money: Int, coins: List[Int]) => parallelCountChangeWithThreshold(money, coins, totalCoinsThreshold(coins.length))
+    val parallelCountChangeWithCombinedThreshold = (money: Int, coins: List[Int]) => parallelCountChangeWithThreshold(money, coins, combinedThreshold(money, coins))
 
     def check(money: Int, coins: List[Int], expected: Int) = {
       checkFunction(money, coins, countChange, expected)
-      checkFunction(money, coins, parallelCountChange(money, coins), expected)
+      checkFunction(money, coins, parallelCountChangeWithMoneyThreshold(money, coins), expected)
+      checkFunction(money, coins, parallelCountChangeWithTotalCoinsThreshold(money, coins), expected)
+      checkFunction(money, coins, parallelCountChangeWithCombinedThreshold(money, coins), expected)
     }
   }
 
@@ -31,7 +37,7 @@ class ParallelCountChangeSuite extends FunSuite {
     }
   }
 
-  test("countChange should return 1 when money == 0") {
+  test("countChange and parCountChange should return 1 when money == 0") {
     new TestSet {
       val money = 0
       val expected = 1
@@ -42,7 +48,7 @@ class ParallelCountChangeSuite extends FunSuite {
     }
   }
 
-  test("countChange should return 0 for money > 0 and coins = List()") {
+  test("countChange should and parCountChange return 0 for money > 0 and coins = List()") {
     new TestSet {
       val coins = List()
       val expected = 0
@@ -52,7 +58,7 @@ class ParallelCountChangeSuite extends FunSuite {
     }
   }
 
-  test("countChange should work when there is only one coin") {
+  test("countChange and parCountChange should work when there is only one coin") {
     new TestSet {
       check(1, List(1), 1)
       check(2, List(1), 1)
@@ -62,7 +68,7 @@ class ParallelCountChangeSuite extends FunSuite {
     }
   }
 
-  test("countChange should work for multi-coins") {
+  test("countChange and parCountChange should work for multi-coins") {
     new TestSet {
       check(4, List(1, 2), 3)
       check(50, List(1, 2, 5, 10), 341)
