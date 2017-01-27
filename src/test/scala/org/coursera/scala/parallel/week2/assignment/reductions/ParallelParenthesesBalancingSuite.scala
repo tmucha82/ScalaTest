@@ -11,13 +11,23 @@ class ParallelParenthesesBalancingSuite extends FunSuite {
   trait TestSet {
     def threshold = 2
 
-    def checkSeq(input: String, expected: Boolean) = assert(balance(input.toArray) == expected, s"balance($input) should be $expected")
+    def checkSeq(input: Array[Char], expected: Boolean) = assert(balance(input) == expected, s"balance(${String.valueOf(input)}) should be $expected")
 
-    def checkPar(input: String, expected: Boolean) = assert(parBalance(input.toArray, threshold) == expected, s"balance($input) should be $expected")
+    def checkPar(input: Array[Char], expected: Boolean) = assert(parBalance(input, threshold) == expected, s"balance(${String.valueOf(input)}) should be $expected")
 
-    def check(input: String, expected: Boolean) = {
+    def checkArray(input: Array[Char], expected: Boolean) = {
       checkSeq(input, expected)
       checkPar(input, expected)
+    }
+
+    def check(input: String, expected: Boolean) = {
+      checkArray(input.toArray, expected)
+    }
+  }
+
+  test("balance and parBalance should work for empty array") {
+    new TestSet {
+      checkArray(new Array[Char](1000), expected = true)
     }
   }
 
