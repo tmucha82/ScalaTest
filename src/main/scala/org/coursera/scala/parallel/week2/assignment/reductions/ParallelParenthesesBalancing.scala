@@ -36,14 +36,27 @@ object ParallelParenthesesBalancingRunner {
 
 object ParallelParenthesesBalancing {
 
-  /** Returns `true` iff the parentheses in the input `chars` are balanced.
-   */
+  /**
+    * Returns `true` iff the parentheses in the input `chars` are balanced.
+    *
+    * @param chars string which is verified against the balancing of parentheses
+    * @return `true` if the balancing of parentheses is met
+    */
   def balance(chars: Array[Char]): Boolean = {
-    ???
+    def parenthesesStockSize(chars: Array[Char], initBalanceStockSize: Int): Int = {
+      if (initBalanceStockSize < 0) -1
+      else {
+        if (chars.isEmpty) initBalanceStockSize
+        else if (chars.head == '(') parenthesesStockSize(chars.tail, initBalanceStockSize + 1)
+        else if (chars.head == ')') parenthesesStockSize(chars.tail, initBalanceStockSize - 1)
+        else parenthesesStockSize(chars.tail, initBalanceStockSize)
+      }
+    }
+    parenthesesStockSize(chars, 0) == 0
   }
 
   /** Returns `true` iff the parentheses in the input `chars` are balanced.
-   */
+    */
   def parBalance(chars: Array[Char], threshold: Int): Boolean = {
 
     def traverse(idx: Int, until: Int, arg1: Int, arg2: Int) /*: ???*/ = {
