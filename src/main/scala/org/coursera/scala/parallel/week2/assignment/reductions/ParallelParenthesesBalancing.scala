@@ -1,5 +1,6 @@
 package org.coursera.scala.parallel.week2.assignment.reductions
 
+import org.coursera.scala.parallel.common._
 import org.scalameter._
 
 object ParallelParenthesesBalancingRunner {
@@ -55,22 +56,48 @@ object ParallelParenthesesBalancing {
     parenthesesStockSize(chars, 0) == 0
   }
 
-  /** Returns `true` iff the parentheses in the input `chars` are balanced.
+  /**
+    * Returns `true` iff the parentheses in the input `chars` are balanced.
+    *
+    * @param chars     input string as chars array
+    * @param threshold parameter for parallel algorithm
+    * @return `true` if the balancing of parentheses is met
     */
   def parBalance(chars: Array[Char], threshold: Int): Boolean = {
 
-    def traverse(idx: Int, until: Int, arg1: Int, arg2: Int) /*: ???*/ = {
-      ???
+    def traverse(from: Int, until: Int, openingParenthesesBalance: Int, closingParenthesesBalance: Int): (Int, Int) = {
+      /**
+        * Computes balance of opening and closing parentheses of given string.
+        * Function analogous balance for seq
+        *
+        * @param chars                     input string as chars array
+        * @param openingParenthesesBalance balance of opening parentheses: +1 if we find `(`, -1 if we find `)` but >0
+        * @param closingParenthesesBalance balance of closing parentheses: +1
+        * @return accumulator of openingParenthesesBalance and closingParenthesesBalance
+        */
+      def balance(chars: Array[Char], openingParenthesesBalance: Int, closingParenthesesBalance: Int): (Int, Int) = {
+        if (chars.isEmpty) (openingParenthesesBalance, closingParenthesesBalance)
+        else if (chars.head == '(') balance(chars.tail, openingParenthesesBalance + 1, closingParenthesesBalance)
+        else if (chars.head == ')') {
+          if (openingParenthesesBalance > 0) balance(chars.tail, openingParenthesesBalance - 1, closingParenthesesBalance)
+          else balance(chars.tail, openingParenthesesBalance, closingParenthesesBalance + 1)
+        }
+        else balance(chars.tail, openingParenthesesBalance, closingParenthesesBalance)
+      }
+
+      balance(chars.slice(from, until), openingParenthesesBalance, closingParenthesesBalance)
     }
 
-    def reduce(from: Int, until: Int) /*: ???*/ = {
-      ???
+    def reduce(from: Int, until: Int): (Int, Int) = {
+      if (until - from <= threshold) traverse(from, until, 0, 0)
+      else {
+        val middle = (from + until) / 2
+        val ((leftOpeningBalance, leftClosingBalance), (rightOpeningBalance, rightClosingBalance)) = parallel(reduce(from, middle), reduce(middle, until))
+        val matched = scala.math.min(leftOpeningBalance, rightClosingBalance)
+        (leftOpeningBalance + rightOpeningBalance - matched, leftClosingBalance + rightClosingBalance - matched)
+      }
     }
 
-    reduce(0, chars.length) == ???
+    reduce(0, chars.length) ==(0, 0)
   }
-
-  // For those who want more:
-  // Prove that your reduction operator is associative!
-
 }
