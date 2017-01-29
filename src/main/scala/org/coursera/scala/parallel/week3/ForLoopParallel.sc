@@ -1,4 +1,17 @@
+//1. data parallel - for loop
+def initializeArray(xs: Array[Int])(v: Int): Unit = {
+  for (i <- xs.indices.par) {
+    xs(i) = v
+  }
+}
 
+val array = Array(0, 0, 0, 0)
+initializeArray(array)(3)
+array
+
+
+
+//2. data parallel - for loop - MandelbrotSet
 val image = Array[Int]()
 
 def color(i: Int): Int = {
