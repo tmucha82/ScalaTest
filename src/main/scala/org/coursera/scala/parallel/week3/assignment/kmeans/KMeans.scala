@@ -64,7 +64,7 @@ class KMeans {
   }
 
   def converged(eta: Double)(oldMeans: GenSeq[Point], newMeans: GenSeq[Point]): Boolean = {
-    ???
+    oldMeans.zip(newMeans).forall { case (oldMean, newMean) => oldMean.squareDistance(newMean) <= eta }
   }
 
   @tailrec
