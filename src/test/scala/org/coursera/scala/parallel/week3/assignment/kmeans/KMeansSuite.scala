@@ -13,6 +13,19 @@ import org.coursera.scala.parallel.week3.assignment.kmeans.KM._
 @RunWith(classOf[JUnitRunner])
 class KMeansSuite extends FunSuite {
 
+  trait TestSet {
+    val points: GenSeq[Point] = IndexedSeq(
+      new Point(1, 1, 0),
+      new Point(1, -1, 0),
+      new Point(-1, 1, 0),
+      new Point(-1, -1, 0)
+    )
+
+    val oneMeanZero: GenSeq[Point] = IndexedSeq(new Point(0, 0, 0))
+    val oneMeanOne: GenSeq[Point] = IndexedSeq(new Point(1, 1, 1))
+    val twoMeans: GenSeq[Point] = IndexedSeq(new Point(1, 0, 0), new Point(-1, 0, 0))
+  }
+
   def checkClassify(points: GenSeq[Point], means: GenSeq[Point], expected: GenMap[Point, GenSeq[Point]]) {
     assert(classify(points, means) == expected,
       s"classify($points, $means) should equal to $expected")
@@ -26,50 +39,38 @@ class KMeansSuite extends FunSuite {
   }
 
   test("'classify' should work for empty 'points' and 'means' == GenSeq(Point(1,1,1))") {
-    val points: GenSeq[Point] = IndexedSeq()
-    val mean = new Point(1, 1, 1)
-    val means: GenSeq[Point] = IndexedSeq(mean)
-    val expected = GenMap[Point, GenSeq[Point]]((mean, GenSeq()))
-    checkClassify(points, means, expected)
+    new TestSet {
+      val expected = GenMap[Point, GenSeq[Point]]((oneMeanOne.head, GenSeq()))
+      checkClassify(IndexedSeq(), oneMeanOne, expected)
+    }
   }
 
   test("'classify' should work for 'points' == GenSeq((1, 1, 0), (1, -1, 0), (-1, 1, 0), (-1, -1, 0)) and 'means' == GenSeq((0, 0, 0))") {
-    val p1 = new Point(1, 1, 0)
-    val p2 = new Point(1, -1, 0)
-    val p3 = new Point(-1, 1, 0)
-    val p4 = new Point(-1, -1, 0)
-    val points: GenSeq[Point] = IndexedSeq(p1, p2, p3, p4)
-    val mean = new Point(0, 0, 0)
-    val means: GenSeq[Point] = IndexedSeq(mean)
-    val expected = GenMap((mean, GenSeq(p1, p2, p3, p4)))
-    checkClassify(points, means, expected)
+    new TestSet {
+      val expected = GenMap((oneMeanZero.head, points))
+      checkClassify(points, oneMeanZero, expected)
+    }
   }
 
   test("'classify' should work for 'points' == GenSeq((1, 1, 0), (1, -1, 0), (-1, 1, 0), (-1, -1, 0)) and 'means' == GenSeq((1, 0, 0), (-1, 0, 0))") {
-    val p1 = new Point(1, 1, 0)
-    val p2 = new Point(1, -1, 0)
-    val p3 = new Point(-1, 1, 0)
-    val p4 = new Point(-1, -1, 0)
-    val points: GenSeq[Point] = IndexedSeq(p1, p2, p3, p4)
-    val mean1 = new Point(1, 0, 0)
-    val mean2 = new Point(-1, 0, 0)
-    val means: GenSeq[Point] = IndexedSeq(mean1, mean2)
-    val expected = GenMap((mean1, GenSeq(p1, p2)), (mean2, GenSeq(p3, p4)))
-    checkClassify(points, means, expected)
+    new TestSet {
+      val expected = GenMap((twoMeans.head, GenSeq(points.head, points(1))), (twoMeans(1), GenSeq(points(2), points(3))))
+      checkClassify(points, twoMeans, expected)
+    }
   }
 
   def checkParClassify(points: GenSeq[Point], means: GenSeq[Point], expected: GenMap[Point, GenSeq[Point]]) {
-    assert(classify(points.par, means.par) == expected,
-      s"classify($points par, $means par) should equal to $expected")
+    assert(classify(points.par, means.par) == expected, s"classify($points par, $means par) should equal to $expected")
   }
 
   test("'classify with data parallelism should work for empty 'points' and empty 'means'") {
-    val points: GenSeq[Point] = IndexedSeq()
-    val means: GenSeq[Point] = IndexedSeq()
-    val expected = GenMap[Point, GenSeq[Point]]()
-    checkParClassify(points, means, expected)
+    checkParClassify(IndexedSeq(), IndexedSeq(), GenMap[Point, GenSeq[Point]]())
   }
 
+  test("update") {
+    val initMeans: GenSeq[Point] = IndexedSeq(new Point(1, 0, 0), new Point(-1, 0, 0))
+    //    update(classified, initMeans)
+  }
 }
 
 

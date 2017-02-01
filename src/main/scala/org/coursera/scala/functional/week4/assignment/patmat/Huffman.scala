@@ -85,7 +85,7 @@ object Huffman {
     * head of the list should have the smallest weight), where the weight
     * of a leaf is the frequency of the character.
     */
-  def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = freqs.map(tuple => Leaf(tuple._1, tuple._2)).sortBy(leaf => leaf.weight)
+  def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = freqs.map { case (char, freq) => Leaf(char, freq) }.sortBy(leaf => leaf.weight)
 
   def insert(x: Int, xs: List[Int]): List[Int] = xs match {
     case List() => List(x)
