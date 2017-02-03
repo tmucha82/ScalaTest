@@ -27,8 +27,7 @@ class KMeansSuite extends FunSuite {
   }
 
   def checkClassify(points: GenSeq[Point], means: GenSeq[Point], expected: GenMap[Point, GenSeq[Point]]) {
-    assert(classify(points, means) == expected,
-      s"classify($points, $means) should equal to $expected")
+    assert(classify(points, means) == expected, s"classify($points, $means) should equal to $expected")
   }
 
   test("'classify should work for empty 'points' and empty 'means'") {
@@ -65,11 +64,6 @@ class KMeansSuite extends FunSuite {
 
   test("'classify with data parallelism should work for empty 'points' and empty 'means'") {
     checkParClassify(IndexedSeq(), IndexedSeq(), GenMap[Point, GenSeq[Point]]())
-  }
-
-  test("update") {
-    val initMeans: GenSeq[Point] = IndexedSeq(new Point(1, 0, 0), new Point(-1, 0, 0))
-    //    update(classified, initMeans)
   }
 }
 
