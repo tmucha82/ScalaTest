@@ -96,5 +96,4 @@ object ArrayCombiner {
     run(4)
     run(8)
   }
-
 }

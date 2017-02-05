@@ -3,6 +3,7 @@ package org.coursera.scala.parallel.week4
 import org.scalatest.FunSuite
 
 import scala.collection.mutable.ArrayBuffer
+import scala.collection.parallel.Combiner
 
 
 class ArrayCombinerTest extends FunSuite {
@@ -49,4 +50,14 @@ class ArrayCombinerTest extends FunSuite {
       assert(finalCombiner.result === Array("1", "2", "3", "4", "5", "6"))
     }
   }
+
+  test("aggregate with combiner") {
+    new TestSet() {
+      val input = Array("0", "1", "2", "3", "4", "5")
+      val combiner: Combiner[String, Array[String]] = new ArrayCombiner[String](2)
+      val result = input.aggregate(combiner)(_ += _, _ combine _).result
+      assert(input === result)
+    }
+  }
+
 }
