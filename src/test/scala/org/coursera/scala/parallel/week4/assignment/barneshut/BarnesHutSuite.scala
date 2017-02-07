@@ -39,7 +39,6 @@ import FloatOps._
     assert(quad.total == 1, s"${quad.total} should be 1")
   }
 
-
   test("Fork with 3 empty quadrants and 1 leaf (nw)") {
     val b = new Body(123f, 18f, 26f, 0f, 0f)
     val nw = Leaf(17.5f, 27.5f, 5f, Seq(b))
