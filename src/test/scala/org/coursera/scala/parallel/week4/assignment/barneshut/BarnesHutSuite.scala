@@ -12,7 +12,8 @@ class BarnesHutSuite extends FunSuite {
 
   // test cases for quad tree
 
-import FloatOps._
+  import FloatOps._
+
   test("Empty: center of mass should be the center of the cell") {
     val quad = Empty(51f, 46.3f, 5f)
     assert(quad.massX == 51f, s"${quad.massX} should be 51f")
@@ -67,6 +68,142 @@ import FloatOps._
         assert(bodies == Seq(b), s"$bodies should contain only the inserted body")
       case _ =>
         fail("Empty.insert() should have returned a Leaf, was $inserted")
+    }
+  }
+
+  test("Fork.insert(b) should return Fork with one body NW") {
+    val quad = Fork(Empty(9f, 11f, 2f), Empty(11f, 11f, 2f), Empty(9f, 13f, 2f), Empty(11f, 13f, 2f))
+    val b = new Body(3f, 9.5f, 11.5f, 0f, 0f)
+    val inserted = quad.insert(b)
+    inserted match {
+      case Fork(nw, ne, sw, se) =>
+        assert(nw.total == 1, "NW of given Fork should have one body")
+        assert(ne.total == 0, "NE of given Fork should be empty")
+        assert(sw.total == 0, "SW of given Fork should be empty")
+        assert(se.total == 0, "SE of given Fork should be empty")
+      case _ =>
+        fail("Fork.insert() should have returned a Fork, was $inserted")
+    }
+  }
+
+  test("Fork.insert(b) should return Fork with one body NE") {
+    val quad = Fork(Empty(9f, 11f, 2f), Empty(11f, 11f, 2f), Empty(9f, 13f, 2f), Empty(11f, 13f, 2f))
+    val b = new Body(3f, 10.5f, 10.5f, 0f, 0f)
+    val inserted = quad.insert(b)
+    inserted match {
+      case Fork(nw, ne, sw, se) =>
+        assert(nw.total == 0, "NW of given Fork should be empty")
+        assert(ne.total == 1, "NE of given Fork should have one body")
+        assert(sw.total == 0, "SW of given Fork should be empty")
+        assert(se.total == 0, "SE of given Fork should be empty")
+      case _ =>
+        fail("Fork.insert() should have returned a Fork, was $inserted")
+    }
+  }
+
+  test("Fork.insert(b) should return Fork with one body SW") {
+    val quad = Fork(Empty(9f, 11f, 2f), Empty(11f, 11f, 2f), Empty(9f, 13f, 2f), Empty(11f, 13f, 2f))
+    val b = new Body(3f, 8.5f, 12.5f, 0f, 0f)
+    val inserted = quad.insert(b)
+    inserted match {
+      case Fork(nw, ne, sw, se) =>
+        assert(nw.total == 0, "NW of given Fork should be empty")
+        assert(ne.total == 0, "NE of given Fork should be empty")
+        assert(sw.total == 1, "SW of given Fork should have one body")
+        assert(se.total == 0, "SE of given Fork should be empty")
+      case _ =>
+        fail("Fork.insert() should have returned a Fork, was $inserted")
+    }
+  }
+
+  test("Fork.insert(b) should return Fork with one body SE") {
+    val quad = Fork(Empty(9f, 11f, 2f), Empty(11f, 11f, 2f), Empty(9f, 13f, 2f), Empty(11f, 13f, 2f))
+    val b = new Body(3f, 11.5f, 13.5f, 0f, 0f)
+    val inserted = quad.insert(b)
+    inserted match {
+      case Fork(nw, ne, sw, se) =>
+        assert(nw.total == 0, "NW of given Fork should be empty")
+        assert(ne.total == 0, "NE of given Fork should be empty")
+        assert(sw.total == 0, "SW of given Fork should be empty")
+        assert(se.total == 1, "NW of given Fork should have one body")
+      case _ =>
+        fail("Fork.insert() should have returned a Fork, was $inserted")
+    }
+  }
+
+  test("Leaf.insert(b) should return Leaf if size is lower or equal than minimumSize (0.00001f)") {
+    val initialBody = new Body(1f, 46f, 54f, 1f, 2f)
+    val quad = Leaf(51f, 46.3f, 0.000001f, Seq(initialBody))
+    val b = new Body(3f, 54f, 46f, 0f, 0f)
+    val inserted = quad.insert(b)
+    inserted match {
+      case Leaf(centerX, centerY, size, bodies) =>
+        assert(centerX == 51f, s"$centerX should be 51f")
+        assert(centerY == 46.3f, s"$centerY should be 46.3f")
+        assert(size == 0.000001f, s"$size should be 5f")
+        assert(bodies == Seq(b, initialBody), s"$bodies should contain the inserted body and initial body")
+      case _ =>
+        fail("Fork.insert() should have returned a Fork, was $inserted")
+    }
+  }
+
+  test("Leaf.insert(b) should return Fork with one body in NW") {
+    val quad = Leaf(10f, 12f, 4f, Seq())
+    val b = new Body(1f, 9f, 11f, 1f, 2f)
+    val inserted = quad.insert(b)
+    inserted match {
+      case Fork(nw, ne, sw, se) =>
+        assert(nw.total == 1, "NW of given Fork should have one body")
+        assert(ne.total == 0, "NE of given Fork should be empty")
+        assert(sw.total == 0, "SW of given Fork should be empty")
+        assert(se.total == 0, "SE of given Fork should be empty")
+      case _ =>
+        fail("Fork.insert() should have returned a Fork, was $inserted")
+    }
+  }
+
+  test("Leaf.insert(b) should return Fork with one body in NE") {
+    val quad = Leaf(10f, 12f, 4f, Seq())
+    val b = new Body(1f, 11f, 11f, 1f, 2f)
+    val inserted = quad.insert(b)
+    inserted match {
+      case Fork(nw, ne, sw, se) =>
+        assert(nw.total == 0, "NW of given Fork should be empty")
+        assert(ne.total == 1, "NE of given Fork should have one body")
+        assert(sw.total == 0, "SW of given Fork should be empty")
+        assert(se.total == 0, "SE of given Fork should be empty")
+      case _ =>
+        fail("Fork.insert() should have returned a Fork, was $inserted")
+    }
+  }
+
+  test("Leaf.insert(b) should return Fork with one body in SW") {
+    val quad = Leaf(10f, 12f, 4f, Seq())
+    val b = new Body(1f, 9f, 13f, 1f, 2f)
+    val inserted = quad.insert(b)
+    inserted match {
+      case Fork(nw, ne, sw, se) =>
+        assert(nw.total == 0, "NW of given Fork should be empty")
+        assert(ne.total == 0, "NE of given Fork should be empty")
+        assert(sw.total == 1, "SW of given Fork should have one body")
+        assert(se.total == 0, "SE of given Fork should be empty")
+      case _ =>
+        fail("Fork.insert() should have returned a Fork, was $inserted")
+    }
+  }
+
+  test("Leaf.insert(b) should return Fork with one body in SE") {
+    val quad = Leaf(10f, 12f, 4f, Seq())
+    val b = new Body(1f, 11f, 13f, 1f, 2f)
+    val inserted = quad.insert(b)
+    inserted match {
+      case Fork(nw, ne, sw, se) =>
+        assert(nw.total == 0, "NW of given Fork should be empty")
+        assert(ne.total == 0, "NE of given Fork should be empty")
+        assert(sw.total == 0, "SW of given Fork should be empty")
+        assert(se.total == 1, "NW of given Fork should have one body")
+      case _ =>
+        fail("Fork.insert() should have returned a Fork, was $inserted")
     }
   }
 
@@ -133,5 +270,6 @@ object FloatOps {
           abs(a - b) < precisionThreshold
         }
   }
+
 }
 

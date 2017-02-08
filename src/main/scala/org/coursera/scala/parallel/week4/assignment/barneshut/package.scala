@@ -44,7 +44,13 @@ package object barneshut {
     // total bodies in the cell
     def total: Int
 
-    def insert(b: Body): Quad
+    def insert(body: Body): Quad
+
+    def contains(body: Body): Boolean = {
+      val halfOfSize = size / 2
+      val isBetween = (value: Float, center: Float) => value >= center - halfOfSize && value <= center + halfOfSize
+      isBetween(body.x, centerX) && isBetween(body.y, centerY)
+    }
   }
 
   case class Empty(centerX: Float, centerY: Float, size: Float) extends Quad {
@@ -56,7 +62,7 @@ package object barneshut {
 
     def total: Int = 0
 
-    def insert(b: Body): Quad = Leaf(centerX, centerY, size, Seq(b))
+    def insert(body: Body): Quad = Leaf(centerX, centerY, size, Seq(body))
   }
 
   case class Fork(nw: Quad, ne: Quad, sw: Quad, se: Quad) extends Quad {
@@ -70,9 +76,12 @@ package object barneshut {
     val massY: Float = quads.map(quad => quad.massY * quad.mass).sum / mass
     val total: Int = quads.map(_.total).sum
 
-    def insert(b: Body): Fork = {
-      Fork(nw, ne, sw, se) //TODO ???
+    def insert(body: Body): Fork = {
+      quads.map(quad => if (quad.contains(body)) quad.insert(body) else quad) match {
+        case List(northWest, northEast, southWest, southEast) => Fork(northWest, northEast, southWest, southEast)
+      }
     }
+
   }
 
   case class Leaf(centerX: Float, centerY: Float, size: Float, bodies: Seq[Body]) extends Quad {
@@ -82,7 +91,21 @@ package object barneshut {
 
     val total: Int = bodies.size
 
-    def insert(b: Body): Quad = Empty(0, 0, 1) //TODO ???
+    def insert(body: Body): Quad = {
+      if (size > minimumSize) {
+        val quarterOfSize = size / 4
+        val halfOfSize = size / 2
+        val initQuad = Fork(
+          Empty(centerX - quarterOfSize, centerY - quarterOfSize, halfOfSize),
+          Empty(centerX + quarterOfSize, centerY - quarterOfSize, halfOfSize),
+          Empty(centerX - quarterOfSize, centerY + quarterOfSize, halfOfSize),
+          Empty(centerX + quarterOfSize, centerY + quarterOfSize, halfOfSize)
+        )
+        (body +: bodies).foldLeft(initQuad)(_.insert(_))
+      } else {
+        Leaf(centerX, centerY, size, body +: bodies)
+      }
+    }
   }
 
   def minimumSize = 0.00001f
