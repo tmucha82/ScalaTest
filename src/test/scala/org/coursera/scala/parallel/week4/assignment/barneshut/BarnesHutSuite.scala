@@ -76,8 +76,8 @@ import FloatOps._
     val b1 = new Body(123f, 18f, 26f, 0f, 0f)
     val body = b1.updated(Empty(50f, 60f, 5f))
 
-    assert(body.xspeed == 0f)
-    assert(body.yspeed == 0f)
+    assert(body.xSpeed == 0f)
+    assert(body.ySpeed == 0f)
   }
 
   test("Body.updated should take bodies in a Leaf into account") {
@@ -89,8 +89,8 @@ import FloatOps._
 
     val body = b1.updated(quad)
 
-    assert(body.xspeed ~= 12.587037f)
-    assert(body.yspeed ~= 0.015557117f)
+    assert(body.xSpeed ~= 12.587037f)
+    assert(body.ySpeed ~= 0.015557117f)
   }
 
   // test cases for sector matrix
@@ -104,7 +104,7 @@ import FloatOps._
     boundaries.maxY = 97
     val sm = new SectorMatrix(boundaries, SECTOR_PRECISION)
     sm += body
-    val res = sm(2, 3).size == 1 && sm(2, 3).find(_ == body).isDefined
+    val res = sm(2, 3).size == 1 && sm(2, 3).exists(_ == body)
     assert(res, s"Body not found in the right sector")
   }
 

@@ -43,9 +43,9 @@ object Conc {
     val level = 1 + math.max(left.level, right.level)
     val size = left.size + right.size
     override def normalized = {
-      def wrap[T](xs: Conc[T], ys: Conc[T]): Conc[T] = (xs: @unchecked) match {
+      def wrap[S](xs: Conc[S], ys: Conc[S]): Conc[S] = (xs: @unchecked) match {
         case Append(ws, zs) => wrap(ws, zs <> ys)
-        case xs => xs <> ys
+        case list => list <> ys
       }
       wrap(left, right)
     }

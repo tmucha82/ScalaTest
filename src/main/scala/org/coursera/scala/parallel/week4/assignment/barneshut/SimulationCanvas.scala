@@ -10,8 +10,8 @@ class SimulationCanvas(val model: SimulationModel) extends JComponent {
 
   val pixels = new Array[Int](MAX_RES * MAX_RES)
 
-  override def paintComponent(gcan: Graphics) = {
-    super.paintComponent(gcan)
+  override def paintComponent(graphics: Graphics) = {
+    super.paintComponent(graphics)
 
     val width = getWidth
     val height = getHeight
@@ -19,7 +19,7 @@ class SimulationCanvas(val model: SimulationModel) extends JComponent {
 
     // clear canvas pixels
     for (x <- 0 until MAX_RES; y <- 0 until MAX_RES) pixels(y * width + x) = 0
-    
+
     // count number of bodies in each pixel
     for (b <- model.bodies) {
       val px = ((b.x - model.screen.minX) / model.screen.width * width).toInt
@@ -51,7 +51,7 @@ class SimulationCanvas(val model: SimulationModel) extends JComponent {
     if (model.shouldRenderQuad) {
       g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
       val green = new Color(0, 225, 80, 150)
-      val red = new Color(200, 0, 0, 150)
+      //val red = new Color(200, 0, 0, 150)
       g.setColor(green)
       def drawQuad(depth: Int, quad: Quad): Unit = {
         def drawRect(fx: Float, fy: Float, fsz: Float, q: Quad, fill: Boolean = false) {
@@ -81,9 +81,9 @@ class SimulationCanvas(val model: SimulationModel) extends JComponent {
         }
       }
       drawQuad(0, model.quad)
-      
+
     }
-    gcan.drawImage(img, 0, 0, null)
+    graphics.drawImage(img, 0, 0, null)
   }
 
   // zoom on mouse rotation
@@ -108,12 +108,12 @@ class SimulationCanvas(val model: SimulationModel) extends JComponent {
   })
 
   // reset the last known mouse drag position on mouse press
-  var xlast = Int.MinValue
-  var ylast = Int.MinValue
+  var xLast = Int.MinValue
+  var yLast = Int.MinValue
   addMouseListener(new MouseAdapter {
     override def mousePressed(e: MouseEvent) {
-      xlast = Int.MinValue
-      ylast = Int.MinValue
+      xLast = Int.MinValue
+      yLast = Int.MinValue
     }
   })
 
@@ -121,11 +121,11 @@ class SimulationCanvas(val model: SimulationModel) extends JComponent {
   // update the boundaries of the visible area
   addMouseMotionListener(new MouseMotionAdapter {
     override def mouseDragged(e: MouseEvent) {
-      val xcurr = e.getX
-      val ycurr = e.getY
-      if (xlast != Int.MinValue) {
-        val xd = xcurr - xlast
-        val yd = ycurr - ylast
+      val xCurrent = e.getX
+      val yCurrent = e.getY
+      if (xLast != Int.MinValue) {
+        val xd = xCurrent - xLast
+        val yd = yCurrent - yLast
         val w = model.screen.width
         val h = model.screen.height
         val cx = model.screen.centerX - xd * w / 1000
@@ -136,8 +136,8 @@ class SimulationCanvas(val model: SimulationModel) extends JComponent {
         model.screen.maxY = cy + h / 2
         println(model.screen)
       }
-      xlast = xcurr
-      ylast = ycurr
+      xLast = xCurrent
+      yLast = yCurrent
       repaint()
     }
   })

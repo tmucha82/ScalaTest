@@ -11,8 +11,8 @@ object BarnesHut {
 
   var simulator: Simulator = _
 
-  def initialize(parallelismLevel: Int, pattern: String, nbodies: Int) {
-    model.initialize(parallelismLevel, pattern, nbodies)
+  def initialize(parallelismLevel: Int, pattern: String, nBodies: Int) {
+    model.initialize(parallelismLevel, pattern, nBodies)
     model.timeStats.clear()
     simulator = new Simulator(model.taskSupport, model.timeStats)
   }
@@ -22,32 +22,32 @@ object BarnesHut {
     setSize(1024, 600)
     setLayout(new BorderLayout)
 
-    val rightpanel = new JPanel
-    rightpanel.setBorder(BorderFactory.createEtchedBorder(border.EtchedBorder.LOWERED))
-    rightpanel.setLayout(new BorderLayout)
-    add(rightpanel, BorderLayout.EAST)
-    
+    val rightPanel = new JPanel
+    rightPanel.setBorder(BorderFactory.createEtchedBorder(border.EtchedBorder.LOWERED))
+    rightPanel.setLayout(new BorderLayout)
+    add(rightPanel, BorderLayout.EAST)
+
     val controls = new JPanel
     controls.setLayout(new GridLayout(0, 2))
-    rightpanel.add(controls, BorderLayout.NORTH)
-    
+    rightPanel.add(controls, BorderLayout.NORTH)
+
     val parallelismLabel = new JLabel("Parallelism")
     controls.add(parallelismLabel)
-    
+
     val items = (1 to Runtime.getRuntime.availableProcessors).map(_.toString).toArray
-    val parcombo = new JComboBox[String](items)
-    parcombo.setSelectedIndex(items.length - 1)
-    parcombo.addActionListener(new ActionListener {
+    val parCombo = new JComboBox[String](items)
+    parCombo.setSelectedIndex(items.length - 1)
+    parCombo.addActionListener(new ActionListener {
       def actionPerformed(e: ActionEvent) = {
         initialize(getParallelism, "two-galaxies", getTotalBodies)
         canvas.repaint()
       }
     })
-    controls.add(parcombo)
-    
+    controls.add(parCombo)
+
     val bodiesLabel = new JLabel("Total bodies")
     controls.add(bodiesLabel)
-    
+
     val bodiesSpinner = new JSpinner(new SpinnerNumberModel(25000, 32, 1000000, 1000))
     bodiesSpinner.addChangeListener(new ChangeListener {
       def stateChanged(e: ChangeEvent) = {
@@ -58,15 +58,15 @@ object BarnesHut {
       }
     })
     controls.add(bodiesSpinner)
-    
-    val stepbutton = new JButton("Step")
-    stepbutton.addActionListener(new ActionListener {
+
+    val stepButton = new JButton("Step")
+    stepButton.addActionListener(new ActionListener {
       def actionPerformed(e: ActionEvent) {
         stepThroughSimulation()
       }
     })
-    controls.add(stepbutton)
-    
+    controls.add(stepButton)
+
     val startButton = new JToggleButton("Start/Pause")
     val startTimer = new javax.swing.Timer(0, new ActionListener {
       def actionPerformed(e: ActionEvent) {
@@ -80,15 +80,15 @@ object BarnesHut {
       }
     })
     controls.add(startButton)
-    
-    val quadcheckbox = new JToggleButton("Show quad")
-    quadcheckbox.addActionListener(new ActionListener {
+
+    val quadCheckbox = new JToggleButton("Show quad")
+    quadCheckbox.addActionListener(new ActionListener {
       def actionPerformed(e: ActionEvent) {
-        model.shouldRenderQuad = quadcheckbox.isSelected
+        model.shouldRenderQuad = quadCheckbox.isSelected
         repaint()
       }
     })
-    controls.add(quadcheckbox)
+    controls.add(quadCheckbox)
 
     val clearButton = new JButton("Restart")
     clearButton.addActionListener(new ActionListener {
@@ -100,7 +100,7 @@ object BarnesHut {
 
     val info = new JTextArea("   ")
     info.setBorder(BorderFactory.createLoweredBevelBorder)
-    rightpanel.add(info, BorderLayout.SOUTH)
+    rightPanel.add(info, BorderLayout.SOUTH)
 
     val canvas = new SimulationCanvas(model)
     add(canvas, BorderLayout.CENTER)
@@ -124,8 +124,8 @@ object BarnesHut {
     }
 
     def getParallelism = {
-      val selidx = parcombo.getSelectedIndex
-      parcombo.getItemAt(selidx).toInt
+      val selectedIndex = parCombo.getSelectedIndex
+      parCombo.getItemAt(selectedIndex).toInt
     }
 
     def getTotalBodies = bodiesSpinner.getValue.asInstanceOf[Int]
@@ -134,7 +134,7 @@ object BarnesHut {
   }
 
   try {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
+    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName)
   } catch {
     case _: Exception => println("Cannot set look and feel, using the default one.")
   }

@@ -30,23 +30,23 @@ class SimulationModel {
     val bodyArray = new Array[Body](totalBodies)
     val random = new scala.util.Random(213L)
 
-    def galaxy(from: Int, num: Int, maxradius: Float, cx: Float, cy: Float, sx: Float, sy: Float) {
+    def galaxy(from: Int, num: Int, maxRadius: Float, cx: Float, cy: Float, sx: Float, sy: Float) {
       val totalM = 1.5f * num
       val blackHoleM = 1.0f * num
-      val cubmaxradius = maxradius * maxradius * maxradius
+      val cubMaxRadius = maxRadius * maxRadius * maxRadius
       for (i <- from until (from + num)) {
         val b = if (i == from) {
           new Body(blackHoleM, cx, cy, sx, sy)
         } else {
           val angle = random.nextFloat * 2 * math.Pi
-          val radius = 25 + maxradius * random.nextFloat
-          val starx = cx + radius * math.sin(angle).toFloat
-          val stary = cy + radius * math.cos(angle).toFloat
-          val speed = math.sqrt(gee * blackHoleM / radius + gee * totalM * radius * radius / cubmaxradius)
-          val starspeedx = sx + (speed * math.sin(angle + math.Pi / 2)).toFloat
-          val starspeedy = sy + (speed * math.cos(angle + math.Pi / 2)).toFloat
-          val starmass = 1.0f + 1.0f * random.nextFloat
-          new Body(starmass, starx, stary, starspeedx, starspeedy)
+          val radius = 25 + maxRadius * random.nextFloat
+          val starX = cx + radius * math.sin(angle).toFloat
+          val starY = cy + radius * math.cos(angle).toFloat
+          val speed = math.sqrt(gee * blackHoleM / radius + gee * totalM * radius * radius / cubMaxRadius)
+          val starSpeedX = sx + (speed * math.sin(angle + math.Pi / 2)).toFloat
+          val starSpeedY = sy + (speed * math.cos(angle + math.Pi / 2)).toFloat
+          val starMass = 1.0f + 1.0f * random.nextFloat
+          new Body(starMass, starX, starY, starSpeedX, starSpeedY)
         }
         bodyArray(i) = b
       }

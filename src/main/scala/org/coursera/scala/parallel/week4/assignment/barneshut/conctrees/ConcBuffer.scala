@@ -66,7 +66,7 @@ object ConcBufferRunner {
     Key.exec.maxWarmupRuns -> 40,
     Key.exec.benchRuns -> 60,
     Key.verbose -> true
-  ) withWarmer(new Warmer.Default)
+  ) withWarmer new Warmer.Default
 
   def main(args: Array[String]) {
     val size = 1000000
@@ -76,9 +76,9 @@ object ConcBufferRunner {
         new scala.concurrent.forkjoin.ForkJoinPool(p))
       val strings = (0 until size).map(_.toString)
       val time = standardConfig measure {
-        val parallelized = strings.par
-        parallelized.tasksupport = taskSupport
-        parallelized.aggregate(new ConcBuffer[String])(_ += _, _ combine _).result
+        val parallelled = strings.par
+        parallelled.tasksupport = taskSupport
+        parallelled.aggregate(new ConcBuffer[String])(_ += _, _ combine _).result
       }
       println(s"p = $p, time = $time ms")
     }
