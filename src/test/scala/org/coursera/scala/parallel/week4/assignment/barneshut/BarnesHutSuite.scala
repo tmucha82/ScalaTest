@@ -84,6 +84,12 @@ class BarnesHutSuite extends FunSuite {
       case _ =>
         fail("Fork.insert() should have returned a Fork, was $inserted")
     }
+    assert(inserted.centerX == 10f, s"${inserted.centerX} should be 10f")
+    assert(inserted.centerY == 12f, s"${inserted.centerY} should be 12f")
+    assert(inserted.mass == b.mass, s"${inserted.mass} should be ${b.mass}")
+    assert(inserted.massX == b.x, s"${inserted.massX} should be ${b.x}")
+    assert(inserted.massY == b.y, s"${inserted.massY} should be ${b.y}")
+    assert(inserted.total == 1, s"${inserted.total} should be 1")
   }
 
   test("Fork.insert(b) should return Fork with one body NE") {
@@ -99,6 +105,12 @@ class BarnesHutSuite extends FunSuite {
       case _ =>
         fail("Fork.insert() should have returned a Fork, was $inserted")
     }
+    assert(inserted.centerX == 10f, s"${inserted.centerX} should be 10f")
+    assert(inserted.centerY == 12f, s"${inserted.centerY} should be 12f")
+    assert(inserted.mass == b.mass, s"${inserted.mass} should be ${b.mass}")
+    assert(inserted.massX == b.x, s"${inserted.massX} should be ${b.x}")
+    assert(inserted.massY == b.y, s"${inserted.massY} should be ${b.y}")
+    assert(inserted.total == 1, s"${inserted.total} should be 1")
   }
 
   test("Fork.insert(b) should return Fork with one body SW") {
@@ -114,6 +126,12 @@ class BarnesHutSuite extends FunSuite {
       case _ =>
         fail("Fork.insert() should have returned a Fork, was $inserted")
     }
+    assert(inserted.centerX == 10f, s"${inserted.centerX} should be 10f")
+    assert(inserted.centerY == 12f, s"${inserted.centerY} should be 12f")
+    assert(inserted.mass == b.mass, s"${inserted.mass} should be ${b.mass}")
+    assert(inserted.massX == b.x, s"${inserted.massX} should be ${b.x}")
+    assert(inserted.massY == b.y, s"${inserted.massY} should be ${b.y}")
+    assert(inserted.total == 1, s"${inserted.total} should be 1")
   }
 
   test("Fork.insert(b) should return Fork with one body SE") {
@@ -129,6 +147,12 @@ class BarnesHutSuite extends FunSuite {
       case _ =>
         fail("Fork.insert() should have returned a Fork, was $inserted")
     }
+    assert(inserted.centerX == 10f, s"${inserted.centerX} should be 10f")
+    assert(inserted.centerY == 12f, s"${inserted.centerY} should be 12f")
+    assert(inserted.mass == b.mass, s"${inserted.mass} should be ${b.mass}")
+    assert(inserted.massX == b.x, s"${inserted.massX} should be ${b.x}")
+    assert(inserted.massY == b.y, s"${inserted.massY} should be ${b.y}")
+    assert(inserted.total == 1, s"${inserted.total} should be 1")
   }
 
   test("Leaf.insert(b) should return Leaf if size is lower or equal than minimumSize (0.00001f)") {
@@ -160,6 +184,12 @@ class BarnesHutSuite extends FunSuite {
       case _ =>
         fail("Fork.insert() should have returned a Fork, was $inserted")
     }
+    assert(inserted.centerX == 10f, s"${inserted.centerX} should be 10f")
+    assert(inserted.centerY == 12f, s"${inserted.centerY} should be 12f")
+    assert(inserted.mass == b.mass, s"${inserted.mass} should be ${b.mass}")
+    assert(inserted.massX == b.x, s"${inserted.massX} should be ${b.x}")
+    assert(inserted.massY == b.y, s"${inserted.massY} should be ${b.y}")
+    assert(inserted.total == 1, s"${inserted.total} should be 1")
   }
 
   test("Leaf.insert(b) should return Fork with one body in NE") {
@@ -175,6 +205,12 @@ class BarnesHutSuite extends FunSuite {
       case _ =>
         fail("Fork.insert() should have returned a Fork, was $inserted")
     }
+    assert(inserted.centerX == 10f, s"${inserted.centerX} should be 10f")
+    assert(inserted.centerY == 12f, s"${inserted.centerY} should be 12f")
+    assert(inserted.mass == b.mass, s"${inserted.mass} should be ${b.mass}")
+    assert(inserted.massX == b.x, s"${inserted.massX} should be ${b.x}")
+    assert(inserted.massY == b.y, s"${inserted.massY} should be ${b.y}")
+    assert(inserted.total == 1, s"${inserted.total} should be 1")
   }
 
   test("Leaf.insert(b) should return Fork with one body in SW") {
@@ -190,6 +226,12 @@ class BarnesHutSuite extends FunSuite {
       case _ =>
         fail("Fork.insert() should have returned a Fork, was $inserted")
     }
+    assert(inserted.centerX == 10f, s"${inserted.centerX} should be 10f")
+    assert(inserted.centerY == 12f, s"${inserted.centerY} should be 12f")
+    assert(inserted.mass == b.mass, s"${inserted.mass} should be ${b.mass}")
+    assert(inserted.massX == b.x, s"${inserted.massX} should be ${b.x}")
+    assert(inserted.massY == b.y, s"${inserted.massY} should be ${b.y}")
+    assert(inserted.total == 1, s"${inserted.total} should be 1")
   }
 
   test("Leaf.insert(b) should return Fork with one body in SE") {
@@ -205,6 +247,12 @@ class BarnesHutSuite extends FunSuite {
       case _ =>
         fail("Fork.insert() should have returned a Fork, was $inserted")
     }
+    assert(inserted.centerX == 10f, s"${inserted.centerX} should be 10f")
+    assert(inserted.centerY == 12f, s"${inserted.centerY} should be 12f")
+    assert(inserted.mass == b.mass, s"${inserted.mass} should be ${b.mass}")
+    assert(inserted.massX == b.x, s"${inserted.massX} should be ${b.x}")
+    assert(inserted.massY == b.y, s"${inserted.massY} should be ${b.y}")
+    assert(inserted.total == 1, s"${inserted.total} should be 1")
   }
 
   // test cases for Body

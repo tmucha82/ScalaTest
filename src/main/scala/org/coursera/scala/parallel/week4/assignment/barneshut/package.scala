@@ -38,10 +38,8 @@ package object barneshut {
 
     def centerY: Float
 
-    // width and height of the cell
     def size: Float
 
-    // total bodies in the cell
     def total: Int
 
     def insert(body: Body): Quad
@@ -81,7 +79,6 @@ package object barneshut {
         case List(northWest, northEast, southWest, southEast) => Fork(northWest, northEast, southWest, southEast)
       }
     }
-
   }
 
   case class Leaf(centerX: Float, centerY: Float, size: Float, bodies: Seq[Body]) extends Quad {
@@ -127,8 +124,8 @@ package object barneshut {
   class Body(val mass: Float, val x: Float, val y: Float, val xSpeed: Float, val ySpeed: Float) {
 
     def updated(quad: Quad): Body = {
-      var netforcex = 0.0f
-      var netforcey = 0.0f
+      var netForceX = 0.0f
+      var netForceY = 0.0f
 
       def addForce(thatMass: Float, thatMassX: Float, thatMassY: Float): Unit = {
         val dist = distance(thatMassX, thatMassY, x, y)
@@ -142,13 +139,13 @@ package object barneshut {
          * simple approximation, we ignore gravity at extreme proximaties.
          */
         if (dist > 1f) {
-          val dforce = force(mass, thatMass, dist)
+          val dForce = force(mass, thatMass, dist)
           val xn = (thatMassX - x) / dist
           val yn = (thatMassY - y) / dist
-          val dforcex = dforce * xn
-          val dforcey = dforce * yn
-          netforcex += dforcex
-          netforcey += dforcey
+          val dForceX = dForce * xn
+          val dForceY = dForce * yn
+          netForceX += dForceX
+          netForceY += dForceY
         }
       }
 
@@ -166,10 +163,10 @@ package object barneshut {
 
       val nx = x + xSpeed * delta
       val ny = y + ySpeed * delta
-      val nxspeed = xSpeed + netforcex / mass * delta
-      val nyspeed = ySpeed + netforcey / mass * delta
+      val nXSpeed = xSpeed + netForceX / mass * delta
+      val nYSpeed = ySpeed + netForceY / mass * delta
 
-      new Body(mass, nx, ny, nxspeed, nyspeed)
+      new Body(mass, nx, ny, nXSpeed, nYSpeed)
     }
 
   }
