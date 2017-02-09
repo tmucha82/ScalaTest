@@ -279,7 +279,20 @@ class BarnesHutSuite extends FunSuite {
   }
 
   // test cases for sector matrix
-  test("'SectorMatrix.+=' should add a body at (25,47) to the correct bucket of a sector matrix of size 96") {
+  test("'SectorMatrix.normalizeBodyPosition' should always translate outbound body to boundries area") {
+    val boundaries = new Boundaries()
+    boundaries.minX = 1
+    boundaries.minY = 1
+    boundaries.maxX = 97
+    boundaries.maxY = 97
+
+    val sm = new SectorMatrix(boundaries, SECTOR_PRECISION)
+
+    assert((boundaries.minX, boundaries.minY) === sm.normalizeBodyPosition(new Body(3f, -1f, -1f, 0f, 0f)))
+    assert((3f, boundaries.minY) === sm.normalizeBodyPosition(new Body(3f, 3f, -1f, 0f, 0f)))
+    assert((5f, 7f) === sm.normalizeBodyPosition(new Body(3f, 5f, 7f, 0f, 0f)))
+    assert((boundaries.maxX, boundaries.minY) === sm.normalizeBodyPosition(new Body(3f, 100f, -1f, 0f, 0f)))
+    assert((boundaries.maxX, boundaries.maxY) === sm.normalizeBodyPosition(new Body(3f, 100f, 100f, 0f, 0f)))
   }
 
   test("'SectorMatrix.+=' should add a body at (25,47) to the correct bucket of a sector matrix of size 96") {
@@ -293,6 +306,36 @@ class BarnesHutSuite extends FunSuite {
     sm += body
     val res = sm(2, 3).size == 1 && sm(2, 3).exists(_ == body)
     assert(res, s"Body not found in the right sector")
+  }
+
+  test("'SectorMatrix.+=' should add a body to the correct bucket of a sector matrix") {
+    val boundaries = new Boundaries()
+    boundaries.minX = 0
+    boundaries.minY = 0
+    boundaries.maxX = 32
+    boundaries.maxY = 32
+    val sm = new SectorMatrix(boundaries, SECTOR_PRECISION)
+
+    var body = new Body(5, 1, 1, 0f, 0f)
+    sm += body
+    var res = sm(0, 0).size == 1 && sm(0, 0).exists(_ == body)
+    assert(res, s"Body not found in the right sector")
+
+    body = new Body(5, 5, 1, 0f, 0f)
+    sm += body
+    res = sm(1, 0).size == 1 && sm(1, 0).exists(_ == body)
+    assert(res, s"Body not found in the right sector")
+
+    body = new Body(5, 1, 5, 0f, 0f)
+    sm += body
+    res = sm(0, 1).size == 1 && sm(0, 1).exists(_ == body)
+    assert(res, s"Body not found in the right sector")
+
+    body = new Body(5, 31, 31, 0f, 0f)
+    sm += body
+    res = sm(7, 7).size == 1 && sm(7, 7).exists(_ == body)
+    assert(res, s"Body not found in the right sector")
+
   }
 
 }
