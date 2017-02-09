@@ -178,7 +178,23 @@ package object barneshut {
     val matrix = new Array[ConcBuffer[Body]](sectorPrecision * sectorPrecision)
     for (i <- matrix.indices) matrix(i) = new ConcBuffer
 
+    def normalizeBodyPosition(b: Body): Body = {
+      val insideBoundaries = (value: Float) => math.min(boundaries.maxX, math.max(boundaries.minX, value))
+      new Body(b.mass, insideBoundaries(b.x), insideBoundaries(b.y), b.xSpeed, b.ySpeed)
+    }
+
+    /**
+      * This method should use the body position, boundaries and sectorPrecision
+      * to determine the sector into which the body should go into,
+      * and add the body into the corresponding ConcBuffer object.
+      *
+      * Importantly, if the Body lies outside of the Boundaries,
+      * it should be considered to be located at the closest point
+      * within the Boundaries for the purpose of finding
+      * which ConcBuffer should hold the body.
+      */
     def +=(b: Body): SectorMatrix = {
+      normalizeBodyPosition(b)
       ???
       this
     }

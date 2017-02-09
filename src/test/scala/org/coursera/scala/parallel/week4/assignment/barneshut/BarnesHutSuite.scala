@@ -279,6 +279,8 @@ class BarnesHutSuite extends FunSuite {
   }
 
   // test cases for sector matrix
+  test("'SectorMatrix.+=' should add a body at (25,47) to the correct bucket of a sector matrix of size 96") {
+  }
 
   test("'SectorMatrix.+=' should add a body at (25,47) to the correct bucket of a sector matrix of size 96") {
     val body = new Body(5, 25, 47, 0.1f, 0.1f)
