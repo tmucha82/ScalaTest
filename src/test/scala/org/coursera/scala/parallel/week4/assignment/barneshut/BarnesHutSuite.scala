@@ -5,6 +5,7 @@ import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 
 import scala.collection._
+import scala.collection.parallel._
 import scala.math._
 
 @RunWith(classOf[JUnitRunner])
@@ -279,7 +280,7 @@ class BarnesHutSuite extends FunSuite {
   }
 
   // test cases for sector matrix
-  test("'SectorMatrix.normalizeBodyPosition' should always translate outbound body to boundries area") {
+  test("'SectorMatrix.normalizeBodyPosition' should always translate outbound body to boundaries area") {
     val boundaries = new Boundaries()
     boundaries.minX = 1
     boundaries.minY = 1
@@ -335,7 +336,36 @@ class BarnesHutSuite extends FunSuite {
     sm += body
     res = sm(7, 7).size == 1 && sm(7, 7).exists(_ == body)
     assert(res, s"Body not found in the right sector")
+  }
 
+  test("Simulator updateBoundaries should return proper min and max of x and y") {
+    val simulator = new Simulator(defaultTaskSupport, new TimeStatistics)
+    var boundaries = new Boundaries()
+    boundaries.minX = 10
+    boundaries.minY = 10
+    boundaries.maxX = 12
+    boundaries.maxY = 12
+
+    boundaries = simulator.updateBoundaries(boundaries, new Body(5, 11, 11, 0f, 0f))
+    assert((boundaries.minX, boundaries.minY, boundaries.maxX, boundaries.maxY) ===(10, 10, 12, 12))
+
+    boundaries = simulator.updateBoundaries(boundaries, new Body(5, 9, 11, 0f, 0f))
+    assert((boundaries.minX, boundaries.minY, boundaries.maxX, boundaries.maxY) ===(9, 10, 12, 12))
+
+    boundaries = simulator.updateBoundaries(boundaries, new Body(5, 8, 8, 0f, 0f))
+    assert((boundaries.minX, boundaries.minY, boundaries.maxX, boundaries.maxY) ===(8, 8, 12, 12))
+
+    boundaries = simulator.updateBoundaries(boundaries, new Body(5, 11, 7, 0f, 0f))
+    assert((boundaries.minX, boundaries.minY, boundaries.maxX, boundaries.maxY) ===(8, 7, 12, 12))
+
+    boundaries = simulator.updateBoundaries(boundaries, new Body(5, 13, 11, 0f, 0f))
+    assert((boundaries.minX, boundaries.minY, boundaries.maxX, boundaries.maxY) ===(8, 7, 13, 12))
+
+    boundaries = simulator.updateBoundaries(boundaries, new Body(5, 11, 14, 0f, 0f))
+    assert((boundaries.minX, boundaries.minY, boundaries.maxX, boundaries.maxY) ===(8, 7, 13, 14))
+
+    boundaries = simulator.updateBoundaries(boundaries, new Body(5, 15, 16, 0f, 0f))
+    assert((boundaries.minX, boundaries.minY, boundaries.maxX, boundaries.maxY) ===(8, 7, 15, 16))
   }
 
 }

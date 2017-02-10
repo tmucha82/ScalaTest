@@ -6,7 +6,11 @@ import scala.collection.parallel.mutable.ParHashSet
 class Simulator(val taskSupport: TaskSupport, val timeStats: TimeStatistics) {
 
   def updateBoundaries(boundaries: Boundaries, body: Body): Boundaries = {
-    ???
+    boundaries.minX = math.min(boundaries.minX, body.x)
+    boundaries.maxX = math.max(boundaries.maxX, body.x)
+    boundaries.minY = math.min(boundaries.minY, body.y)
+    boundaries.maxY = math.max(boundaries.maxY, body.y)
+    boundaries
   }
 
   def mergeBoundaries(a: Boundaries, b: Boundaries): Boundaries = {
