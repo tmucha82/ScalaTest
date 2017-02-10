@@ -70,8 +70,8 @@ package object barneshut {
     val centerY: Float = nw.centerY + nw.size / 2
     val size: Float = nw.size + ne.size
     val mass: Float = quads.map(_.mass).sum
-    val massX: Float = quads.map(quad => quad.massX * quad.mass).sum / mass
-    val massY: Float = quads.map(quad => quad.massY * quad.mass).sum / mass
+    val massX: Float = if (mass != 0) quads.map(quad => quad.massX * quad.mass).sum / mass else centerX
+    val massY: Float = if (mass != 0) quads.map(quad => quad.massY * quad.mass).sum / mass else centerY
     val total: Int = quads.map(_.total).sum
 
     def insert(body: Body): Fork = {

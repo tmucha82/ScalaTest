@@ -41,6 +41,21 @@ class BarnesHutSuite extends FunSuite {
     assert(quad.total == 1, s"${quad.total} should be 1")
   }
 
+  test("Fork with 4 empty quadrants") {
+    val nw = Empty(1f, 1f, 0f)
+    val ne = Empty(3f, 1f, 0f)
+    val sw = Empty(1f, 3f, 0f)
+    val se = Empty(3f, 3f, 0f)
+    val quad = Fork(nw, ne, sw, se)
+
+    assert(quad.centerX === 1)
+    assert(quad.centerY === 1)
+    assert(quad.mass === 0f)
+    assert(quad.massX === 1f)
+    assert(quad.massY === 1f)
+    assert(quad.total === 0)
+  }
+
   test("Fork with 3 empty quadrants and 1 leaf (nw)") {
     val b = new Body(123f, 18f, 26f, 0f, 0f)
     val nw = Leaf(17.5f, 27.5f, 5f, Seq(b))
