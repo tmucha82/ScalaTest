@@ -399,6 +399,24 @@ class BarnesHutSuite extends FunSuite {
     result = simulator.mergeBoundaries(a, b)
     assert((result.minX, result.minY, result.maxX, result.maxY) ===(10, 10, 13, 13))
   }
+
+  test("Simulator computeSectorMatrix should compose proper matrix") {
+    val simulator = new Simulator(defaultTaskSupport, new TimeStatistics)
+    val boundaries = new Boundaries()
+    boundaries.minX = 0
+    boundaries.minY = 0
+    boundaries.maxX = 32
+    boundaries.maxY = 32
+    var bodies: Seq[Body] = Seq()
+
+    for(i <- 2 to boundaries.maxX.toInt by 4; j <- 2 to boundaries.maxY.toInt by 4) {
+      bodies = bodies :+ new Body(1f, i, j, 0f, 0f)
+    }
+
+    val sectorMatrix = simulator.computeSectorMatrix(bodies, boundaries)
+    assert(sectorMatrix.sectorSize === 4)
+    assert(sectorMatrix.matrix.length === 64)
+  }
 }
 
 object FloatOps {
