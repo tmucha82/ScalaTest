@@ -368,6 +368,37 @@ class BarnesHutSuite extends FunSuite {
     assert((boundaries.minX, boundaries.minY, boundaries.maxX, boundaries.maxY) ===(8, 7, 15, 16))
   }
 
+  test("Simulator mergeBoundaries should return proper min and max of x and y") {
+    val simulator = new Simulator(defaultTaskSupport, new TimeStatistics)
+    val a = new Boundaries()
+    a.minX = 10
+    a.minY = 10
+    a.maxX = 12
+    a.maxY = 12
+
+    val b = new Boundaries()
+    b.minX = 11
+    b.minY = 11
+    b.maxX = 13
+    b.maxY = 13
+
+    val c = new Boundaries()
+    c.minX = 10.5f
+    c.minY = 10.5f
+    c.maxX = 11.5f
+    c.maxY = 11.5f
+
+    var result = new Boundaries()
+
+    result = simulator.mergeBoundaries(a, c)
+    assert((result.minX, result.minY, result.maxX, result.maxY) ===(10, 10, 12, 12))
+
+    result = simulator.mergeBoundaries(b, c)
+    assert((result.minX, result.minY, result.maxX, result.maxY) ===(10.5, 10.5, 13, 13))
+
+    result = simulator.mergeBoundaries(a, b)
+    assert((result.minX, result.minY, result.maxX, result.maxY) ===(10, 10, 13, 13))
+  }
 }
 
 object FloatOps {
