@@ -18,6 +18,8 @@ object WikipediaRanking {
   // Hint: use a combination of `sc.textFile`, `WikipediaData.filePath` and `WikipediaData.parse`
   val wikiRdd: RDD[WikipediaArticle] = sc.textFile(WikipediaData.filePath).map(WikipediaData.parse).cache()
 
+  def articleContainsLang(lang: String, article: WikipediaArticle): Boolean = article.text.split(" ").contains(lang)
+
   /**
     * Returns the number of articles on which the language `lang` occurs.
     * Hint1: consider using method `aggregate` on RDD[T].
@@ -27,7 +29,7 @@ object WikipediaRanking {
     */
   def occurrencesOfLang(lang: String, rdd: RDD[WikipediaArticle]): Int = {
     val count: (Int, WikipediaArticle) => Int = (counter, article) => {
-      if (article.text.split(" ").contains(lang)) counter + 1 else counter
+      if (articleContainsLang(lang, article)) counter + 1 else counter
     }
     rdd.aggregate(0)(count, _ + _)
   }
@@ -47,7 +49,9 @@ object WikipediaRanking {
   /* Compute an inverted index of the set of articles, mapping each language
    * to the Wikipedia pages in which it occurs.
    */
-  def makeIndex(langs: List[String], rdd: RDD[WikipediaArticle]): RDD[(String, Iterable[WikipediaArticle])] = ???
+  def makeIndex(langs: List[String], rdd: RDD[WikipediaArticle]): RDD[(String, Iterable[WikipediaArticle])] = {
+    rdd.flatMap(article => langs.filter(lang => articleContainsLang(lang, article)).map(lang => (lang, article))).groupByKey()
+  }
 
   /* (2) Compute the language ranking again, but now using the inverted index. Can you notice
    *     a performance improvement?
