@@ -49,3 +49,8 @@ crashlytics-build.properties
 
 project/
 target/
+projectFilesBackup/
+
+/src/main/resources/wikipedia/wikipedia.dat
+!/src/main/resources/wikipedia/wikipedia.txt
+
