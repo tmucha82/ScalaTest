@@ -16,14 +16,14 @@ object WikipediaRanking {
   val sc: SparkContext = new SparkContext(conf)
 
   // Hint: use a combination of `sc.textFile`, `WikipediaData.filePath` and `WikipediaData.parse`
-  val wikiRdd: RDD[WikipediaArticle] = ???
+  val wikiRdd: RDD[WikipediaArticle] = sc.textFile(WikipediaData.filePath).map(WikipediaData.parse).cache()
 
   /** Returns the number of articles on which the language `lang` occurs.
-   *  Hint1: consider using method `aggregate` on RDD[T].
-   *  Hint2: should you count the "Java" language when you see "JavaScript"?
-   *  Hint3: the only whitespaces are blanks " "
-   *  Hint4: no need to search in the title :)
-   */
+    * Hint1: consider using method `aggregate` on RDD[T].
+    * Hint2: should you count the "Java" language when you see "JavaScript"?
+    * Hint3: the only whitespaces are blanks " "
+    * Hint4: no need to search in the title :)
+    */
   def occurrencesOfLang(lang: String, rdd: RDD[WikipediaArticle]): Int = ???
 
   /* (1) Use `occurrencesOfLang` to compute the ranking of the languages
@@ -78,6 +78,7 @@ object WikipediaRanking {
   }
 
   val timing = new StringBuffer
+
   def timed[T](label: String, code: => T): T = {
     val start = System.currentTimeMillis()
     val result = code
