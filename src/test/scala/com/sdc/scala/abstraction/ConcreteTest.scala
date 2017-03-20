@@ -158,7 +158,7 @@ class ConcreteTest extends FunSuite {
     val lassie = new Dog
     val anotherDog = new Dog
     lassie.eat(new DogFood)
-//    lassie.eat(new bessy.SuitableFood) //won't compile
+    //    lassie.eat(new bessy.SuitableFood) //won't compile
     lassie.eat(new anotherDog.SuitableFood) //this would
 
     //strange it is like above..but it does not work like you think it would
