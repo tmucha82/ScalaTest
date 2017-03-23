@@ -93,14 +93,37 @@ class StackOverflowSuite extends FunSuite with BeforeAndAfterAll {
         (Posting(1, 5484340, None, None, 0, Some("C#")), Posting(2, 5494879, None, Some(5484340), 1, None))
       ).toIterable),
       (9002525, Seq(
-        (Posting(1, 9002525, None, None, 2, Some("C++")), Posting(2, 9003401, None, Some(9002525), 4, None)),
-        (Posting(1, 9002525, None, None, 2, Some("C++")), Posting(2, 9003942, None, Some(9002525), 1, None))
+        (Posting(1, 9002525, None, None, 2, Some("C++")), Posting(2, 9003401, None, Some(9002525), 14, None)),
+        (Posting(1, 9002525, None, None, 2, Some("C++")), Posting(2, 9003942, None, Some(9002525), 31, None))
       ).toIterable)
     ))
 
-    //TODO
     val scoredPostings = testObject.scoredPostings(groupedPosting)
     val result = scoredPostings.collect()
-    result.foreach(println)
+
+    val firstScore = result.head
+    assert(firstScore._1 === Posting(1, 5484340, None, None, 0, Some("C#")))
+    assert(firstScore._2 === 1)
+
+    val secondScore = result.tail.head
+    assert(secondScore._1 === Posting(1, 9002525, None, None, 2, Some("C++")))
+    assert(secondScore._2 === 31)
   }
+
+  ignore("scoredPostings for all data: count - should be 2121822") {
+    val questionWithAnswers = testObject.groupedPostings(testObject.raw)
+    val scoredPostings = testObject.scoredPostings(questionWithAnswers).count()
+    assert(2121822 === scoredPostings)
+  }
+
+  ignore("scoredPostings for all data: take first element") {
+    val questionWithAnswers = testObject.groupedPostings(testObject.raw)
+    val test = questionWithAnswers.take(1)
+    test.foreach(println)
+    val scoredPosting = testObject.scoredPostings(questionWithAnswers).take(1).head
+    println(scoredPosting)
+    assert(Posting(1, 17743038, None, None, 1, Some("Python")) === scoredPosting._1)
+    assert(0 === scoredPosting._2)
+  }
+
 }

@@ -23,7 +23,7 @@ object StackOverflow extends StackOverflow {
     val lines = sc.textFile("src/main/resources/stackoverflow/stackoverflow.csv")
     val raw = rawPostings(lines)
     val grouped = groupedPostings(raw)
-    //    val scored  = scoredPostings(grouped)
+    val scored = scoredPostings(grouped)
     //    val vectors = vectorPostings(scored)
     //    assert(vectors.count() == 2121822, "Incorrect number of vectors: " + vectors.count())
 
@@ -99,7 +99,11 @@ class StackOverflow extends Serializable {
       highScore
     }
 
-    ???
+    grouped.map {
+      case (_, questionAdnAnswer) => (questionAdnAnswer.head._1, answerHighScore(questionAdnAnswer.map {
+        case (_, answer) => answer
+      }.toArray))
+    }
   }
 
 
@@ -235,7 +239,7 @@ class StackOverflow extends Serializable {
   def findClosest(p: (Int, Int), centers: Array[(Int, Int)]): Int = {
     var bestIndex = 0
     var closest = Double.PositiveInfinity
-    for (i <- 0 until centers.length) {
+    for (i <- centers.indices) {
       val tempDist = euclideanDistance(p, centers(i))
       if (tempDist < closest) {
         closest = tempDist
@@ -288,6 +292,6 @@ class StackOverflow extends Serializable {
     println("  Score  Dominant language (%percent)  Questions")
     println("================================================")
     for ((lang, percent, size, score) <- results)
-      println(f"${score}%7d  ${lang}%-17s (${percent}%-5.1f%%)      ${size}%7d")
+      println(f"$score%7d  $lang%-17s ($percent%-5.1f%%)      $size%7d")
   }
 }
