@@ -1,6 +1,5 @@
 package org.coursera.scala.spark.week2.assignment.stackoverflow
 
-import org.junit.Ignore
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
@@ -64,9 +63,9 @@ class StackOverflowSuite extends FunSuite with BeforeAndAfterAll {
 
     /**
       * Posting(1, 9002525, None, None, 2, Some("C++")) -> [
-      *   Posting(2, 9003401, None, Some(9002525), 4, None),
-      *   Posting(2, 9003942, None, Some(9002525), 1, None),
-      *   Posting(2, 9005311, None, Some(9002525), 0, None)
+      * Posting(2, 9003401, None, Some(9002525), 4, None),
+      * Posting(2, 9003942, None, Some(9002525), 1, None),
+      * Posting(2, 9005311, None, Some(9002525), 0, None)
       * ]
       */
     val questionTwo = result.filter { case (qId, _) => qId == 9002525 }.head
@@ -88,4 +87,20 @@ class StackOverflowSuite extends FunSuite with BeforeAndAfterAll {
     assert(17743038 === questionWithAnswers._1)
   }
 
+  test("scoredPostings for some data") {
+    val groupedPosting = StackOverflow.sc.parallelize(List(
+      (5484340, Seq(
+        (Posting(1, 5484340, None, None, 0, Some("C#")), Posting(2, 5494879, None, Some(5484340), 1, None))
+      ).toIterable),
+      (9002525, Seq(
+        (Posting(1, 9002525, None, None, 2, Some("C++")), Posting(2, 9003401, None, Some(9002525), 4, None)),
+        (Posting(1, 9002525, None, None, 2, Some("C++")), Posting(2, 9003942, None, Some(9002525), 1, None))
+      ).toIterable)
+    ))
+
+    //TODO
+    val scoredPostings = testObject.scoredPostings(groupedPosting)
+    val result = scoredPostings.collect()
+    result.foreach(println)
+  }
 }
