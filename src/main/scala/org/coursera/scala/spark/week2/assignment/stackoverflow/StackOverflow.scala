@@ -24,10 +24,10 @@ object StackOverflow extends StackOverflow {
     val raw = rawPostings(lines)
     val grouped = groupedPostings(raw)
     val scored = scoredPostings(grouped)
-    //    val vectors = vectorPostings(scored)
-    //    assert(vectors.count() == 2121822, "Incorrect number of vectors: " + vectors.count())
+    val vectors = vectorPostings(scored)
+    assert(vectors.count() == 2121822, "Incorrect number of vectors: " + vectors.count())
 
-    //    val means   = kmeans(sampleVectors(vectors), vectors, debug = true)
+    val means   = kmeans(sampleVectors(vectors), vectors, debug = true)
     //    val results = clusterResults(means, vectors)
     //    printResults(results)
   }
@@ -106,9 +106,8 @@ class StackOverflow extends Serializable {
     }
   }
 
-
   /** Compute the vectors for the kmeans */
-  def vectorPostings(scored: RDD[(Posting, Int)]): RDD[(Int, Int)] = {
+    def vectorPostings(scored: RDD[(Posting, Int)]): RDD[(Int, Int)] = {
     /** Return optional index of first language that occurs in `tags`. */
     def firstLangInTag(tag: Option[String], ls: List[String]): Option[Int] = {
       if (tag.isEmpty) None
@@ -123,7 +122,12 @@ class StackOverflow extends Serializable {
       }
     }
 
-    ???
+    val notDefined = -1
+    scored.map {
+      case (question, highScore) => (firstLangInTag(question.tags, langs).getOrElse(notDefined) * langSpread, highScore)
+    }.filter {
+      case (index, _) => index != notDefined
+    }.cache()
   }
 
 

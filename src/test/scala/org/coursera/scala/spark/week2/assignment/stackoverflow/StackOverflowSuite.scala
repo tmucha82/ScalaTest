@@ -118,12 +118,52 @@ class StackOverflowSuite extends FunSuite with BeforeAndAfterAll {
 
   ignore("scoredPostings for all data: take first element") {
     val questionWithAnswers = testObject.groupedPostings(testObject.raw)
-    val test = questionWithAnswers.take(1)
-    test.foreach(println)
     val scoredPosting = testObject.scoredPostings(questionWithAnswers).take(1).head
-    println(scoredPosting)
     assert(Posting(1, 17743038, None, None, 1, Some("Python")) === scoredPosting._1)
     assert(0 === scoredPosting._2)
   }
 
+  test("vectorPostings for some data") {
+    val scoredPosting = StackOverflow.sc.parallelize(List(
+      (Posting(1, 6, None, None, 140, Some("CSS")), 67),
+      (Posting(1, 42, None, None, 155, Some("PHP")), 89),
+      (Posting(1, 72, None, None, 16, Some("Ruby")), 3),
+      (Posting(1, 126, None, None, 33, Some("Java")), 30),
+      (Posting(1, 174, None, None, 38, Some("C#")), 20),
+      (Posting(1, 178, None, None, 38, Some("C#")), 34),
+      (Posting(1, 179, None, None, 38, Some("Java")), 23),
+      (Posting(1, 181, None, None, 38, Some("Ruby")), 7),
+      (Posting(1, 182, None, None, 38, Some("COBOL")), 7)
+    ))
+
+    val vectorPostings = testObject.vectorPostings(scoredPosting)
+    val result = vectorPostings.collect()
+    assert((testObject.langs.indexOf("CSS") * testObject.langSpread, 67) === result(0))
+    assert((testObject.langs.indexOf("PHP") * testObject.langSpread, 89) === result(1))
+    assert((testObject.langs.indexOf("Ruby") * testObject.langSpread, 3) === result(2))
+    assert((testObject.langs.indexOf("Java") * testObject.langSpread, 30) === result(3))
+    assert((testObject.langs.indexOf("C#") * testObject.langSpread, 20) === result(4))
+    assert((testObject.langs.indexOf("C#") * testObject.langSpread, 34) === result(5))
+    assert((testObject.langs.indexOf("Java") * testObject.langSpread, 23) === result(6))
+    assert((testObject.langs.indexOf("Ruby") * testObject.langSpread, 7) === result(7))
+  }
+
+  ignore("vectorPostings for all data: count - should be 2121822") {
+    val questionWithAnswers = testObject.groupedPostings(testObject.raw)
+    val scoredPostings = testObject.scoredPostings(questionWithAnswers)
+    val vectorPostings = testObject.vectorPostings(scoredPostings).count()
+    assert(2121822 === vectorPostings)
+  }
+
+  ignore("vectorPostings for all data: take first tree elements") {
+    val questionWithAnswers = testObject.groupedPostings(testObject.raw)
+    val scoredPostings = testObject.scoredPostings(questionWithAnswers)
+    val result = scoredPostings.take(3)
+    val vectorPostings = testObject.vectorPostings(scoredPostings)
+
+    val test = vectorPostings.take(3)
+    assert((testObject.langs.indexOf(result(0)._1.tags.get) * testObject.langSpread, result(0)._2) === test(0))
+    assert((testObject.langs.indexOf(result(1)._1.tags.get) * testObject.langSpread, result(1)._2) === test(1))
+    assert((testObject.langs.indexOf(result(2)._1.tags.get) * testObject.langSpread, result(2)._2) === test(2))
+  }
 }
