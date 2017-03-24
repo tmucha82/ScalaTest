@@ -1,11 +1,9 @@
 package org.coursera.scala.spark.week2.assignment.stackoverflow
 
-import org.apache.spark.SparkConf
-import org.apache.spark.SparkContext
-import org.apache.spark.SparkContext._
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.rdd.RDD
-import annotation.tailrec
-import scala.reflect.ClassTag
+
+import scala.annotation.tailrec
 
 /** A raw stackoverflow posting, either a question or an answer */
 case class Posting(postingType: Int, id: Int, acceptedAnswer: Option[Int], parentId: Option[Int], score: Int, tags: Option[String]) extends Serializable
@@ -27,9 +25,9 @@ object StackOverflow extends StackOverflow {
     val vectors = vectorPostings(scored)
     assert(vectors.count() == 2121822, "Incorrect number of vectors: " + vectors.count())
 
-    val means   = kmeans(sampleVectors(vectors), vectors, debug = true)
-    //    val results = clusterResults(means, vectors)
-    //    printResults(results)
+    val means = kmeans(sampleVectors(vectors), vectors, debug = true)
+    val results = clusterResults(means, vectors)
+    printResults(results)
   }
 }
 
@@ -56,7 +54,6 @@ class StackOverflow extends Serializable {
 
   /** K-means parameter: Maximum iterations */
   def kmeansMaxIterations = 120
-
 
   //
   //
@@ -107,7 +104,7 @@ class StackOverflow extends Serializable {
   }
 
   /** Compute the vectors for the kmeans */
-    def vectorPostings(scored: RDD[(Posting, Int)]): RDD[(Int, Int)] = {
+  def vectorPostings(scored: RDD[(Posting, Int)]): RDD[(Int, Int)] = {
     /** Return optional index of first language that occurs in `tags`. */
     def firstLangInTag(tag: Option[String], ls: List[String]): Option[Int] = {
       if (tag.isEmpty) None
@@ -162,17 +159,16 @@ class StackOverflow extends Serializable {
     val res =
       if (langSpread < 500)
       // sample the space regardless of the language
-        vectors.takeSample(false, kmeansKernels, 42)
+        vectors.takeSample(withReplacement = false, kmeansKernels, 42)
       else
       // sample the space uniformly from each language partition
         vectors.groupByKey.flatMap({
-          case (lang, vectors) => reservoirSampling(lang, vectors.toIterator, perLang).map((lang, _))
+          case (lang, postingVectors) => reservoirSampling(lang, postingVectors.toIterator, perLang).map((lang, _))
         }).collect()
 
     assert(res.length == kmeansKernels, res.length)
     res
   }
-
 
   //
   //
@@ -207,7 +203,6 @@ class StackOverflow extends Serializable {
       newMeans
     }
   }
-
 
   //
   //
@@ -268,7 +263,6 @@ class StackOverflow extends Serializable {
     }
     ((comp1 / count).toInt, (comp2 / count).toInt)
   }
-
 
   //
   //
