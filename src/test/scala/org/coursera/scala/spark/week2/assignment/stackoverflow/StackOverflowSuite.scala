@@ -166,4 +166,55 @@ class StackOverflowSuite extends FunSuite with BeforeAndAfterAll {
     assert((testObject.langs.indexOf(result(1)._1.tags.get) * testObject.langSpread, result(1)._2) === test(1))
     assert((testObject.langs.indexOf(result(2)._1.tags.get) * testObject.langSpread, result(2)._2) === test(2))
   }
+
+  ignore("sampleVectors for all data") {
+    val questionWithAnswers = testObject.groupedPostings(testObject.raw)
+    val scoredPostings = testObject.scoredPostings(questionWithAnswers)
+    val vectorPostings = testObject.vectorPostings(scoredPostings)
+    val sampleVectors = testObject.sampleVectors(vectorPostings)
+    val (lang, mean) = sampleVectors(0)
+    assert(450000 === lang)
+    assert(0 === mean)
+  }
+
+  test("clusterResults for some data") {
+    val vectors = StackOverflow.sc.parallelize(List(
+      (0, 2),
+      (0, 3),
+      (0, 4),
+      (0, 1),
+      (0, 3),
+      (450000, 3),
+      (450000, 2),
+      (450000, 1),
+      (450000, 3),
+      (450000, 3),
+      (450000, 3),
+      (450000, 3),
+      (450000, 3),
+      (550000, 1130),
+      (700000, 49),
+      (700000, 49),
+      (700000, 49),
+      (700000, 49),
+      (700000, 49),
+      (700000, 49)
+    ))
+    val means = Array(
+      (0, 3),
+      (450000, 3),
+      (450000, 3),
+      (550000, 1130),
+      (700000, 49),
+      (700000, 49)
+
+    )
+
+    val result = testObject.clusterResults(means, vectors)
+    assert(4 === result.length)
+    assert(("JavaScript", 1.0, 1, 1) === result(0))
+    assert(("Perl", 1.0, 1, 1) === result(1))
+    assert(("Haskell", 1.0, 1, 1) === result(2))
+    assert(("Groovy", 1.0, 1, 1) === result(3))
+  }
 }
