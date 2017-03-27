@@ -96,7 +96,11 @@ class StackOverflow extends Serializable {
       highScore
     }
 
-    grouped.flatMap(_._2).groupByKey().mapValues(postings => answerHighScore(postings.toArray))
+    grouped.map {
+      case (_, questionAdnAnswer) => (questionAdnAnswer.head._1, answerHighScore(questionAdnAnswer.map {
+        case (_, answer) => answer
+      }.toArray))
+    }
   }
 
   /** Compute the vectors for the kmeans */
@@ -172,21 +176,21 @@ class StackOverflow extends Serializable {
   //
   //
 
-  def classify(vectors: RDD[(Int, Int)], means: Array[(Int, Int)]): RDD[((Int, Int), Iterable[(Int, Int)])] = {
-    vectors.groupBy(vector => means(findClosest(vector, means))).cache()
-  }
-
-  def update(classified: RDD[((Int, Int), Iterable[(Int, Int)])], oldMeans: Array[(Int, Int)]): Array[(Int, Int)] = {
-    oldMeans.map(oldMean => classified.filter(_._1 == oldMean).take(1) match {
-      //      case Array(_, posting: Iterable[(Int, Int)]) => averageVectors(posting)
-      case Array(t) => averageVectors(t._2)
-      case _ => oldMean
-    })
-  }
-
   /** Main kmeans computation */
   @tailrec final def kmeans(means: Array[(Int, Int)], vectors: RDD[(Int, Int)], iter: Int = 1, debug: Boolean = false): Array[(Int, Int)] = {
-    val newMeans = update(classify(vectors, means), means)
+    val newMeans = means.clone() // you need to compute newMeans
+
+    vectors
+      .map(
+        vector => (findClosest(vector, means), vector)
+      )
+      .groupByKey()
+      .mapValues(averageVectors)
+      .collect()
+      .foreach(pair => {
+        newMeans.update(pair._1, pair._2)
+      })
+
     val distance = euclideanDistance(means, newMeans)
 
     if (debug) {
