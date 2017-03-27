@@ -101,11 +101,11 @@ class StackOverflowSuite extends FunSuite with BeforeAndAfterAll {
     val scoredPostings = testObject.scoredPostings(groupedPosting)
     val result = scoredPostings.collect()
 
-    val firstScore = result.head
+    val firstScore = result.find { case (posting, _) => posting.id == 5484340 }.get
     assert(firstScore._1 === Posting(1, 5484340, None, None, 0, Some("C#")))
     assert(firstScore._2 === 1)
 
-    val secondScore = result.tail.head
+    val secondScore = result.find { case (posting, _) => posting.id == 9002525 }.get
     assert(secondScore._1 === Posting(1, 9002525, None, None, 2, Some("C++")))
     assert(secondScore._2 === 31)
   }
@@ -212,9 +212,9 @@ class StackOverflowSuite extends FunSuite with BeforeAndAfterAll {
 
     val result = testObject.clusterResults(means, vectors)
     assert(4 === result.length)
-    assert(("JavaScript", 1.0, 1, 1) === result(0))
-    assert(("Perl", 1.0, 1, 1) === result(1))
-    assert(("Haskell", 1.0, 1, 1) === result(2))
-    assert(("Groovy", 1.0, 1, 1) === result(3))
+    assert(("JavaScript", 100.0, 5, 3) === result(0))
+    assert(("Perl", 100.0, 8, 3) === result(1))
+    assert(("Groovy", 100.0, 6, 49) === result(2))
+    assert(("Haskell", 100.0, 1, 1130) === result(3))
   }
 }

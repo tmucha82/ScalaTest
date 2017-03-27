@@ -27,8 +27,7 @@ object StackOverflow extends StackOverflow {
 
     val means = kmeans(sampleVectors(vectors), vectors, debug = true)
     val results = clusterResults(means, vectors)
-    //    printResults(results)
-    println(means)
+    printResults(results)
   }
 }
 
@@ -97,11 +96,7 @@ class StackOverflow extends Serializable {
       highScore
     }
 
-    grouped.map {
-      case (_, questionAdnAnswer) => (questionAdnAnswer.head._1, answerHighScore(questionAdnAnswer.map {
-        case (_, answer) => answer
-      }.toArray))
-    }
+    grouped.flatMap(_._2).groupByKey().mapValues(postings => answerHighScore(postings.toArray))
   }
 
   /** Compute the vectors for the kmeans */
@@ -288,15 +283,23 @@ class StackOverflow extends Serializable {
       val langOccurrences = vs.map {
         case (lang, _) => lang
       }.groupBy(lang => lang).mapValues(_.size)
-      val langIndex = langOccurrences.maxBy{
+
+      val maxLangIndex = langOccurrences.maxBy {
         case (_, size) => size
       }._1
 
-      val langLabel: String = langs(langIndex / langSpread) // most common language in the cluster
-    val langPercent: Double = 1.0 // percent of the questions in the most common language
-    val clusterSize: Int = 1
-      val medianScore: Int = 1
+      val langLabel: String = langs(maxLangIndex / langSpread) // most common language in the cluster
+    val langPercent: Double = langOccurrences(maxLangIndex) * 100d / vs.size // percent of the questions in the most common language
+    val clusterSize: Int = vs.size
 
+
+      def calculateMedianScore(): Int = {
+        val sortedScores = vs.map(_._2).toList.sorted
+        val middle = clusterSize / 2
+        if (clusterSize % 2 == 0) (sortedScores(middle - 1) + sortedScores(middle)) / 2 else sortedScores(middle)
+      }
+
+      val medianScore: Int = calculateMedianScore()
       (langLabel, langPercent, clusterSize, medianScore)
     }
 
