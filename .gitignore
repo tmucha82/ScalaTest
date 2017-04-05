@@ -56,3 +56,5 @@ projectFilesBackup/
 
 /src/main/resources/stackoverflow/stackoverflow.csv
 !/src/main/resources/stackoverflow/stackoverflow.txt
+/src/main/resources/timeusage/atussum.csv
+!/src/main/resources/timeusage/atussum.txt
