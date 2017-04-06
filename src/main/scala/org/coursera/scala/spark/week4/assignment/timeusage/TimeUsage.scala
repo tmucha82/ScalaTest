@@ -72,8 +72,7 @@ object TimeUsage {
     * @param line Raw fields
     */
   def row(line: List[String]): Row = {
-    println(line.take(3))
-    ???
+    Row.fromSeq(line.head.replaceAll("\"", "") :: line.tail.map(element => element.toDouble))
   }
 
   /** @return The initial data frame columns partitioned in three groups: primary needs (sleeping, eating, etc.),

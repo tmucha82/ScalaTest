@@ -95,8 +95,18 @@ class TimeUsageSuite extends FunSuite with BeforeAndAfterAll {
   test("row for transforming line to proper case class") {
     new TestSet {
       val rdd = spark.sparkContext.textFile(fsPath(testFilePath))
-      println(get(rdd, 1))
-      //      row()
+      val result = row(get(rdd, 1).split(",").toList)
+      println(result)
+      assert(columnNames.length === result.length)
+      println(result.getString(0))
+      println(result.getDouble(1))
+      println(result.getDouble(2))
+      println(result.getDouble(3))
+      assert("20030100013280" === result.getString(0))
+      assert(1 === result.getDouble(1))
+      assert(-1 === result.getDouble(2))
+      assert(44 === result.getDouble(3))
+      assert(2 === result.getDouble(4))
     }
   }
 
