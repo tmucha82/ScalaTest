@@ -1,5 +1,6 @@
 package org.coursera.scala.spark.week4.assignment.timeusage
 
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types.{DoubleType, StringType}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -13,6 +14,10 @@ class TimeUsageSuite extends FunSuite with BeforeAndAfterAll {
 
     val testFilePath = "/timeusage/test.csv"
     val assignmentFilePath = "/timeusage/atussum.csv"
+
+    def get[T](rdd: RDD[T], i: Integer): T = {
+      rdd.take(i + 1).reverse.head
+    }
 
     val columnNames = List("tucaseid", "gemetsta", "gtmetsta", "peeduca", "pehspnon", "ptdtrace", "teage", "telfs", "temjot",
       "teschenr", "teschlvl", "tesex", "tespempnot", "trchildnum", "trdpftpt", "trernwa", "trholiday", "trspftpt",
@@ -69,6 +74,7 @@ class TimeUsageSuite extends FunSuite with BeforeAndAfterAll {
   test("dfSchema getting columns") {
     new TestSet {
       def schema = dfSchema(columnNames)
+
       assert(schema.fieldNames === columnNames.toArray)
       assert(schema.fields.head.dataType === StringType)
       assert(schema.fields.head.nullable === false)
@@ -86,9 +92,17 @@ class TimeUsageSuite extends FunSuite with BeforeAndAfterAll {
     }
   }
 
+  test("row for transforming line to proper case class") {
+    new TestSet {
+      val rdd = spark.sparkContext.textFile(fsPath(testFilePath))
+      println(get(rdd, 1))
+      //      row()
+    }
+  }
+
   ignore("read for getting file") {
     new TestSet {
-      val (columns, initDf) = read("/timeusage/atussum.csv")
+      val (columns, initDf) = read(testFilePath)
       println(columns)
       initDf.show()
 
