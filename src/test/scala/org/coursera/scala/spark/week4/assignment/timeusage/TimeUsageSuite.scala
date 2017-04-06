@@ -11,8 +11,8 @@ class TimeUsageSuite extends FunSuite with BeforeAndAfterAll {
 
   trait TestSet {
 
-    val testFilePath = "/timeusage/atussum.csv"
-    val assignmentFilePath = "/timeusage/test.csv"
+    val testFilePath = "/timeusage/test.csv"
+    val assignmentFilePath = "/timeusage/atussum.csv"
 
     val columnNames = List("tucaseid", "gemetsta", "gtmetsta", "peeduca", "pehspnon", "ptdtrace", "teage", "telfs", "temjot",
       "teschenr", "teschlvl", "tesex", "tespempnot", "trchildnum", "trdpftpt", "trernwa", "trholiday", "trspftpt",
@@ -78,6 +78,8 @@ class TimeUsageSuite extends FunSuite with BeforeAndAfterAll {
 
   test("fsPath for getting file") {
     new TestSet {
+      assert(fsPath(testFilePath).endsWith("test.csv"))
+      assert(fsPath(assignmentFilePath).endsWith("atussum.csv"))
       intercept[NullPointerException] {
         fsPath("/timeusage/blahblah.csv")
       }
