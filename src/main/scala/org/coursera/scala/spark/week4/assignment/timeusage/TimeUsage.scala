@@ -166,7 +166,7 @@ object TimeUsage {
     */
   def timeUsageGrouped(summed: DataFrame): DataFrame = {
     summed.groupBy($"working", $"sex", $"age").
-      agg(avg(round($"primaryNeeds")).as("primaryNeeds"), avg(round($"work")).as("work"), avg(round($"other")).as("other")).
+      agg(round(avg($"primaryNeeds"), 1).as("primaryNeeds"), round(avg($"work"), 1).as("work"), round(avg($"other"), 1).as("other")).
       orderBy($"working", $"sex", $"age")
   }
 

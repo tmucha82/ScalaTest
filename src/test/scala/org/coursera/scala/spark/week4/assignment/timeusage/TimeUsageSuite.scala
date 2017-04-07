@@ -234,24 +234,23 @@ class TimeUsageSuite extends FunSuite with BeforeAndAfterAll {
       assert("not working" === result(0).getString(0))
       assert("female" === result(0).getString(1))
       assert("young" === result(0).getString(2))
-      assert(12 === result(0).getDouble(3))
+      assert(11.9 === result(0).getDouble(3))
       assert(0.0 === result(0).getDouble(4))
-      assert(12 === result(0).getDouble(5))
+      assert(12.1 === result(0).getDouble(5))
 
       assert("working" === result(1).getString(0))
       assert("female" === result(1).getString(1))
       assert("active" === result(1).getString(2))
-      assert(14 === result(1).getDouble(3))
+      assert(13.8 === result(1).getDouble(3))
       assert(0.0 === result(1).getDouble(4))
-      assert(10 === result(1).getDouble(5))
+      assert(10.2 === result(1).getDouble(5))
 
       assert("working" === result(2).getString(0))
       assert("male" === result(2).getString(1))
       assert("elder" === result(2).getString(2))
-      assert(15 === result(2).getDouble(3))
+      assert(15.3 === result(2).getDouble(3))
       assert(0.0 === result(2).getDouble(4))
-      assert(9.0 === result(2).getDouble(5))
-
+      assert(8.8 === result(2).getDouble(5))
     }
   }
 }
