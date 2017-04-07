@@ -1,11 +1,13 @@
 package org.coursera.scala.spark.week4.assignment.timeusage
 
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.Column
 import org.apache.spark.sql.types.{DoubleType, StringType}
+import org.coursera.scala.spark.week4.assignment.timeusage.TimeUsage._
+import spark.implicits._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
-import TimeUsage._
 
 @RunWith(classOf[JUnitRunner])
 class TimeUsageSuite extends FunSuite with BeforeAndAfterAll {
@@ -116,6 +118,24 @@ class TimeUsageSuite extends FunSuite with BeforeAndAfterAll {
       assert(-1 === result.getDouble(2))
       assert(44 === result.getDouble(3))
       assert(2 === result.getDouble(4))
+    }
+  }
+
+  test("classifiedColumns for getting interesting columns") {
+    new TestSet {
+      val (primaryNeedsColumns, workColumns, otherColumns) = classifiedColumns(columnNames)
+
+      //"t01.*", "t03.*", "t11.*", "t1801.*", "t1803.*"
+      val primaryNeedsColumnNames = List(
+        "t010101", "t010102", "t010199", "t010201", "t010299", "t010301", "t010399", "t010401", "t010499", "t010501", "t010599", "t019999",
+        "t030101", "t030102", "t030103", "t030104", "t030105", "t030108", "t030109", "t030110", "t030111", "t030112", "t030186", "t030199",
+        "t030201", "t030202", "t030203", "t030204", "t030299", "t030301", "t030302", "t030303", "t030399", "t030401", "t030402", "t030403",
+        "t030404", "t030405", "t030499", "t030501", "t030502", "t030503", "t030504", "t030599", "t039999",
+        "t110101", "t110199", "t110281", "t110289", "t119999",
+        "t180101", "t180199",
+        "t180381", "t180382", "t180399"
+      )
+//      assert(primaryNeedsColumnNames === primaryNeedsColumns)
     }
   }
 }

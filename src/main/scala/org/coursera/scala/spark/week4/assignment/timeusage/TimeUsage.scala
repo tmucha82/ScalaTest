@@ -90,7 +90,10 @@ object TimeUsage {
     *      “t10”, “t12”, “t13”, “t14”, “t15”, “t16” and “t18” (those which are not part of the previous groups only).
     */
   def classifiedColumns(columnNames: List[String]): (List[Column], List[Column], List[Column]) = {
-    ???
+    val primaryNeedsColumns = List(expr("t01.*"), expr("t03.*"), expr("t11.*"), expr("t1801.*"), expr("t1803.*"))
+    val workColumns = List()
+    val otherColumns = List()
+    (primaryNeedsColumns, workColumns, otherColumns)
   }
 
   /** @return a projection of the initial DataFrame such that all columns containing hours spent on primary needs
