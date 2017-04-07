@@ -2,6 +2,7 @@ package org.coursera.scala.spark.week4.assignment.timeusage
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.Column
+import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{DoubleType, StringType}
 import org.coursera.scala.spark.week4.assignment.timeusage.TimeUsage._
 import spark.implicits._
@@ -183,6 +184,74 @@ class TimeUsageSuite extends FunSuite with BeforeAndAfterAll {
       assert(primaryNeedsColumnNames.map(new Column(_)) === primaryNeedsColumns)
       assert(workColumnNames.map(new Column(_)) === workColumns)
       assert(otherColumnNames.map(new Column(_)) === otherColumns)
+    }
+  }
+
+  test("timeUsageSummary for getting ineteresting data about time usages") {
+    new TestSet {
+      val (_, dataFrame) = read(testFilePath)
+      val (primaryNeedsColumns, workColumns, otherColumns) = classifiedColumns(columnNames)
+      val timeUsageFrame = timeUsageSummary(primaryNeedsColumns, workColumns, otherColumns, dataFrame)
+
+      val result = timeUsageFrame.collect()
+
+      assert(Array("working", "sex", "age", "primaryNeeds", "work", "other") === timeUsageFrame.columns)
+      assert(3 === result.length)
+      assert("working" === result(0).getString(0))
+      assert("male" === result(0).getString(1))
+      assert("elder" === result(0).getString(2))
+      assert(15.25 === result(0).getDouble(3))
+      assert(0.0 === result(0).getDouble(4))
+      assert(8.75 === result(0).getDouble(5))
+
+      assert("working" === result(1).getString(0))
+      assert("female" === result(1).getString(1))
+      assert("active" === result(1).getString(2))
+      assert(13.833333333333334 === result(1).getDouble(3))
+      assert(0.0 === result(1).getDouble(4))
+      assert(10.166666666666666 === result(1).getDouble(5))
+
+      assert("not working" === result(2).getString(0))
+      assert("female" === result(2).getString(1))
+      assert("young" === result(2).getString(2))
+      assert(11.916666666666666 === result(2).getDouble(3))
+      assert(0.0 === result(2).getDouble(4))
+      assert(12.083333333333334 === result(2).getDouble(5))
+    }
+  }
+
+  test("timeUsageGrouped for getting grouped statistics") {
+    new TestSet {
+      val (columns, dataFrame) = read(testFilePath)
+      val (primaryNeedsColumns, workColumns, otherColumns) = classifiedColumns(columns)
+      val summaryDf = timeUsageSummary(primaryNeedsColumns, workColumns, otherColumns, dataFrame)
+      val finalDf = timeUsageGrouped(summaryDf)
+
+      val result = finalDf.collect()
+
+      assert(Array("working", "sex", "age", "primaryNeeds", "work", "other") === finalDf.columns)
+      assert(3 === result.length)
+      assert("not working" === result(0).getString(0))
+      assert("female" === result(0).getString(1))
+      assert("young" === result(0).getString(2))
+      assert(12 === result(0).getDouble(3))
+      assert(0.0 === result(0).getDouble(4))
+      assert(12 === result(0).getDouble(5))
+
+      assert("working" === result(1).getString(0))
+      assert("female" === result(1).getString(1))
+      assert("active" === result(1).getString(2))
+      assert(14 === result(1).getDouble(3))
+      assert(0.0 === result(1).getDouble(4))
+      assert(10 === result(1).getDouble(5))
+
+      assert("working" === result(2).getString(0))
+      assert("male" === result(2).getString(1))
+      assert("elder" === result(2).getString(2))
+      assert(15 === result(2).getDouble(3))
+      assert(0.0 === result(2).getDouble(4))
+      assert(9.0 === result(2).getDouble(5))
+
     }
   }
 }
