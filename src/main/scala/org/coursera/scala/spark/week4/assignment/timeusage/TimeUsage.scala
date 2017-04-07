@@ -90,9 +90,9 @@ object TimeUsage {
     *      “t10”, “t12”, “t13”, “t14”, “t15”, “t16” and “t18” (those which are not part of the previous groups only).
     */
   def classifiedColumns(columnNames: List[String]): (List[Column], List[Column], List[Column]) = {
-    val primaryNeedsColumns = List(expr("t01.*"), expr("t03.*"), expr("t11.*"), expr("t1801.*"), expr("t1803.*"))
-    val workColumns = List()
-    val otherColumns = List()
+    val primaryNeedsColumns = columnNames.filter(_.matches("""t((01)|(03)|(11)|(1801)|(1803))\d+""")).map(new Column(_))
+    val workColumns = columnNames.filter(_.matches("""t((05)|(1805))\d+""")).map(new Column(_))
+    val otherColumns = columnNames.filter(_.matches("""t((02)|(04)|(06)|(07)|(08)|(09)|(10)|(12)|(13)|(14)|(15)|(16)|(18[1-9])|(180[^135]))\d+""")).map(new Column(_))
     (primaryNeedsColumns, workColumns, otherColumns)
   }
 
