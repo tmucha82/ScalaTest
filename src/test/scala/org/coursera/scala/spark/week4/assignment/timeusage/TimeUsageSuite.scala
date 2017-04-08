@@ -1,11 +1,9 @@
 package org.coursera.scala.spark.week4.assignment.timeusage
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{Row, Column}
-import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{DoubleType, StringType}
+import org.apache.spark.sql.{Column, Row}
 import org.coursera.scala.spark.week4.assignment.timeusage.TimeUsage._
-import spark.implicits._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
@@ -323,7 +321,6 @@ class TimeUsageSuite extends FunSuite with BeforeAndAfterAll {
       val timeUsageFrame = timeUsageSummary(primaryNeedsColumns, workColumns, otherColumns, dataFrame)
       val timeUsageDataSet = timeUsageSummaryTyped(timeUsageFrame)
 
-      timeUsageDataSet.show()
       val result = timeUsageDataSet.collect()
 
       assert(Array("working", "sex", "age", "primaryNeeds", "work", "other") === timeUsageDataSet.columns)
@@ -351,4 +348,38 @@ class TimeUsageSuite extends FunSuite with BeforeAndAfterAll {
     }
   }
 
+  test("timeUsageGroupedTyped for getting grouped statistics") {
+    new TestSet {
+      val (columns, dataFrame) = read(testFilePath)
+      val (primaryNeedsColumns, workColumns, otherColumns) = classifiedColumns(columns)
+      val timeUsageFrame = timeUsageSummary(primaryNeedsColumns, workColumns, otherColumns, dataFrame)
+      val timeUsageDataSet = timeUsageSummaryTyped(timeUsageFrame)
+      val finalDataSet = timeUsageGroupedTyped(timeUsageDataSet)
+
+      val result = finalDataSet.collect()
+
+      assert(Array("working", "sex", "age", "primaryNeeds", "work", "other") === finalDataSet.columns)
+      assert(3 === result.length)
+      assert("not working" === result(0).working)
+      assert("female" === result(0).sex)
+      assert("young" === result(0).age)
+      assert(11.9 === result(0).primaryNeeds)
+      assert(0.0 === result(0).work)
+      assert(12.1 === result(0).other)
+
+      assert("working" === result(1).working)
+      assert("female" === result(1).sex)
+      assert("active" === result(1).age)
+      assert(13.8 === result(1).primaryNeeds)
+      assert(0.0 === result(1).work)
+      assert(10.2 === result(1).other)
+
+      assert("working" === result(2).working)
+      assert("male" === result(2).sex)
+      assert("elder" === result(2).age)
+      assert(15.3 === result(2).primaryNeeds)
+      assert(0.0 === result(2).work)
+      assert(8.8 === result(2).other)
+    }
+  }
 }

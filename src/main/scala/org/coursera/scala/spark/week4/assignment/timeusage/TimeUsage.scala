@@ -15,7 +15,7 @@ object TimeUsage {
     SparkSession
       .builder()
       .appName("Time Usage")
-      .config("spark.master", "local]")
+      .config("spark.master", "local")
       .getOrCreate()
 
   // For implicit conversions like converting RDDs to DataFrames
@@ -185,9 +185,9 @@ object TimeUsage {
     */
   def timeUsageGroupedSqlQuery(viewName: String): String = {
     s"""select working, sex, age, round(avg(primaryNeeds), 1) as primaryNeeds, round(avg(work), 1) as work, round(avg(other), 1) as other
-       |from $viewName
-       |group by working, sex, age
-       |order by working, sex, age""".stripMargin
+        |from $viewName
+        |group by working, sex, age
+        |order by working, sex, age""".stripMargin
   }
 
   /**
@@ -220,8 +220,13 @@ object TimeUsage {
     *               Hint: you should use the `groupByKey` and `typed.avg` methods.
     */
   def timeUsageGroupedTyped(summed: Dataset[TimeUsageRow]): Dataset[TimeUsageRow] = {
-    import org.apache.spark.sql.expressions.scalalang.typed
-    ???
+    import org.apache.spark.sql.expressions.scalalang.typed._
+    summed.groupByKey(timeUsage => (timeUsage.working, timeUsage.sex, timeUsage.age)).
+      agg(round(avg[TimeUsageRow](_.primaryNeeds),1).as[Double], round(avg[TimeUsageRow](_.work), 1).as[Double], round(avg[TimeUsageRow](_.other), 1).as[Double]).
+      map{
+        case ((working, sex, age), primaryNeeds, work, other) => TimeUsageRow(working, sex, age, primaryNeeds, work, other)
+      }.
+      orderBy($"working", $"sex", $"age")
   }
 }
 
