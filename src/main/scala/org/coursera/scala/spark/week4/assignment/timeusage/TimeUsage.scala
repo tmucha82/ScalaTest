@@ -15,7 +15,7 @@ object TimeUsage {
     SparkSession
       .builder()
       .appName("Time Usage")
-      .config("spark.master", "local")
+      .config("spark.master", "local]")
       .getOrCreate()
 
   // For implicit conversions like converting RDDs to DataFrames
@@ -197,8 +197,16 @@ object TimeUsage {
     *                           Hint: you should use the `getAs` method of `Row` to look up columns and
     *                           cast them at the same time.
     */
-  def timeUsageSummaryTyped(timeUsageSummaryDf: DataFrame): Dataset[TimeUsageRow] =
-    ???
+  def timeUsageSummaryTyped(timeUsageSummaryDf: DataFrame): Dataset[TimeUsageRow] = {
+    timeUsageSummaryDf.map(row => TimeUsageRow(
+      row.getAs("working"),
+      row.getAs("sex"),
+      row.getAs("age"),
+      row.getAs("primaryNeeds"),
+      row.getAs("work"),
+      row.getAs("other")
+    ))
+  }
 
   /**
     * @return Same as `timeUsageGrouped`, but using the typed API when possible

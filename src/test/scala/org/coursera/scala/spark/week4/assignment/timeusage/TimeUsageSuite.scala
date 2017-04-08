@@ -187,7 +187,7 @@ class TimeUsageSuite extends FunSuite with BeforeAndAfterAll {
     }
   }
 
-  test("timeUsageSummary for getting ineteresting data about time usages") {
+  test("timeUsageSummary for getting interesting data about time usages") {
     new TestSet {
       val (_, dataFrame) = read(testFilePath)
       val (primaryNeedsColumns, workColumns, otherColumns) = classifiedColumns(columnNames)
@@ -313,6 +313,41 @@ class TimeUsageSuite extends FunSuite with BeforeAndAfterAll {
       assert(15.3 === result(2).getDouble(3))
       assert(0.0 === result(2).getDouble(4))
       assert(8.8 === result(2).getDouble(5))
+    }
+  }
+
+  test("timeUsageSummaryTyped for getting interesting data about time usages") {
+    new TestSet {
+      val (_, dataFrame) = read(testFilePath)
+      val (primaryNeedsColumns, workColumns, otherColumns) = classifiedColumns(columnNames)
+      val timeUsageFrame = timeUsageSummary(primaryNeedsColumns, workColumns, otherColumns, dataFrame)
+      val timeUsageDataSet = timeUsageSummaryTyped(timeUsageFrame)
+
+      timeUsageDataSet.show()
+      val result = timeUsageDataSet.collect()
+
+      assert(Array("working", "sex", "age", "primaryNeeds", "work", "other") === timeUsageDataSet.columns)
+      assert(3 === result.length)
+      assert("working" === result(0).working)
+      assert("male" === result(0).sex)
+      assert("elder" === result(0).age)
+      assert(15.25 === result(0).primaryNeeds)
+      assert(0.0 === result(0).work)
+      assert(8.75 === result(0).other)
+
+      assert("working" === result(1).working)
+      assert("female" === result(1).sex)
+      assert("active" === result(1).age)
+      assert(13.833333333333334 === result(1).primaryNeeds)
+      assert(0.0 === result(1).work)
+      assert(10.166666666666666 === result(1).other)
+
+      assert("not working" === result(2).working)
+      assert("female" === result(2).sex)
+      assert("young" === result(2).age)
+      assert(11.916666666666666 === result(2).primaryNeeds)
+      assert(0.0 === result(2).work)
+      assert(12.083333333333334 === result(2).other)
     }
   }
 
