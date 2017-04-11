@@ -14,6 +14,17 @@ class ParserTest extends FunSuite {
     def factor: Parser[Any] = floatingPointNumber | "(" ~ expr ~ ")"
   }
 
+  object SimpleJSON extends JavaTokenParsers {
+
+    def value: Parser[Any] = obj | arr | stringLiteral | floatingPointNumber | "null" | "true" | "false"
+
+    def obj: Parser[Any] = "{" ~ repsep(member, ",") ~ "}"
+
+    def arr: Parser[Any] = "[" ~ repsep(value, ",") ~ "]"
+
+    def member: Parser[Any] = stringLiteral ~ ":" ~ value
+  }
+
   object MyParsers extends RegexParsers {
     val ident: Parser[String] = """[a-zA-Z_]\w*""".r
   }
@@ -26,5 +37,13 @@ class ParserTest extends FunSuite {
   test("regexp parser") {
     assert("[1.11] parsed: helloWorld" === MyParsers.parseAll(MyParsers.ident, "helloWorld").toString)
     assert("[1.1] failure: string matching regex `[a-zA-Z_]\\w*' expected but `^' found\n\n^temp\n^" === MyParsers.parseAll(MyParsers.ident, "^temp").toString)
+  }
+
+  test("SimpleJSON parser") {
+    val json = "{\"address book\": {\"name\": \"John Smith\",\"address\": {\"street\": \"10 Market Street\",\"city\"  : \"San Francisco, CA\",\"zip\"   : 94111},\"phone numbers\": [\"408 338-4238\",\"408 111-6892\"]}}"
+    assert("[1.178] parsed: (({~List(((\"address book\"~:)~(({~List(((\"name\"~:)~\"John Smith\"), ((\"address\"~:)~(({~List(((\"street\"~:)~\"10 Market Street\"), ((\"city\"~:)~\"San Francisco, CA\"), ((\"zip\"~:)~94111)))~})), ((\"phone numbers\"~:)~(([~List(\"408 338-4238\", \"408 111-6892\"))~]))))~}))))~})" === SimpleJSON.parseAll(SimpleJSON.value, json).toString)
+
+    val invalidJson = "{ test:1.1 }"
+    assert("[1.3] failure: `}' expected but `t' found\n\n{ test:1.1 }\n  ^" === SimpleJSON.parseAll(SimpleJSON.value, invalidJson).toString)
   }
 }
