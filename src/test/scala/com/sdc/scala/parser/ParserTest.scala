@@ -25,6 +25,16 @@ class ParserTest extends FunSuite {
     def member: Parser[Any] = stringLiteral ~ ":" ~ value
   }
 
+  object ParsedJSON extends JavaTokenParsers {
+    def value: Parser[Any] = obj | arr | stringLiteral | floatingPointNumber ^^ (_.toDouble) | "null" ^^ (x => null) | "true" ^^ (x => true) | "false" ^^ (x => false)
+
+    def obj: Parser[Map[String, Any]] = "{" ~> repsep(member, ",") <~ "}" ^^ (Map() ++ _)
+
+    def arr: Parser[List[Any]] = "[" ~> repsep(value, ",") <~ "]"
+
+    def member: Parser[(String, Any)] = stringLiteral ~ ":" ~ value ^^ { case name ~ ":" ~ value => (name, value) }
+  }
+
   object MyParsers extends RegexParsers {
     val ident: Parser[String] = """[a-zA-Z_]\w*""".r
   }
@@ -46,4 +56,17 @@ class ParserTest extends FunSuite {
     val invalidJson = "{ test:1.1 }"
     assert("[1.3] failure: `}' expected but `t' found\n\n{ test:1.1 }\n  ^" === SimpleJSON.parseAll(SimpleJSON.value, invalidJson).toString)
   }
+
+  test("ParsedJSON parser") {
+    val json = "{\"address book\": {\"name\": \"John Smith\",\"address\": {\"street\": \"10 Market Street\",\"city\"  : \"San Francisco, CA\",\"zip\"   : 94111},\"phone numbers\": [\"408 338-4238\",\"408 111-6892\"]}}"
+
+    val parsed = ParsedJSON.parseAll(ParsedJSON.value, json)
+    assert(parsed.successful)
+    assert(parsed.next.source === json)
+    val result: Map[String, Any] = parsed.get.asInstanceOf[Map[String, Any]]
+    val only = result.head
+    assert("\"address book\"" === only._1)
+    assert(("\"name\"", "\"John Smith\"") === only._2.asInstanceOf[Map[String, Any]].head)
+  }
+
 }
