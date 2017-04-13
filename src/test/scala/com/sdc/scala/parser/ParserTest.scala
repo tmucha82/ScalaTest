@@ -2,7 +2,7 @@ package com.sdc.scala.parser
 
 import org.scalatest.FunSuite
 
-import scala.util.parsing.combinator.{JavaTokenParsers, RegexParsers}
+import scala.util.parsing.combinator._
 
 class ParserTest extends FunSuite {
 
