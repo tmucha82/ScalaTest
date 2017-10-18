@@ -3,9 +3,10 @@ package org.coursera.scala.spark.week2
 import org.apache.spark.{SparkContext, SparkConf}
 import org.coursera.scala.spark.week1.assignment.wikipedia.WikipediaArticle
 import org.junit.runner.RunWith
-import org.scalatest.FunSuite
+import org.scalatest.{Ignore, FunSuite}
 import org.scalatest.junit.JUnitRunner
 
+@Ignore
 @RunWith(classOf[JUnitRunner])
 class PairRddTest extends FunSuite {
 

@@ -6,8 +6,9 @@ import org.apache.spark.sql.{Column, Row}
 import org.coursera.scala.spark.week4.assignment.timeusage.TimeUsage._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.{BeforeAndAfterAll, FunSuite}
+import org.scalatest.{Ignore, BeforeAndAfterAll, FunSuite}
 
+@Ignore
 @RunWith(classOf[JUnitRunner])
 class TimeUsageSuite extends FunSuite with BeforeAndAfterAll {
 

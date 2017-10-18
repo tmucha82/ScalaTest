@@ -2,8 +2,9 @@ package org.coursera.scala.spark.week1.assignment.wikipedia
 
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.{BeforeAndAfterAll, FunSuite}
+import org.scalatest.{Ignore, BeforeAndAfterAll, FunSuite}
 
+@Ignore
 @RunWith(classOf[JUnitRunner])
 class WikipediaSuite extends FunSuite with BeforeAndAfterAll {
 

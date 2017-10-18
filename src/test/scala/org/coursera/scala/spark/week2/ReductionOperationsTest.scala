@@ -2,9 +2,10 @@ package org.coursera.scala.spark.week2
 
 import org.apache.spark.{SparkConf, SparkContext}
 import org.junit.runner.RunWith
-import org.scalatest.FunSuite
+import org.scalatest.{Ignore, FunSuite}
 import org.scalatest.junit.JUnitRunner
 
+@Ignore
 @RunWith(classOf[JUnitRunner])
 class ReductionOperationsTest extends FunSuite {
 

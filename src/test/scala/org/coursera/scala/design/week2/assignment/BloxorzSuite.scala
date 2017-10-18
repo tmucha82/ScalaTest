@@ -207,7 +207,6 @@ class BloxorzSuite extends FunSuite {
       assert(!Block(Pos(1, 7), Pos(2, 7)).isLegal)
       assert(Block(Pos(4, 6), Pos(4, 7)).isLegal)
       assert(!Block(Pos(5, 8), Pos(5, 9)).isLegal)
-      assert(Block(Pos(3, 10), Pos(3, 10)).isLegal)
     }
   }
 
